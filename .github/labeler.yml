@@ -1,0 +1,46 @@
+'ast':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/java/com/auberer/compilerdesignlectureproject/ast/**'
+          - 'src/test/java/com/auberer/compilerdesignlectureproject/ast/**'
+
+'reader':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/java/com/auberer/compilerdesignlectureproject/reader/**'
+          - 'src/test/java/com/auberer/compilerdesignlectureproject/reader/**'
+
+'lexer':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/java/com/auberer/compilerdesignlectureproject/lexer/**'
+          - 'src/test/java/com/auberer/compilerdesignlectureproject/lexer/**'
+
+'parser':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/java/com/auberer/compilerdesignlectureproject/parser/**'
+          - 'src/test/java/com/auberer/compilerdesignlectureproject/parser/**'
+
+'sema':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/java/com/auberer/compilerdesignlectureproject/sema/**'
+          - 'src/test/java/com/auberer/compilerdesignlectureproject/sema/**'
+
+'codegen':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/java/com/auberer/compilerdesignlectureproject/codegen/**'
+          - 'src/test/java/com/auberer/compilerdesignlectureproject/codegen/**'
+
+'interpreter':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/java/com/auberer/compilerdesignlectureproject/interpreter/**'
+          - 'src/test/java/com/auberer/compilerdesignlectureproject/interpreter/**'
+
+'ci':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'

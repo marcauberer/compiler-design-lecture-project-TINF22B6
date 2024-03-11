@@ -1,0 +1,29 @@
+version: 2
+updates:
+  # Maven
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: daily
+      time: "04:00"
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 15
+    target-branch: main
+    reviewers:
+      - marcauberer
+    assignees:
+      - marcauberer
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: .github/workflows/
+    schedule:
+      interval: daily
+      time: "04:00"
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 15
+    target-branch: main
+    reviewers:
+      - marcauberer
+    assignees:
+      - marcauberer
