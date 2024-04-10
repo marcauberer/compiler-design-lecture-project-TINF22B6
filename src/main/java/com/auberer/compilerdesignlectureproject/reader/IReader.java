@@ -4,6 +4,6 @@ public interface IReader {
   char getChar();
   CodeLoc getCodeLoc();
   void advance();
-  void expect();
+  void expect(char expectedChar);
   boolean isEOF();
 }
