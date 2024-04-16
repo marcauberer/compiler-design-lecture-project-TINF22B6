@@ -1,9 +1,9 @@
 package com.auberer.compilerdesignlectureproject.reader;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Reader
@@ -11,20 +11,25 @@ import java.util.Scanner;
 public class Reader implements IReader {
 
     private CodeLoc codeLoc;
-    private Scanner sc;
-    private char c;
+    private char currentChar;
+    private InputStream stream;
+    private boolean eof;
 
-    public Reader(File file) throws FileNotFoundException {
-        this.codeLoc = new CodeLoc(0, 0);
-        this.c = '0';
-        this.sc = new Scanner(file);
+    public Reader(String filePath) {
+        this.eof = false;
+        this.codeLoc = new CodeLoc(1, 0);
+        this.currentChar = '0';
+        try {
+            stream = new FileInputStream(filePath);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
     public char getChar() {
-        c = (char) sc.nextByte();
-        advance();
-        return c;
+        return currentChar;
     }
 
     @Override
@@ -34,22 +39,37 @@ public class Reader implements IReader {
 
     @Override
     public void advance() {
-        codeLoc.column++;
-        if (c == '\n') {
-            codeLoc.line++;
-            codeLoc.column = 0;
+        try {
+            int ret = stream.read();
+            if (ret != -1) {
+                this.currentChar = (char) ret;
+            } else {
+                this.eof = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("Fuck");
+        }
+        if (!isEOF()) {
+            codeLoc.column++;
+            if (currentChar == '\n') {
+                codeLoc.line++;
+                codeLoc.column = 1;
+            }
         }
     }
 
     @Override
     public void expect(char expectedChar) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'expect'");
+        if (!isEOF()) {
+            if (expectedChar != currentChar) {
+                throw new IllegalStateException("Fuck Fuck");
+            }
+        }
     }
 
     @Override
     public boolean isEOF() {
-        return this.sc.hasNext();
+        return eof;
     }
-
 }
