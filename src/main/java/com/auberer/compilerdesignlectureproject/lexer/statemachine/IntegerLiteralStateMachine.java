@@ -5,7 +5,7 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 public class IntegerLiteralStateMachine extends StateMachine {
     @Override
     public void init() {
-        State startState = new State("startState");
+        State startState = new State("Cool State");
         State isNumberState = new State("isNumberState");
         State acceptingState = new State("acceptingState");
         State failState = new State("failState");
@@ -26,13 +26,12 @@ public class IntegerLiteralStateMachine extends StateMachine {
         addState(failState);
 
         addRangeTransition(startState, isNumberState, ziffern);
-        addCharTransition(startState, isNumberState, '5');
         addElseTransition(startState, failState);
 
         addRangeTransition(isNumberState, isNumberState, ziffern);
         addElseTransition(isNumberState, acceptingState);
 
-        addElseTransition(acceptingState, failState);
+        // addElseTransition(acceptingState, failState);
 
         addElseTransition(failState, failState);
 

@@ -1,5 +1,6 @@
 package com.auberer.compilerdesignlectureproject.lexer;
 
+import com.auberer.compilerdesignlectureproject.lexer.statemachine.IntegerLiteralStateMachine;
 import com.auberer.compilerdesignlectureproject.lexer.statemachine.KeywordStateMachine;
 import com.auberer.compilerdesignlectureproject.lexer.statemachine.StateMachine;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
@@ -17,13 +18,12 @@ public class Lexer implements ILexer {
     public Lexer(IReader reader) {
         this.reader = reader;
         this.stateMachineList = new ArrayList<>();
-        // stateMachineList.add(new IntegerLiteralStateMachine());
         // stateMachineList.add(new KeywordStateMachine("DankeRoethig"));
         // stateMachineList.add(new StringLiteralStateMachine());
         stateMachineList.add(new KeywordStateMachine("XSLT"));
         // stateMachineList.add(new KeywordStateMachine("XML"));
         // stateMachineList.add(new DoubleLiteralStateMachine());
-        // stateMachineList.add(new IntegerLiteralStateMachine());
+        stateMachineList.add(new IntegerLiteralStateMachine());
 
         for (StateMachine stateMachine : stateMachineList) {
             stateMachine.init();
@@ -38,17 +38,16 @@ public class Lexer implements ILexer {
 
     @Override
     public void advance() {
-        int acceptingMachines = 0;
         StringBuilder currentTokenText = new StringBuilder();
 
-        while (acceptingMachines != 1) {
-            currentTokenText.append(reader.getChar());
+        while (!reader.isEOF()) {
             for (StateMachine machine : stateMachineList) {
                 machine.processInput(reader.getChar());
                 if (machine.isInAcceptState()) {
-                    acceptingMachines++;
+                    break;
                 }
             }
+            currentTokenText.append(reader.getChar());
             reader.advance();
         }
 

@@ -14,13 +14,14 @@ public class KeywordStateMachine extends StateMachine {
 
     @Override
     public void init() {
-        State startState = new State("startState");
-        State incorrectState = new State("incorrectState");
+        State startState = new State("startState-Keyword");
+        State incorrectState = new State("incorrectState-Keyword");
 
         startState.setStartState(true);
 
         addState(startState);
         addState(incorrectState);
+        addElseTransition(incorrectState, incorrectState);
 
         List<State> states = new ArrayList<>();
         for (int i = 0; i < keyword.length(); i++) {
@@ -30,10 +31,13 @@ public class KeywordStateMachine extends StateMachine {
             }
             addState(tmpState);
             states.add(tmpState);
-            if (i == 0)
+            if (i == 0) {
                 addCharTransition(startState, tmpState, keyword.charAt(i));
-            else
+                addElseTransition(startState, incorrectState);
+            } else {
                 addCharTransition(states.get(i - 1), states.get(i), keyword.charAt(i));
+                addElseTransition(states.get(i - 1), incorrectState);
+            }
         }
 
     }

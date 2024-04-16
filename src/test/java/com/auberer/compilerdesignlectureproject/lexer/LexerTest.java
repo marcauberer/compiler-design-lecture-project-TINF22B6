@@ -12,14 +12,15 @@ import org.junit.jupiter.api.Test;
 public class LexerTest {
     @Test
     public void testStateMachineState() {
-        Lexer l = new Lexer(new Reader("testfiles/xslt.txt"));
+        Lexer l = new Lexer(new Reader(new ByteArrayInputStream("XSLT".getBytes())));
         l.advance();
+        assertEquals(l.getToken().getText(), "XSLT");
     }
 
     @Test
     @DisplayName("Test if Integer works")
     public void test_IntegerLiteralStateMachine() {
-        Lexer l = new Lexer(new Reader(new ByteArrayInputStream("500".getBytes())));
+        Lexer l = new Lexer(new Reader(new ByteArrayInputStream("500;".getBytes())));
         l.advance();
         assertEquals(l.getToken().getText(), "500");
     }
