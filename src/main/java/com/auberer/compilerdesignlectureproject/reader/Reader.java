@@ -28,6 +28,15 @@ public class Reader implements IReader {
         }
     }
 
+    // This one is for testing
+    public Reader(InputStream stream) {
+        this.eof = false;
+        this.codeLoc = new CodeLoc(1, 0);
+        this.stream = stream;
+        // get first char of file
+        advance();
+    }
+
     @Override
     public char getChar() {
         return currentChar;

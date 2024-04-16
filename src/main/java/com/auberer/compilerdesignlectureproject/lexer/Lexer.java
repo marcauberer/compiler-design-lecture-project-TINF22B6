@@ -17,13 +17,13 @@ public class Lexer implements ILexer {
     public Lexer(IReader reader) {
         this.reader = reader;
         this.stateMachineList = new ArrayList<>();
-        //stateMachineList.add(new IntegerLiteralStateMachine());
-        //stateMachineList.add(new KeywordStateMachine("DankeRoethig"));
-        //stateMachineList.add(new StringLiteralStateMachine());
+        // stateMachineList.add(new IntegerLiteralStateMachine());
+        // stateMachineList.add(new KeywordStateMachine("DankeRoethig"));
+        // stateMachineList.add(new StringLiteralStateMachine());
         stateMachineList.add(new KeywordStateMachine("XSLT"));
-        //stateMachineList.add(new KeywordStateMachine("XML"));
-        //stateMachineList.add(new DoubleLiteralStateMachine());
-        //stateMachineList.add(new IntegerLiteralStateMachine());
+        // stateMachineList.add(new KeywordStateMachine("XML"));
+        // stateMachineList.add(new DoubleLiteralStateMachine());
+        // stateMachineList.add(new IntegerLiteralStateMachine());
 
         for (StateMachine stateMachine : stateMachineList) {
             stateMachine.init();
@@ -42,11 +42,13 @@ public class Lexer implements ILexer {
         StringBuilder currentTokenText = new StringBuilder();
 
         while (acceptingMachines != 1) {
+            currentTokenText.append(reader.getChar());
             for (StateMachine machine : stateMachineList) {
                 machine.processInput(reader.getChar());
-                if (machine.isInAcceptState()) acceptingMachines++;
+                if (machine.isInAcceptState()) {
+                    acceptingMachines++;
+                }
             }
-            currentTokenText.append(reader.getChar());
             reader.advance();
         }
 

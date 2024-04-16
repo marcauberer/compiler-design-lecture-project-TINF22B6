@@ -5,39 +5,40 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 public class IntegerLiteralStateMachine extends StateMachine {
     @Override
     public void init() {
-        State state0 = new State("State 0");
-        State state1 = new State("State 1");
-        State state2 = new State("State 2");
-        State state3 = new State("State 3");
-        State state4 = new State("State 4");
+        State startState = new State("Start State");
+        State isNumberState = new State("State 1");
+        State acceptingState = new State("State 2");
+        State failState = new State("Not Accepting");
 
-        state0.setStartState(true);
-        state2.setAcceptState(true);
-        Range ziffernOhneNull = new Range('1', '9');
-        Range ziffernMitNull = new Range('0', '9');
+        // int sum= 5+9;
+        // int sum = 5_900;
+        // int sum= 50;
+        //
+        // = + ;
 
-        addRangeTransition(state0, state1, ziffernOhneNull);
-        addCharTransition(state0, state1, '+');
-        addCharTransition(state0, state1, '-');
-        addCharTransition(state0, state3, '0');
-        addElseTransition(state0, state4);
+        startState.setStartState(true);
+        acceptingState.setAcceptState(true);
+        Range ziffern = new Range('0', '9');
 
-        addCharTransition(state3, state2, ' ');
-        addElseTransition(state3, state4);
+        addState(startState);
+        addState(isNumberState);
+        addState(acceptingState);
+        addState(failState);
 
-        addRangeTransition(state1, state1, ziffernMitNull);
-        addCharTransition(state1, state2, ' ');
-        addElseTransition(state1, state4);
 
-        addElseTransition(state4, state4);
+        addRangeTransition(startState, isNumberState, ziffern);
+        addCharTransition(startState, isNumberState, '5');
+        addElseTransition(startState, failState);
 
-        addElseTransition(state0, state4);
 
-        addState(state0);
-        addState(state1);
-        addState(state2);
-        addState(state3);
-        addState(state4);
+        addRangeTransition(isNumberState, isNumberState, ziffern);
+        addElseTransition(isNumberState, acceptingState);
+
+        addElseTransition(acceptingState, failState);
+
+        addElseTransition(failState, failState);
+
+
 
         reset();
     }
