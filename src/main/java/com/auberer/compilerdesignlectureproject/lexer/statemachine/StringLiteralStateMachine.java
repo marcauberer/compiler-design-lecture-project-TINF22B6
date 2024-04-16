@@ -4,38 +4,37 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
 public class StringLiteralStateMachine extends StateMachine {
 
+    /*
+     * Von Benjamin
+     */
     @Override
     public void init() {
-        State state0 = new State("State 0");
-        State state1 = new State("State 1");
-        State state2 = new State("State 2");
-        State state3 = new State("State 3");
-        State state4 = new State("State 4");
+        State startState = new State("start State");
+        State contentState = new State("content");
+        State acceptState = new State("accept State");
+        State failState = new State("fail State");
 
-        state0.setStartState(true);
-        state3.setAcceptState(true);
+        startState.setStartState(true);
+        acceptState.setAcceptState(true);
+        Range großbuchstaben = new Range('A', 'Z');
+        Range kleinbuchstaben = new Range('a', 'z');
 
-        addCharTransition(state0, state1, '"');
-        addElseTransition(state0, state4);
+        addState(startState);
+        addState(contentState);
+        addState(acceptState);
+        addState(failState);
 
-        // Betrachtung von escape-ten Anführungszeichen
+        addCharTransition(startState, contentState, '"');
+        addElseTransition(startState, failState);
 
-        addCharTransition(state1, state2, '\\');
-        addCharTransition(state1, state4, '"');
-        addElseTransition(state1, state1);
+        addRangeTransition(contentState, contentState, großbuchstaben);
+        addRangeTransition(contentState, contentState, kleinbuchstaben);
+        addCharTransition(contentState, contentState, ' ');
 
-        addCharTransition(state2, state1, '"');
-        addElseTransition(state2, state1);
+        addCharTransition(contentState, acceptState, '"');
 
-        addCharTransition(state3, state3, ' ');
-        addElseTransition(state3, state4);
-        addElseTransition(state0, state3);
+        addCharTransition(acceptState, acceptState, ' ');
 
-        addState(state0);
-        addState(state1);
-        addState(state2);
-        addState(state3);
-        addState(state4);
         reset();
     }
 

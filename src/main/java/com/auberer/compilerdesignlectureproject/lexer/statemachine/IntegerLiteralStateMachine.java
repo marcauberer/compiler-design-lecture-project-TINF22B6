@@ -5,10 +5,10 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 public class IntegerLiteralStateMachine extends StateMachine {
     @Override
     public void init() {
-        State startState = new State("Start State");
-        State isNumberState = new State("State 1");
-        State acceptingState = new State("State 2");
-        State failState = new State("Not Accepting");
+        State startState = new State("startState");
+        State isNumberState = new State("isNumberState");
+        State acceptingState = new State("acceptingState");
+        State failState = new State("failState");
 
         // int sum= 5+9;
         // int sum = 5_900;
@@ -25,11 +25,9 @@ public class IntegerLiteralStateMachine extends StateMachine {
         addState(acceptingState);
         addState(failState);
 
-
         addRangeTransition(startState, isNumberState, ziffern);
         addCharTransition(startState, isNumberState, '5');
         addElseTransition(startState, failState);
-
 
         addRangeTransition(isNumberState, isNumberState, ziffern);
         addElseTransition(isNumberState, acceptingState);
@@ -37,8 +35,6 @@ public class IntegerLiteralStateMachine extends StateMachine {
         addElseTransition(acceptingState, failState);
 
         addElseTransition(failState, failState);
-
-
 
         reset();
     }
