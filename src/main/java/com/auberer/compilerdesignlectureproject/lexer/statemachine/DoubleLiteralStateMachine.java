@@ -50,6 +50,6 @@ public class DoubleLiteralStateMachine extends StateMachine{
 
     @Override
     public TokenType getTokenType() {
-        return TokenType.TYPE_DOUBLE;
+        return isInAcceptState() ? TokenType.TYPE_DOUBLE : TokenType.TOK_INVALID;
     }
 }

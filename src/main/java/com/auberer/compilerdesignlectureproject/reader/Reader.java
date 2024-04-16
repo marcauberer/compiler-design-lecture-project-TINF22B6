@@ -1,11 +1,15 @@
 package com.auberer.compilerdesignlectureproject.reader;
 
+import lombok.Getter;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
 public class Reader implements IReader {
+    @Getter
     private final String fileContents;
 
     private final CodeLoc codeLoc = new CodeLoc(1, 0);
@@ -13,16 +17,19 @@ public class Reader implements IReader {
     private int index = 0;
 
     public Reader(String filename) {
+        this.fileContents = readFile(filename);
+        advance();
+    }
+
+    private String readFile(String filename) {
         List<String> lines;
         try {
-            lines = Files.readAllLines(Paths.get(filename));
+            lines = Files.readAllLines(Paths.get(filename), StandardCharsets.US_ASCII);
         } catch (IOException e) {
             throw new RuntimeException("Source file cannot be opened: " + filename, e);
         }
 
-        this.fileContents = String.join("", lines);
-
-        this.advance();
+        return String.join("", lines);
     }
 
     @Override
@@ -65,4 +72,5 @@ public class Reader implements IReader {
     public boolean isEOF() {
         return currChar == '\0';
     }
+
 }

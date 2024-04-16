@@ -5,10 +5,10 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 public class IdentifierStateMachine extends StateMachine{
     @Override
     public void init() {
-        State state0 = new State("0");
-        State state1 = new State("1");
-        State state2 = new State("2");
-        State state3 = new State("3");
+        State state0 = new State("State 0");
+        State state1 = new State("State 1");
+        State state2 = new State("State 2");
+        State state3 = new State("State 3");
 
         state0.setStartState(true);
         state2.setAcceptState(true);
@@ -18,7 +18,7 @@ public class IdentifierStateMachine extends StateMachine{
         Range ziffern = new Range('0','9');
 
         addRangeTransition(state0, state1, kleinbuchstaben);
-        addRangeTransition(state0, state2, grossbuchstaben);
+        addRangeTransition(state0, state1, grossbuchstaben);
         addCharTransition(state0, state1, '_');
         addElseTransition(state0, state3);
 
@@ -40,6 +40,6 @@ public class IdentifierStateMachine extends StateMachine{
 
     @Override
     public TokenType getTokenType() {
-        return TokenType.IDENTIFIER;
+        return isInAcceptState() ? TokenType.IDENTIFIER : TokenType.TOK_INVALID;
     }
 }

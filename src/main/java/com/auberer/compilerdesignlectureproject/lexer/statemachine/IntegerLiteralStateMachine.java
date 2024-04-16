@@ -42,6 +42,6 @@ public class IntegerLiteralStateMachine extends StateMachine{
 
     @Override
     public TokenType getTokenType() {
-        return TokenType.TYPE_INT;
+        return isInAcceptState() ? TokenType.TYPE_INT : TokenType.TOK_INVALID;
     }
 }

@@ -14,9 +14,9 @@ public class KeywordStateMachine extends StateMachine{
     @Override
     public void init() {
         List<State> states = new ArrayList<>();
-        State startState = new State("startState");
-        State incorrectState = new State("incorrectState");
-        State acceptedState = new State("acceptedState");
+        State startState = new State("State 0");
+        State incorrectState = new State("State False");
+        State acceptedState = new State("State True");
 
         startState.setStartState(true);
         acceptedState.setAcceptState(true);
@@ -52,6 +52,6 @@ public class KeywordStateMachine extends StateMachine{
 
     @Override
     public TokenType getTokenType() {
-        return TokenType.KEYWORD;
+        return isInAcceptState() ? TokenType.KEYWORD : TokenType.TOK_INVALID;
     }
 }
