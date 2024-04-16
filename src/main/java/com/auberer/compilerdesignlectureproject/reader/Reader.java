@@ -18,9 +18,10 @@ public class Reader implements IReader {
     public Reader(String filePath) {
         this.eof = false;
         this.codeLoc = new CodeLoc(1, 0);
-        this.currentChar = '0';
         try {
-            stream = new FileInputStream(filePath);
+            this.stream = new FileInputStream(filePath);
+            // get first char of file
+            advance();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
