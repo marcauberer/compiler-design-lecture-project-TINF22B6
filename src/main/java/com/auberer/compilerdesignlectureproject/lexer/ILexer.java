@@ -7,8 +7,8 @@ import java.util.Set;
 public interface ILexer {
   Token getToken();
   void advance();
-  void expect(TokenType expectedType);
-  void expectOneOf(Set<TokenType> expectedTypes);
+  void expect(TokenType expectedType) throws Exception;
+  void expectOneOf(Set<TokenType> expectedTypes) throws Exception;
   boolean isEOF();
   CodeLoc getCodeLoc();
 }
