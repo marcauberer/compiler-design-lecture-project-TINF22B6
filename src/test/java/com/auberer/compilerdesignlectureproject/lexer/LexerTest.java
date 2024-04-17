@@ -20,7 +20,7 @@ public class LexerTest {
     @Test
     @DisplayName("Test if Integer works")
     public void test_IntegerLiteralStateMachine() {
-        Lexer l = new Lexer(new Reader(new ByteArrayInputStream("500;".getBytes())));
+        Lexer l = new Lexer(new Reader(new ByteArrayInputStream("500".getBytes())));
         l.advance();
         assertEquals(l.getToken().getText(), "500");
     }

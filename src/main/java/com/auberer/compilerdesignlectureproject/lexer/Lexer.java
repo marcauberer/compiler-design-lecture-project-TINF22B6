@@ -41,20 +41,15 @@ public class Lexer implements ILexer {
         StringBuilder currentTokenText = new StringBuilder();
 
         while (!reader.isEOF()) {
+            currentTokenText.append(reader.getChar());
             for (StateMachine machine : stateMachineList) {
                 machine.processInput(reader.getChar());
+                currentToken = new Token(machine.getTokenType(), currentTokenText.toString().substring(0, currentTokenText.toString().length()), reader.getCodeLoc());
                 if (machine.isInAcceptState()) {
                     break;
                 }
             }
-            currentTokenText.append(reader.getChar());
             reader.advance();
-        }
-
-        for (StateMachine machine : stateMachineList) {
-            if (machine.isInAcceptState()) {
-                currentToken = new Token(machine.getTokenType(), currentTokenText.toString(), reader.getCodeLoc());
-            }
         }
     }
 
