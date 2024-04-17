@@ -18,6 +18,7 @@ public class Lexer implements ILexer {
     public Lexer(IReader reader) {
         this.reader = reader;
         this.stateMachineList = new ArrayList<>();
+        this.currentToken = new Token(TokenType.TOK_INVALID, null, getCodeLoc());
         // stateMachineList.add(new KeywordStateMachine("DankeRoethig"));
         // stateMachineList.add(new StringLiteralStateMachine());
         stateMachineList.add(new KeywordStateMachine("XSLT"));
@@ -44,7 +45,8 @@ public class Lexer implements ILexer {
             currentTokenText.append(reader.getChar());
             for (StateMachine machine : stateMachineList) {
                 machine.processInput(reader.getChar());
-                currentToken = new Token(machine.getTokenType(), currentTokenText.toString(), reader.getCodeLoc());
+                currentToken.setText(currentTokenText.toString());
+                currentToken.setType(machine.getTokenType());
                 if (machine.isInAcceptState()) {
                     break;
                 }
