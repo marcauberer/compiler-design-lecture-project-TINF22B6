@@ -5,16 +5,15 @@ import com.auberer.compilerdesignlectureproject.lexer.statemachine.State;
 
 public class KeywordStateMachine extends StateMachine {
 
-    private final String javaKeywords;
-    boolean isKeyword;
+    private final String keywords;
 
-    public KeywordStateMachine(String javaKeywords) {
-        this.javaKeywords = javaKeywords;
+    public KeywordStateMachine(String keywords) {
+        this.keywords = keywords;
     }
 
     @Override
     public void init() {
-        State[] states = new State[javaKeywords.length() + 1];
+        State[] states = new State[keywords.length() + 1];
 
         for (int i = 0; i < states.length; i++) {
             states[i] = new State("q" + i);
@@ -24,8 +23,8 @@ public class KeywordStateMachine extends StateMachine {
         states[0].setStartState(true);
         states[states.length-1].setAcceptState(true);
 
-        for (int i = 0; i < javaKeywords.length(); i++) {
-            addCharTransition(states[i], states[i+1], javaKeywords.charAt(i));
+        for (int i = 0; i < keywords.length(); i++) {
+            addCharTransition(states[i], states[i+1], keywords.charAt(i));
         }
 
     }
