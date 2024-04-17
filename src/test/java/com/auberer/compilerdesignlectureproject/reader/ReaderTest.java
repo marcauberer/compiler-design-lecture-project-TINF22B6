@@ -2,6 +2,8 @@ package com.auberer.compilerdesignlectureproject.reader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.ByteArrayInputStream;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,30 +31,21 @@ public class ReaderTest {
      * tortor. Nam euismod tellus id erat.
      */
 
-    @Test
-    @DisplayName("Test for getChar()")
-    public void testGetChar() {
-        Reader reader = new Reader("testfiles/test.txt");
-        assertEquals(reader.getChar(), '0');
-    }
 
     @Test
     @DisplayName("Test for getChar()")
     public void testGetChar_FirstChar() {
-        Reader reader = new Reader("testfiles/test.txt");
-        reader.advance();
+        Reader reader = new Reader(new ByteArrayInputStream("Alles".getBytes()));
         assertEquals(reader.getChar(), 'A');
         // Test for CodeLoc
         assertEquals(1, reader.getCodeLoc().line);
         assertEquals(1, reader.getCodeLoc().column);
     }
 
-
-
     @Test
     @DisplayName("Test if EOF works")
     public void testIsEOF() {
-        Reader reader = new Reader("testfiles/empty.txt");
+        Reader reader = new Reader(new ByteArrayInputStream("".getBytes()));
         reader.advance();
         assertEquals(reader.isEOF(), true);
     }
