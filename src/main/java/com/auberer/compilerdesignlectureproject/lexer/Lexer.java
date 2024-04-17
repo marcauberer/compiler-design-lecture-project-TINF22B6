@@ -44,7 +44,7 @@ public class Lexer implements ILexer {
             currentTokenText.append(reader.getChar());
             for (StateMachine machine : stateMachineList) {
                 machine.processInput(reader.getChar());
-                currentToken = new Token(machine.getTokenType(), currentTokenText.toString().substring(0, currentTokenText.toString().length()), reader.getCodeLoc());
+                currentToken = new Token(machine.getTokenType(), currentTokenText.toString(), reader.getCodeLoc());
                 if (machine.isInAcceptState()) {
                     break;
                 }
