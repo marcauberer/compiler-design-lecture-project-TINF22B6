@@ -13,9 +13,11 @@ public class Lexer implements ILexer {
 
     private final IReader reader;
     private String tokenValue;
+    private Token currentToken;
 
     public Lexer(IReader reader) {
         this.reader = reader;
+        this.tokenValue = "";
         reader.advance();
     }
 
@@ -26,37 +28,55 @@ public class Lexer implements ILexer {
         }
 
         StateMachine stateMachine;
-        char startChar = tokenValue.charAt(0);
 
-        if (startChar == '"') {
-            stateMachine = new StringLiteralStateMachine();
-        } else if (startChar == '_' || startChar == '$') {
-            stateMachine = new IdentifierStateMachine();
-        } else if (new Range('0', '9').contains(startChar)) {
-            if (tokenValue.contains(".")) {
-                stateMachine = new DoubleLiteralStateMachine();
+        if (!tokenValue.isEmpty()) {
+            char startChar = tokenValue.charAt(0);
+
+            if (startChar == '"') {
+                stateMachine = new StringLiteralStateMachine();
+            } else if (startChar == '_' || startChar == '$') {
+                stateMachine = new IdentifierStateMachine();
+            } else if (Character.isDigit(startChar) || startChar == '.') {
+                if (tokenValue.contains(".")) {
+                    try {
+                        Double.parseDouble(tokenValue);
+                        stateMachine = new DoubleLiteralStateMachine();
+                    } catch (NumberFormatException e) {
+                        return new Token(TokenType.TOK_INVALID, tokenValue, reader.getCodeLoc());
+                    }
+                } else {
+                    try {
+                        Integer.parseInt(tokenValue);
+                        stateMachine = new IntegerLiteralStateMachine();
+                    } catch (NumberFormatException e) {
+                        return new Token(TokenType.TOK_INVALID, tokenValue, reader.getCodeLoc());
+                    }
+                }
+            } else if (Character.isLetter(startChar)) {
+                if (Arrays.asList(keywordList).contains(tokenValue)) {
+                    stateMachine = new KeywordStateMachine(tokenValue);
+                } else {
+                    stateMachine = new IdentifierStateMachine();
+                }
+            } else {
+                return new Token(TokenType.TOK_INVALID, tokenValue, reader.getCodeLoc());
             }
-            stateMachine = new IntegerLiteralStateMachine();
-        } else if (new Range('A', 'Z').contains(startChar) || new Range('a', 'z').contains(startChar)) {
-            if (Arrays.asList(keywordList).contains(tokenValue)) {
-                stateMachine = new KeywordStateMachine(tokenValue);
+
+            stateMachine.init();
+            stateMachine.reset();
+
+            try {
+                StateMachine finalStateMachine = stateMachine;
+                tokenValue.chars().forEach(input -> finalStateMachine.processInput((char)input));
+                return new Token(stateMachine.getTokenType(), tokenValue, reader.getCodeLoc());
+            } catch (IllegalStateException e) {
+                return new Token(TokenType.TOK_INVALID, tokenValue, reader.getCodeLoc());
             }
-            stateMachine = new IdentifierStateMachine();
         } else {
-            return new Token(TokenType.TOK_INVALID, tokenValue, reader.getCodeLoc());
-        }
-
-        stateMachine.init();
-        stateMachine.reset();
-
-        try {
-            StateMachine finalStateMachine = stateMachine;
-            tokenValue.chars().forEach(input -> finalStateMachine.processInput((char)input));
-            return new Token(stateMachine.getTokenType(), tokenValue, reader.getCodeLoc());
-        } catch (IllegalStateException e) {
-            return new Token(TokenType.TOK_INVALID, tokenValue, reader.getCodeLoc());
+            return new Token(TokenType.TOK_INVALID, "", reader.getCodeLoc());
         }
     }
+
 
     @Override
     public void advance() {

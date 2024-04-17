@@ -65,33 +65,31 @@ public class LexerTest {
         }
     }
 
-    /*@Test
-    void getToken_shouldReturnIntegerToken() throws Exception {
-        String input = "123";
-        MockReader mockReader = new MockReader(input);
-        mockReader.advance();
-        Lexer lexer = new Lexer(mockReader);
-        Token token = lexer.getToken();
-        assertEquals(TokenType.TOK_INTEGER, token.getType());
-        assertEquals("123", token.getText());
-    }*/
-
-
-  /*  @Test
-    void getToken_shouldReturnDoubleToken() throws Exception {
-        String input = "3.14";
-        Lexer lexer = new Lexer(new MockReader(input));
-        Token token = lexer.getToken();
-        assertEquals(TokenType.TOK_DOUBLE, token.getType());
-        assertEquals("3.14", token.getText());
-    }*/
-
     @Test
-    void advance_shouldAdvanceToNextToken() throws Exception {
+    void getToken_shouldReturnIntegerToken() {
         String input = "123";
         Lexer lexer = new Lexer(new MockReader(input));
         lexer.advance();
         Token token = lexer.getToken();
+        assertEquals(TokenType.TOK_INTEGER, token.getType());
+    }
+
+    @Test
+    void getToken_shouldReturnDoubleToken() {
+        String input = "1.23";
+        Lexer lexer = new Lexer(new MockReader(input));
+        lexer.advance();
+        Token token = lexer.getToken();
+        assertEquals(TokenType.TOK_DOUBLE, token.getType());
+    }
+
+    @Test
+    void advance_shouldAdvanceToNextToken() {
+        String input = "123";
+        Lexer lexer = new Lexer(new MockReader(input));
+        lexer.advance();
+        Token token = lexer.getToken();
+        assertEquals(TokenType.TOK_INTEGER, token.getType());
         assertEquals('2', token.getText().charAt(0));
     }
 
