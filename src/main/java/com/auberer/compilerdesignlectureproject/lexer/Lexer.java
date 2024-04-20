@@ -154,7 +154,7 @@ public class Lexer implements ILexer {
       if (winningEntry == null || entry.getValue().compareTo(winningEntry.getValue()) > 0)
         winningEntry = entry;
     StateMachine winningMachine = winningEntry.getKey();
-    String tokenTextString = tokenText.substring(0, tokenText.length() - 1);
+    String tokenTextString = tokenText.toString().trim();
     curToken = new Token(winningMachine.getTokenType(), tokenTextString, tokenCodeLoc);
   }
 

@@ -28,5 +28,7 @@ public class CompilerDesignLectureProject {
       System.out.println(lexer.getToken());
       lexer.advance();
     }
+    // Print last token
+    System.out.println(lexer.getToken());
   }
 }
