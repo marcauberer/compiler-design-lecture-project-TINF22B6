@@ -6,7 +6,7 @@ stmtLst: (stmt | ifStmt | whileLoop | doWhileLoop | forLoop | switchStmt)*;
 stmt: (varDecl | assignExpr) SEMICOLON;
 
 // Builtin functions
-printBuiltinCall: CALL PRINT LPAREN assignExpr RPAREN;
+printBuiltinCall: PRINT LPAREN assignExpr RPAREN;
 
 // If statement (team 1)
 ifStmt: IF LPAREN assignExpr RPAREN LBRACE stmtLst RBRACE afterIf?;
