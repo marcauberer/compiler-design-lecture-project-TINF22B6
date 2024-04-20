@@ -1,11 +1,10 @@
 grammar TInf;
 
-// Top level definitions and declarations
+// Given language constructs
 entry: fctDef*;
 stmtLst: (stmt | ifStmt | whileLoop | doWhileLoop | forLoop | switchStmt)*;
 stmt: (varDecl | assignExpr) SEMICOLON;
-
-// Builtin functions
+type: TYPE_INT | TYPE_DOUBLE | TYPE_STRING | TYPE_EMPTY;
 printBuiltinCall: PRINT LPAREN assignExpr RPAREN;
 
 // If statement (team 1)
@@ -45,8 +44,6 @@ additiveExpr: multiplicativeExpr ((PLUS | MINUS) multiplicativeExpr)*;
 multiplicativeExpr: prefixExpr ((MUL | DIV) prefixExpr)*;
 prefixExpr: (PLUS | MINUS)? atomicExpr;
 atomicExpr: INT_LIT | DOUBLE_LIT | STRING_LIT | IDENTIFIER | fctCall | printBuiltinCall | LPAREN assignExpr RPAREN;
-
-type: TYPE_INT | TYPE_DOUBLE | TYPE_STRING | TYPE_EMPTY;
 
 // Terminals
 TYPE_INT: 'int';

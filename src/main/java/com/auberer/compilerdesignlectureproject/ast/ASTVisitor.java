@@ -32,10 +32,10 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  // ToDo: Add additional visit methods here
-
   T visitType(ASTTypeNode node) {
     return visitChildren(node);
   }
+
+  // ToDo: Add additional visit methods here
 
 }
