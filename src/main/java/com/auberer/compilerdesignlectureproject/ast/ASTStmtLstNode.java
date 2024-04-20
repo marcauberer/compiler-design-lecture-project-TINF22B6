@@ -1,8 +1,8 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
-public class ASTEntryNode extends ASTNode implements IVisitable {
+public class ASTStmtLstNode extends ASTNode implements IVisitable {
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
-    return visitor.visitEntry(this);
+    return visitor.visitStmtLst(this);
   }
 }
