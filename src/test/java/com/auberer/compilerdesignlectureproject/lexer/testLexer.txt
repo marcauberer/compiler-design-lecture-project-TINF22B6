@@ -1,7 +1,1 @@
-public class Test {
-    public static void main(String[] args) {
-        int num = 123;
-        String message = "Hello, World!";
-        System.out.println(message);
-    }
-}
+"da" 1231 12.3 public variable1 .

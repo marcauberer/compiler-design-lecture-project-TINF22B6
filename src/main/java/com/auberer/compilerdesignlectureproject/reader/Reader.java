@@ -3,33 +3,28 @@ package com.auberer.compilerdesignlectureproject.reader;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 public class Reader implements IReader {
     @Getter
     private final String fileContents;
 
-    private final CodeLoc codeLoc = new CodeLoc(1, 0);
-    private char currChar = '\0';
-    private int index = 0;
+    private final CodeLoc codeLoc = new CodeLoc(0, -1);
+    private char currChar = '\\';
+    private int index = -1;
 
     public Reader(String filename) {
-        this.fileContents = readFile(filename);
-        advance();
+        this.fileContents = this.readFile(filename);
+        this.advance();
     }
 
     private String readFile(String filename) {
-        List<String> lines;
         try {
-            lines = Files.readAllLines(Paths.get(filename), StandardCharsets.US_ASCII);
+            return Files.readString(Paths.get(filename));
         } catch (IOException e) {
             throw new RuntimeException("Source file cannot be opened: " + filename, e);
         }
-
-        return String.join("", lines);
     }
 
     @Override
@@ -49,9 +44,10 @@ public class Reader implements IReader {
         }
 
         this.index++;
-        this.currChar = fileContents.charAt(index);
 
-        if (currChar == '\n') {
+        this.currChar = this.fileContents.charAt(this.index);
+
+        if (this.currChar == '\n') {
             this.codeLoc.line++;
             this.codeLoc.column = 0;
         } else {
@@ -70,7 +66,6 @@ public class Reader implements IReader {
 
     @Override
     public boolean isEOF() {
-        return currChar == '\0';
+        return this.index == this.fileContents.length() - 1;
     }
-
 }

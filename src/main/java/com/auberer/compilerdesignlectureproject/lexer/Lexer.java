@@ -19,8 +19,8 @@ public class Lexer implements ILexer {
         stateMachines.add(new IntegerLiteralStateMachine());
         stateMachines.add(new DoubleLiteralStateMachine());
         stateMachines.add(new IdentifierStateMachine());
-
-        /*stateMachines.add(new KeywordStateMachine("public"));
+        stateMachines.add(new KeywordStateMachine("public"));
+        /*
         stateMachines.add(new KeywordStateMachine("private"));
         stateMachines.add(new KeywordStateMachine("class"));
         stateMachines.add(new KeywordStateMachine("static"));
@@ -42,16 +42,21 @@ public class Lexer implements ILexer {
 
     @Override
     public void advance() {
-        boolean machineAccepted = false;
+        while(reader.getChar() == 32){
+            reader.advance();
+        }
         StringBuilder currentTokenText = new StringBuilder();
 
-        while(!machineAccepted){
+        while(reader.getChar() != 32 && !reader.isEOF()){
+            reader.getChar();
             currentTokenText.append(reader.getChar());
             for (StateMachine stateMachine : stateMachines) {
                 stateMachine.processInput(reader.getChar());
-                if(stateMachine.isInAcceptState()) machineAccepted = true;
             }
             reader.advance();
+        }
+        for (StateMachine stateMachine : stateMachines) {
+                stateMachine.processInput(' ');
         }
 
         for (StateMachine stateMachine : stateMachines) {
@@ -64,16 +69,17 @@ public class Lexer implements ILexer {
 
     @Override
     public void expect(TokenType expectedType) {
+        this.advance();
         if (this.currToken.getType() != expectedType) {
             throw new RuntimeException("Expected " + expectedType + " but got " + this.currToken.getType());
         }
-        this.advance();
     }
 
     @Override
     public void expectOneOf(Set<TokenType> expectedTypes) {
-        for (TokenType expectedType : expectedTypes) {
-            expect(expectedType);
+        advance();
+        if (!expectedTypes.contains(this.currToken.getType())) {
+            throw new RuntimeException("Expected " + expectedTypes + " but got " + this.currToken.getType());
         }
     }
 
