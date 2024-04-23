@@ -92,4 +92,13 @@ public class Reader implements IReader {
   public boolean isEOF() {
     return eofReached;
   }
+
+  @Override
+  public void close() {
+    try {
+      inputReader.close();
+    } catch (IOException e) {
+      log.error("Reader error in close: {}", e.getMessage());
+    }
+  }
 }

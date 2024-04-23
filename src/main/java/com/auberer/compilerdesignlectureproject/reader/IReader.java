@@ -6,4 +6,5 @@ public interface IReader {
   void advance();
   void expect(char expectedChar);
   boolean isEOF();
+  void close();
 }

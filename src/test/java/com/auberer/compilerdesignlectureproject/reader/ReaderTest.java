@@ -1,5 +1,6 @@
 package com.auberer.compilerdesignlectureproject.reader;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,26 +14,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 public class ReaderTest {
-  private Reader reader;
-  private final Path testFilePath = Paths.get("test-input.tinf");
+  private Path testFilePath = null;
 
   @BeforeEach
   public void setUp() throws IOException {
     // Create a test file
+    testFilePath = Files.createTempFile("", ".tmp");
     Files.write(testFilePath, "Test content\nSecond line".getBytes());
-    reader = new Reader(testFilePath);
   }
 
   @AfterEach
-  public void tearDown() throws IOException {
+  public void tearDown() {
     // Delete the test file
-    Files.deleteIfExists(testFilePath);
-    reader = null;
+    try {
+      Files.deleteIfExists(testFilePath);
+    } catch (IOException e) {
+      log.debug("Error deleting test file: {}", e.getMessage());
+    }
   }
 
   @Test
   public void testGetChar() {
+    Reader reader = new Reader(testFilePath);
     assertEquals('T', reader.getChar());
     reader.advance();
     assertEquals('e', reader.getChar());
@@ -40,6 +45,7 @@ public class ReaderTest {
 
   @Test
   public void testGetCodeLoc() {
+    Reader reader = new Reader(testFilePath);
     assertEquals(new CodeLoc(1, 1), reader.getCodeLoc());
     reader.advance();
     assertEquals(new CodeLoc(1, 2), reader.getCodeLoc());
@@ -57,6 +63,7 @@ public class ReaderTest {
 
   @Test
   public void testAdvance() {
+    Reader reader = new Reader(testFilePath);
     reader.advance();
     assertEquals('e', reader.getChar());
     assertEquals(new CodeLoc(1, 2), reader.getCodeLoc());
@@ -64,6 +71,7 @@ public class ReaderTest {
 
   @Test
   public void testIsEOF() {
+    Reader reader = new Reader(testFilePath);
     assertFalse(reader.isEOF());
     // Consume all characters
     while (!reader.isEOF()) {
