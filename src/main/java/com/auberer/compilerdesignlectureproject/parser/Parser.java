@@ -120,7 +120,23 @@ public class Parser implements IParser {
     return node;
   }
 
-  // ToDo: Add more parse methods here
+  public ASTDoWhileLoopNode parseDoWhile() {
+    ASTDoWhileLoopNode node = new ASTDoWhileLoopNode();
+    enterNode(node);
+
+    lexer.expect(TokenType.TOK_DO);
+    lexer.expect(TokenType.TOK_LBRACE);
+    parseStmtLst();
+    lexer.expect(TokenType.TOK_RBRACE);
+    lexer.expect(TokenType.TOK_WHILE);
+    lexer.expect(TokenType.TOK_LPAREN);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_RPAREN);
+    lexer.expect(TokenType.TOK_SEMICOLON);
+
+    exitNode(node);
+    return node;
+  }
 
   // ToDo: Method stub for other teams to rely on. Team 7: Implement this method
   public void parseAssignExpr() {
