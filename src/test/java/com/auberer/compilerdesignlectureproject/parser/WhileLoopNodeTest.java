@@ -39,7 +39,7 @@ class WhileLoopNodeTest {
     doNothing().when(parser).parseAssignExpr();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
     doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
-    doReturn(new ASTStmtLstNode()).when(parser).parseStmtLst();
+    doReturn(null).when(parser).parseStmtLst();
     doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
 
 
