@@ -1,0 +1,5 @@
+func empty main()
+    int a = 1 + 2 + 5 * 4;
+    double b = 4.52334;
+    return;
+cnuf

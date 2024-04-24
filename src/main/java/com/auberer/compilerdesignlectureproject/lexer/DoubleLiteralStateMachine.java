@@ -4,41 +4,39 @@ import com.auberer.compilerdesignlectureproject.lexer.statemachine.Range;
 import com.auberer.compilerdesignlectureproject.lexer.statemachine.State;
 import com.auberer.compilerdesignlectureproject.lexer.statemachine.StateMachine;
 
+/**
+ * Matches a double literal or throws an exception if the input could not be matched.
+ */
 public class DoubleLiteralStateMachine extends StateMachine {
+  @Override
+  public void init() {
+    // Start state
+    State stateStart = new State("Start");
+    stateStart.setStartState(true);
+    addState(stateStart);
+    // State before dot
+    State stateBeforeDot = new State("BeforeDot");
+    addState(stateBeforeDot);
+    // State dot
+    State stateDot = new State("Dot");
+    addState(stateDot);
+    // State after dot
+    State stateEnd = new State("Double");
+    stateEnd.setAcceptState(true);
+    addState(stateEnd);
 
-    @Override
-    public void init() {
-        State startState = new State("START");
-        addState(startState);
-        startState.setStartState(true);
+    // Transitions
+    Range digits = new Range('0', '9');
+    addRangeTransition(stateStart, stateBeforeDot, digits);
+    addCharTransition(stateStart, stateDot, '.');
+    addRangeTransition(stateBeforeDot, stateBeforeDot, digits);
+    addCharTransition(stateBeforeDot, stateDot, '.');
+    addRangeTransition(stateDot, stateEnd, digits);
+    addRangeTransition(stateEnd, stateEnd, digits);
+  }
 
-        State integerState = new State("INTEGER");
-        addState(integerState);
-
-        State decimalPointState = new State("DECIMAL_POINT");
-        addState(decimalPointState);
-
-        State decimalState = new State("DECIMAL");
-        addState(decimalState);
-        decimalState.setAcceptState(true);
-
-        Range digitRange = new Range('0', '9');
-
-        addRangeTransition(startState, integerState, digitRange);
-        addCharTransition(startState, decimalPointState, '.');
-        addRangeTransition(integerState, integerState, digitRange);
-        addCharTransition(integerState, decimalPointState, '.');
-        addRangeTransition(decimalPointState, decimalState, digitRange);
-        addRangeTransition(decimalState, decimalState, digitRange);
-    }
-
-    @Override
-    public TokenType getTokenType() {
-        if (isInAcceptState()) {
-            return TokenType.TOK_DOUBLE;
-        } else {
-            return TokenType.TOK_INVALID;
-        }
-
-    }
+  @Override
+  public TokenType getTokenType() {
+    return TokenType.TOK_DOUBLE_LIT;
+  }
 }

@@ -1,67 +1,104 @@
 package com.auberer.compilerdesignlectureproject.reader;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.*;
+import java.nio.file.Path;
+
+/**
+ * Reader class for reading characters from a file.
+ * Input: File path
+ * Output: Character stream from file
+ */
+@Slf4j
 public class Reader implements IReader {
 
-    private BufferedReader bufferedReader;
-    private int currentChar;
-    private int lineNumber;
-    private int columnNumber;
+  private BufferedReader inputReader;
+  private char curChar;
+  private final CodeLoc curCodeLoc = new CodeLoc(1, 0);
+  private boolean eofReached = false;
 
-    public Reader(String filePath) {
-        try {
-            bufferedReader = new BufferedReader(new FileReader(filePath));
-            currentChar = bufferedReader.read();
-            lineNumber = 1;
-            columnNumber = 1;
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + filePath);
-            System.err.println("Error message: " + e.getMessage());
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + filePath);
-            System.err.println("Error message: " + e.getMessage());
-        }
-    }
+  public Reader(Path path) {
+    try {
+      File file = path.toFile();
+      FileReader fileReader = new FileReader(file);
+      inputReader = new BufferedReader(fileReader);
+      if (!inputReader.ready())
+        throw new IOException("Reader error: Source file could not be read");
 
-    @Override
-    public char getChar() {
-        return (char) currentChar;
+      // Read first character
+      advance();
+    } catch (IOException e) {
+      log.error("Reader error in constructor: {}", e.getMessage());
     }
+  }
 
-    @Override
-    public CodeLoc getCodeLoc() {
-        return new CodeLoc(lineNumber, columnNumber);
-    }
+  // Only for testing purposes
+  public Reader(String input) {
+    try {
+      StringReader stringReader = new StringReader(input);
+      inputReader = new BufferedReader(stringReader);
+      assert inputReader.ready();
 
-    @Override
-    public void advance() {
-        try {
-            currentChar = bufferedReader.read();
-            if (currentChar == '\n') {
-                lineNumber++;
-                columnNumber = 0;
-            } else {
-                columnNumber++;
-            }
-        } catch (IOException e) {
-            System.err.println("Error advancing in file.");
-            System.err.println("Error message: " + e.getMessage());
-        }
+      // Read first character
+      advance();
+    } catch (IOException e) {
+      log.error("Reader error in testing constructor: {}", e.getMessage());
+      assert false;
     }
+  }
 
-    @Override
-    public void expect(char c) throws Exception {
-        if (currentChar != c) {
-            throw new Exception("Expected character " + c + " at " + getCodeLoc() + " but got " + getChar());
-        }
-    }
+  @Override
+  public char getChar() {
+    return curChar;
+  }
 
-    @Override
-    public boolean isEOF() {
-        return currentChar == -1;
+  @Override
+  public CodeLoc getCodeLoc() {
+    return curCodeLoc;
+  }
+
+  @Override
+  public void advance() {
+    assert !isEOF();
+    try {
+      int input = inputReader.read();
+
+      if (input == -1) {
+        eofReached = true;
+        return;
+      }
+
+      curChar = (char) input;
+      if (curChar == '\n') {
+        curCodeLoc.setLine(curCodeLoc.getLine() + 1);
+        curCodeLoc.setColumn(0);
+      } else {
+        curCodeLoc.setColumn(curCodeLoc.getColumn() + 1);
+      }
+    } catch (IOException e) {
+      log.error("Reader error in advance: {}", e.getMessage());
     }
+  }
+
+  @Override
+  public void expect(char expectedChar) throws RuntimeException {
+    if (curChar != expectedChar)
+      throw new RuntimeException("Expected character '" + expectedChar + "' but got '" + curChar + "'");
+    advance();
+  }
+
+  @Override
+  public boolean isEOF() {
+    return eofReached;
+  }
+
+  @Override
+  public void close() {
+    try {
+      inputReader.close();
+    } catch (IOException e) {
+      log.error("Reader error in close: {}", e.getMessage());
+    }
+  }
 }

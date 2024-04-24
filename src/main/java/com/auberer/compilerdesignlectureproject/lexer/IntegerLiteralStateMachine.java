@@ -4,30 +4,35 @@ import com.auberer.compilerdesignlectureproject.lexer.statemachine.Range;
 import com.auberer.compilerdesignlectureproject.lexer.statemachine.State;
 import com.auberer.compilerdesignlectureproject.lexer.statemachine.StateMachine;
 
+/**
+ * Matches an integer literal or throws an exception if the input could not be matched.
+ */
 public class IntegerLiteralStateMachine extends StateMachine {
+  @Override
+  public void init() {
+    // Start state
+    State stateStart = new State("Start");
+    stateStart.setStartState(true);
+    addState(stateStart);
+    // Integer State
+    State stateInt = new State("Integer");
+    stateInt.setAcceptState(true);
+    addState(stateInt);
+    // Zero State
+    State stateZero = new State("Zero");
+    stateZero.setAcceptState(true);
+    addState(stateZero);
 
-    @Override
-    public void init() {
-        State startState = new State("START");
-        addState(startState);
-        startState.setStartState(true);
+    // Transitions
+    Range digitsWithoutZero = new Range('1', '9');
+    Range digits = new Range('0', '9');
+    addRangeTransition(stateStart, stateInt, digitsWithoutZero);
+    addRangeTransition(stateInt, stateInt, digits);
+    addCharTransition(stateStart, stateZero, '0');
+  }
 
-        State integerState = new State("INTEGER");
-        addState(integerState);
-        integerState.setAcceptState(true);
-
-        Range digitRange = new Range('0', '9');
-
-        addRangeTransition(startState, integerState, digitRange);
-        addRangeTransition(integerState, integerState, digitRange);
-    }
-
-    @Override
-    public TokenType getTokenType() {
-        if (isInAcceptState()) {
-            return TokenType.TOK_INTEGER;
-        } else {
-            return TokenType.TOK_INVALID;
-        }
-    }
+  @Override
+  public TokenType getTokenType() {
+    return TokenType.TOK_INT_LIT;
+  }
 }

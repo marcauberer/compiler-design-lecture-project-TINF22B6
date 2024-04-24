@@ -6,14 +6,12 @@ import com.auberer.compilerdesignlectureproject.lexer.statemachine.StateMachine;
 /**
  * Matches the given keyword or throws an exception if the input could not be matched.
  */
-public class KeywordStateMachine extends StateMachine {
-  private final String keyword;
+public class PunctuationStateMachine extends StateMachine {
+  private final String punctuation;
   private final TokenType tokenType;
 
-  public KeywordStateMachine(String keyword, TokenType tokenType) {
-    // We only want to allow lowercase keywords with length > 0
-    assert keyword.matches("[a-z]+");
-    this.keyword = keyword;
+  public PunctuationStateMachine(String punctuation, TokenType tokenType) {
+    this.punctuation = punctuation;
     this.tokenType = tokenType;
   }
 
@@ -25,15 +23,15 @@ public class KeywordStateMachine extends StateMachine {
     addState(stateStart);
 
     // Letter states
-    State[] letterStates = new State[keyword.length()];
-    for (int i = 0; i < keyword.length(); i++) {
+    State[] letterStates = new State[punctuation.length()];
+    for (int i = 0; i < punctuation.length(); i++) {
       letterStates[i] = new State("Letter " + i);
       addState(letterStates[i]);
-      addCharTransition(i == 0 ? stateStart : letterStates[i - 1], letterStates[i], keyword.charAt(i));
+      addCharTransition(i == 0 ? stateStart : letterStates[i - 1], letterStates[i], punctuation.charAt(i));
     }
 
     // Set the last state as the accept state
-    letterStates[keyword.length() - 1].setAcceptState(true);
+    letterStates[punctuation.length() - 1].setAcceptState(true);
   }
 
   @Override

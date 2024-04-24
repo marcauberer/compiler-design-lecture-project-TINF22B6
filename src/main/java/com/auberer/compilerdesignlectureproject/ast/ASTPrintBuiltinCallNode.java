@@ -1,8 +1,8 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
-public class ASTEntryNode extends ASTNode {
+public class ASTPrintBuiltinCallNode extends ASTNode {
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
-    return visitor.visitEntry(this);
+    return visitor.visitPrintBuiltin(this);
   }
 }

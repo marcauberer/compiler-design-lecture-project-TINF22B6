@@ -4,39 +4,36 @@ import com.auberer.compilerdesignlectureproject.lexer.statemachine.Range;
 import com.auberer.compilerdesignlectureproject.lexer.statemachine.State;
 import com.auberer.compilerdesignlectureproject.lexer.statemachine.StateMachine;
 
+/**
+ * Matches an identifier or throws an exception if the input could not be matched.
+ */
 public class IdentifierStateMachine extends StateMachine {
+  @Override
+  public void init() {
+    // Start state
+    State stateStart = new State("Start");
+    stateStart.setStartState(true);
+    addState(stateStart);
+    // Identifier state
+    State stateEnd = new State("Identifier");
+    stateEnd.setAcceptState(true);
+    addState(stateEnd);
 
-    @Override
-    public void init() {
-        State startState = new State("START");
-        addState(startState);
-        startState.setStartState(true);
+    // Transitions
+    Range letters = new Range('a', 'z');
+    Range capitalLetters = new Range('A', 'Z');
+    Range digits = new Range('0', '9');
+    addRangeTransition(stateStart, stateEnd, letters);
+    addRangeTransition(stateStart, stateEnd, capitalLetters);
+    addCharTransition(stateEnd, stateEnd, '_');
+    addRangeTransition(stateEnd, stateEnd, letters);
+    addRangeTransition(stateEnd, stateEnd, capitalLetters);
+    addRangeTransition(stateEnd, stateEnd, digits);
+    addCharTransition(stateEnd, stateEnd, '_');
+  }
 
-        State identifierState = new State("IDENTIFIER");
-        addState(identifierState);
-        identifierState.setAcceptState(true);
-
-        Range lowerCaseLetterRange = new Range('a', 'z');
-        Range upperCaseLetterRange = new Range('A', 'Z');
-        Range digetRange = new Range('0', '9');
-
-        addCharTransition(startState, identifierState, '_');
-        addCharTransition(startState, identifierState, '$');
-        addRangeTransition(startState, identifierState, lowerCaseLetterRange);
-        addRangeTransition(startState, identifierState, upperCaseLetterRange);
-        addRangeTransition(identifierState, identifierState, lowerCaseLetterRange);
-        addRangeTransition(identifierState, identifierState, upperCaseLetterRange);
-        addRangeTransition(identifierState, identifierState, digetRange);
-        addCharTransition(identifierState, identifierState, '_');
-        addCharTransition(identifierState, identifierState, '$');
-    }
-
-    @Override
-    public TokenType getTokenType() {
-        if (isInAcceptState()) {
-            return TokenType.TOK_IDENTIFIER;
-        } else {
-            return TokenType.TOK_INVALID;
-        }
-    }
+  @Override
+  public TokenType getTokenType() {
+    return TokenType.TOK_IDENTIFIER;
+  }
 }

@@ -1,78 +1,82 @@
 package com.auberer.compilerdesignlectureproject.reader;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 public class ReaderTest {
+  private Path testFilePath = null;
 
-    @Test
-    void reader() {
-        String validFilePath = "src/test/java/com/auberer/compilerdesignlectureproject/reader/test.txt";
-        Reader reader = new Reader(validFilePath);
+  @BeforeEach
+  public void setUp() throws IOException {
+    // Create a test file
+    testFilePath = Files.createTempFile("", ".tmp");
+    Files.write(testFilePath, "Test content\nSecond line".getBytes());
+  }
 
-        assertEquals('T', reader.getChar());
-        CodeLoc expectedFirstCharLoc = new CodeLoc(1, 1);
-        assertEquals(expectedFirstCharLoc, reader.getCodeLoc());
+  @AfterEach
+  public void tearDown() {
+    // Delete the test file
+    try {
+      Files.deleteIfExists(testFilePath);
+    } catch (IOException e) {
+      log.debug("Error deleting test file: {}", e.getMessage());
     }
+  }
 
-    @Test
-    void getCodeLoc() {
-        String filePath = "src/test/java/com/auberer/compilerdesignlectureproject/reader/test.txt";
-        Reader reader = new Reader(filePath);
+  @Test
+  public void testGetChar() {
+    Reader reader = new Reader(testFilePath);
+    assertEquals('T', reader.getChar());
+    reader.advance();
+    assertEquals('e', reader.getChar());
+  }
 
-        CodeLoc expectedFirstCharLoc = new CodeLoc(1, 1);
-        assertEquals(expectedFirstCharLoc, reader.getCodeLoc());
-
-        reader.advance();
-        CodeLoc expectedSecondCharLoc = new CodeLoc(1, 2);
-        assertEquals(expectedSecondCharLoc, reader.getCodeLoc());
+  @Test
+  public void testGetCodeLoc() {
+    Reader reader = new Reader(testFilePath);
+    assertEquals(new CodeLoc(1, 1), reader.getCodeLoc());
+    reader.advance();
+    assertEquals(new CodeLoc(1, 2), reader.getCodeLoc());
+    for (int i = 0; i < 11; i++) {
+      reader.advance();
     }
-
-    @Test
-    void advance() {
-        String filePath = "src/test/java/com/auberer/compilerdesignlectureproject/reader/test.txt";
-        Reader reader = new Reader(filePath);
-
-        CodeLoc expectedFirstCharLoc = new CodeLoc(1, 1);
-        assertEquals(expectedFirstCharLoc, reader.getCodeLoc());
-
-        reader.advance();
-
-        CodeLoc expectedSecondCharLoc = new CodeLoc(1, 2);
-        assertEquals(expectedSecondCharLoc, reader.getCodeLoc());
-
-        for (int i = 0; i < 20; i++) {
-            reader.advance();
-        }
-
-        CodeLoc expectedNewLineLoc = new CodeLoc(2, 1);
-        assertEquals(expectedNewLineLoc, reader.getCodeLoc());
+    assertEquals(new CodeLoc(2, 0), reader.getCodeLoc());
+    for (int i = 0; i < 11; i++) {
+      reader.advance();
     }
+    assertEquals(new CodeLoc(2, 11), reader.getCodeLoc());
+    reader.advance();
+    assert reader.isEOF();
+  }
 
-    @Test
-    void expect() {
-        String filePath = "src/test/java/com/auberer/compilerdesignlectureproject/reader/test.txt";
-        Reader reader = new Reader(filePath);
+  @Test
+  public void testAdvance() {
+    Reader reader = new Reader(testFilePath);
+    reader.advance();
+    assertEquals('e', reader.getChar());
+    assertEquals(new CodeLoc(1, 2), reader.getCodeLoc());
+  }
 
-        char expectedChar = 'T';
-        assertDoesNotThrow(() -> reader.expect(expectedChar));
-
-        char unexpectedChar = 'X';
-        Exception exception = assertThrows(Exception.class, () -> reader.expect(unexpectedChar));
-        assertTrue(exception.getMessage().contains("Expected character " + unexpectedChar));
+  @Test
+  public void testIsEOF() {
+    Reader reader = new Reader(testFilePath);
+    assertFalse(reader.isEOF());
+    // Consume all characters
+    while (!reader.isEOF()) {
+      reader.advance();
     }
-
-    @Test
-    void isEOF() {
-        String filePath = "src/test/java/com/auberer/compilerdesignlectureproject/reader/empty_file.txt";
-        Reader reader = new Reader(filePath);
-
-        assertTrue(reader.isEOF());
-    }
+    assertTrue(reader.isEOF());
+  }
 }
