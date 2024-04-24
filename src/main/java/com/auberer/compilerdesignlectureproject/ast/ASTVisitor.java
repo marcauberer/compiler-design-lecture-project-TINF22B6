@@ -36,6 +36,20 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
+  T visitFctDef(ASTFctDef node) {
+    return visitChildren(node);
+  }
+
+  T visitParamLst(ASTParamLst node) {return visitChildren(node);}
+
+  T visitLogic(ASTLogic node) {return visitChildren(node);}
+
+  T visitFctCall(ASTFctCall node) {return visitChildren(node);}
+
+  T visitCallParams(ASTCallParams node) {return visitChildren(node);}
+
+  T visitAssignExpr(ASTAssignExpr node) {return visitChildren(node);}
+
   // ToDo: Add additional visit methods here
 
 }
