@@ -36,6 +36,8 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  // ToDo: Add additional visit methods here
+  T visitFor(ASTForNode node) {
+    return visitChildren(node);
+  }
 
 }
