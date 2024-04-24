@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 @Data
 public abstract class ASTNode implements IVisitable {
 
+
   public void addChild(ASTNode child) {
     children.add(child);
     child.setParent(this);

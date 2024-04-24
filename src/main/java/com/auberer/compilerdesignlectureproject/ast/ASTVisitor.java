@@ -36,6 +36,25 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  // ToDo: Add additional visit methods here
+  T visitIf(ASTIFStmtNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAfterIf(ASTAfterIf node) {
+    return visitChildren(node);
+  }
+
+  T visitEPre(ASTEPre node) {
+    return visitChildren(node);
+  }
+  T visitEPost(ASTEPost node) {
+    return visitChildren(node);
+  }
+
+  T visitElse(ASTElse node) {
+    return visitChildren(node);
+  }
+
+
 
 }
