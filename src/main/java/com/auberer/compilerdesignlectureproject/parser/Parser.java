@@ -122,7 +122,7 @@ public class Parser implements IParser {
 
   // ToDo: Add more parse methods here
 
-  public void parseSwitchStmt(){
+  public ASTSwitchStmtNode parseSwitchStmt(){
     ASTSwitchStmtNode node = new ASTSwitchStmtNode();
     enterNode(node);
 
@@ -136,29 +136,36 @@ public class Parser implements IParser {
       parseDefault();
     }
     lexer.expect(TokenType.TOK_RBRACE);
+
+    exitNode(node);
+    return node;
   }
 
-  public void parseCases(){
-    while(ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())){
-      ASTCasesNode node = new ASTCasesNode();
-      enterNode(node);
+  public ASTCasesNode parseCases(){
+    ASTCasesNode node = new ASTCasesNode();
+    enterNode(node);
 
+    while(ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())){
       lexer.expect(TokenType.TOK_CASE);
       lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
       lexer.expect(TokenType.TOK_COLON);
       parseStmtLst();
     }
+
+    exitNode(node);
+    return node;
   }
 
-  public void parseDefault(){
-
-
+  public ASTDefaultNode parseDefault(){
     ASTDefaultNode node = new ASTDefaultNode();
     enterNode(node);
 
     lexer.expect(TokenType.TOK_DEFAULT);
     lexer.expect(TokenType.TOK_COLON);
     parseStmtLst();
+
+    exitNode(node);
+    return node;
 
   }
 
