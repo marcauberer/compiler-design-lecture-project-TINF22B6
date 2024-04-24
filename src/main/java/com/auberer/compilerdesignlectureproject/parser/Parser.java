@@ -81,7 +81,7 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTPrintBuiltinCallNode parsePrintBuiltinCall() {
+  public ASTPrintBuiltinCallNode parsePrintBuiltinCall() throws Exception {
     ASTPrintBuiltinCallNode node = new ASTPrintBuiltinCallNode();
     enterNode(node);
 
@@ -95,7 +95,7 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTTypeNode parseType() {
+  public ASTTypeNode parseType() throws Exception {
     ASTTypeNode node = new ASTTypeNode();
     enterNode(node);
 

@@ -31,7 +31,7 @@ public class TypeNodeTest {
 
   @Test
   @DisplayName("Test type")
-  void testType() {
+  void testType() throws Exception {
     // Arrange
     doReturn(new Token(TokenType.TOK_TYPE_EMPTY, "", new CodeLoc(3, 14))).when(lexer).getToken();
     doNothing().when(lexer).expect(TokenType.TOK_TYPE_EMPTY);
