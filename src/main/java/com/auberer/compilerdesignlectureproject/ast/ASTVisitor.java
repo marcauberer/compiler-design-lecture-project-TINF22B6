@@ -38,4 +38,16 @@ public class ASTVisitor<T> {
 
   // ToDo: Add additional visit methods here
 
+  T visitSwitchStmt(ASTSwitchStmtNode node){
+    return visitChildren(node);
+  }
+
+  T visitCases(ASTCasesNode node){
+    return visitChildren(node);
+  }
+
+  T visitDefault(ASTDefaultNode node){
+    return visitChildren(node);
+  }
+
 }

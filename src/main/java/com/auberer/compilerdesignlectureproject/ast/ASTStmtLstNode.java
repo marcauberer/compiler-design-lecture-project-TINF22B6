@@ -23,6 +23,7 @@ public class ASTStmtLstNode extends ASTNode {
     // ToDo: Add selection set of doWhileLoop
     // ToDo: Add selection set of forLoop
     // ToDo: Add selection set of switchStmt
+    selectionSet.addAll(ASTSwitchStmtNode.getSelectionSet());
     selectionSet.addAll(followSet);
     return selectionSet;
   }

@@ -122,6 +122,46 @@ public class Parser implements IParser {
 
   // ToDo: Add more parse methods here
 
+  public void parseSwitchStmt(){
+    ASTSwitchStmtNode node = new ASTSwitchStmtNode();
+    enterNode(node);
+
+    lexer.expect(TokenType.TOK_SWITCH);
+    lexer.expect(TokenType.TOK_LPAREN);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_RPAREN);
+    lexer.expect(TokenType.TOK_LBRACE);
+    parseCases();
+    if(ASTDefaultNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      parseDefault();
+    }
+    lexer.expect(TokenType.TOK_RBRACE);
+  }
+
+  public void parseCases(){
+    while(ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())){
+      ASTCasesNode node = new ASTCasesNode();
+      enterNode(node);
+
+      lexer.expect(TokenType.TOK_CASE);
+      lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
+      lexer.expect(TokenType.TOK_COLON);
+      parseStmtLst();
+    }
+  }
+
+  public void parseDefault(){
+
+
+    ASTDefaultNode node = new ASTDefaultNode();
+    enterNode(node);
+
+    lexer.expect(TokenType.TOK_DEFAULT);
+    lexer.expect(TokenType.TOK_COLON);
+    parseStmtLst();
+
+  }
+
   // ToDo: Method stub for other teams to rely on. Team 7: Implement this method
   public void parseAssignExpr() {
   }
