@@ -36,10 +36,14 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  public T visitDoWhile(ASTDoWhileLoopNode node) {
+  T visitDoWhile(ASTDoWhileLoopNode node) {
     return visitChildren(node);
   }
 
-  // ToDo: Add additional visit methods here
+  T visitWhileLoop(ASTWhileLoopNode node) {
+        return visitChildren(node);
+  }
+
+    // ToDo: Add additional visit methods here
 
 }

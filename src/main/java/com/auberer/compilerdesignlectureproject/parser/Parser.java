@@ -142,6 +142,22 @@ public class Parser implements IParser {
   public void parseAssignExpr() {
   }
 
+  public ASTWhileLoopNode parseWhileLoop() {
+    ASTWhileLoopNode node = new ASTWhileLoopNode();
+    enterNode(node);
+
+    lexer.expect(TokenType.TOK_WHILE);
+    lexer.expect(TokenType.TOK_LPAREN);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_RPAREN);
+    lexer.expect(TokenType.TOK_LBRACE);
+    parseStmtLst();
+    lexer.expect(TokenType.TOK_RBRACE);
+
+    exitNode(node);
+    return node;
+  }
+
   private void enterNode(ASTNode node) {
     if (!parentStack.isEmpty()) {
       // Make sure the node is not pushed twice
