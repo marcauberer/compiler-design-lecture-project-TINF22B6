@@ -138,6 +138,53 @@ public class Parser implements IParser {
     return node;
   }
 
+  public ASTSwitchStmtNode parseSwitchStmt(){
+    ASTSwitchStmtNode node = new ASTSwitchStmtNode();
+    enterNode(node);
+
+    lexer.expect(TokenType.TOK_SWITCH);
+    lexer.expect(TokenType.TOK_LPAREN);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_RPAREN);
+    lexer.expect(TokenType.TOK_LBRACE);
+    parseCases();
+    if(ASTDefaultNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      parseDefault();
+    }
+    lexer.expect(TokenType.TOK_RBRACE);
+
+    exitNode(node);
+    return node;
+  }
+
+  public ASTCasesNode parseCases(){
+    ASTCasesNode node = new ASTCasesNode();
+    enterNode(node);
+
+    while(ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())){
+      lexer.expect(TokenType.TOK_CASE);
+      lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
+      lexer.expect(TokenType.TOK_COLON);
+      parseStmtLst();
+    }
+
+    exitNode(node);
+    return node;
+  }
+
+  public ASTDefaultNode parseDefault(){
+    ASTDefaultNode node = new ASTDefaultNode();
+    enterNode(node);
+
+    lexer.expect(TokenType.TOK_DEFAULT);
+    lexer.expect(TokenType.TOK_COLON);
+    parseStmtLst();
+
+    exitNode(node);
+    return node;
+
+  }
+
   // ToDo: Method stub for other teams to rely on. Team 7: Implement this method
   public void parseAssignExpr() {
   }
