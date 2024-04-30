@@ -36,6 +36,30 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
+  T visitLogicalExpr(ASTLogicalExpressionNode node) {
+    return visitChildren(node);
+  }
+
+  T visitCompareExpr(ASTcompareExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAdditiveExpr(ASTAdditiveExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitMultiplicativeExpr(ASTMultiplicativeExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitPrefixExpr(ASTPrefixExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAtomicExpr(ASTAtomicExprNode node) {
+    return visitChildren(node);
+  }
+
   // ToDo: Add additional visit methods here
 
 }

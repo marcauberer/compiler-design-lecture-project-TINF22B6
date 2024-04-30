@@ -54,5 +54,5 @@ public class PrintBuiltinCallNodeTest {
   @DisplayName("Integration test")
   void testPrintBuiltinCallIntegrated() {
     // ToDo: Implement integration test to test reader, lexer and parser together
-  }
+}
 }
