@@ -41,21 +41,21 @@ public class ASTVisitor<T> {
   }
 
   T visitWhileLoop(ASTWhileLoopNode node) {
-        return visitChildren(node);
-  }
-
-    // ToDo: Add additional visit methods here
-
-  T visitSwitchStmt(ASTSwitchStmtNode node){
     return visitChildren(node);
   }
 
-  T visitCases(ASTCasesNode node){
+  T visitSwitchStmt(ASTSwitchStmtNode node) {
     return visitChildren(node);
   }
 
-  T visitDefault(ASTDefaultNode node){
+  T visitCases(ASTCasesNode node) {
     return visitChildren(node);
   }
+
+  T visitDefault(ASTDefaultNode node) {
+    return visitChildren(node);
+  }
+
+  // ToDo: Add additional visit methods here
 
 }

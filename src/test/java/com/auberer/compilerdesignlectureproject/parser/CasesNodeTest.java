@@ -42,7 +42,7 @@ public class CasesNodeTest {
     void testCases() {
         List<Token> tokenList = new LinkedList<>();
         for(int i = 0; i < 3; i++){
-            Token token = new Token(TokenType.TOK_CASE, ""+i, new CodeLoc(1,1));
+            Token token = new Token(TokenType.TOK_CASE, String.valueOf(i), new CodeLoc(1,1));
             tokenList.add(token);
         }
         tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "end", new CodeLoc(1, 1)));
