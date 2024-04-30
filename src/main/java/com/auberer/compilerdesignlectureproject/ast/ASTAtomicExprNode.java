@@ -12,18 +12,14 @@ public class ASTAtomicExprNode extends ASTNode{
     }
 
     public static Set<TokenType> getSelectionSet() {
-        // The first set contains epsilon, so we also need the follow set of stmtLst
-        Set<TokenType> followSet = Set.of(TokenType.TOK_EOF, TokenType.TOK_LOGICAL_AND, TokenType.TOK_LOGICAL_OR, TokenType.TOK_EQUAL, TokenType.TOK_NOT_EQUAL, TokenType.TOK_PLUS, TokenType.TOK_MINUS, TokenType.TOK_MUL, TokenType.TOK_DIV); //TODO: follow Assignexpr fehöt
-
-        // The selection set of stmtLst contains the selection set of stmt and the follow set of stmtLst
-        Set<TokenType> selectionSet = new HashSet<>();
-        selectionSet.addAll(ASTStmtNode.getSelectionSet());
-        // ToDo: Add selection set of ifStmt
-        // ToDo: Add selection set of whileLoop
-        // ToDo: Add selection set of doWhileLoop
-        // ToDo: Add selection set of forLoop
-        // ToDo: Add selection set of switchStmt
-        selectionSet.addAll(followSet);
-        return selectionSet;
+        return Set.of(
+                TokenType.TOK_INT_LIT,
+                TokenType.TOK_DOUBLE_LIT,
+                TokenType.TOK_STRING_LIT,
+                TokenType.TOK_IDENTIFIER,
+                TokenType.TOK_CALL,
+                TokenType.TOK_PRINT,
+                TokenType.TOK_LPAREN
+        );
     }
 }
