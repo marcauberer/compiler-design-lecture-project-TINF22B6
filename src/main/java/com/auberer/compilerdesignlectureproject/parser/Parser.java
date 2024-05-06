@@ -120,70 +120,71 @@ public class Parser implements IParser {
         return node;
     }
 
-  public ASTDoWhileLoopNode parseDoWhile() {
-    ASTDoWhileLoopNode node = new ASTDoWhileLoopNode();
-    enterNode(node);
+    public ASTDoWhileLoopNode parseDoWhile() {
+        ASTDoWhileLoopNode node = new ASTDoWhileLoopNode();
+        enterNode(node);
 
-    lexer.expect(TokenType.TOK_DO);
-    lexer.expect(TokenType.TOK_LBRACE);
-    parseStmtLst();
-    lexer.expect(TokenType.TOK_RBRACE);
-    lexer.expect(TokenType.TOK_WHILE);
-    lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
-    lexer.expect(TokenType.TOK_RPAREN);
-    lexer.expect(TokenType.TOK_SEMICOLON);
+        lexer.expect(TokenType.TOK_DO);
+        lexer.expect(TokenType.TOK_LBRACE);
+        parseStmtLst();
+        lexer.expect(TokenType.TOK_RBRACE);
+        lexer.expect(TokenType.TOK_WHILE);
+        lexer.expect(TokenType.TOK_LPAREN);
+        parseAssignExpr();
+        lexer.expect(TokenType.TOK_RPAREN);
+        lexer.expect(TokenType.TOK_SEMICOLON);
 
-    exitNode(node);
-    return node;
-  }
-
-  public ASTSwitchStmtNode parseSwitchStmt() {
-    ASTSwitchStmtNode node = new ASTSwitchStmtNode();
-    enterNode(node);
-
-    lexer.expect(TokenType.TOK_SWITCH);
-    lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
-    lexer.expect(TokenType.TOK_RPAREN);
-    lexer.expect(TokenType.TOK_LBRACE);
-    parseCases();
-    if (ASTDefaultNode.getSelectionSet().contains(lexer.getToken().getType())) {
-      parseDefault();
-    }
-    lexer.expect(TokenType.TOK_RBRACE);
-
-    exitNode(node);
-    return node;
-  }
-
-  public ASTCasesNode parseCases() {
-    ASTCasesNode node = new ASTCasesNode();
-    enterNode(node);
-
-    while (ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())) {
-      lexer.expect(TokenType.TOK_CASE);
-      lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
-      lexer.expect(TokenType.TOK_COLON);
-      parseStmtLst();
+        exitNode(node);
+        return node;
     }
 
-    exitNode(node);
-    return node;
-  }
+    public ASTSwitchStmtNode parseSwitchStmt() {
+        ASTSwitchStmtNode node = new ASTSwitchStmtNode();
+        enterNode(node);
 
-  public ASTDefaultNode parseDefault() {
-    ASTDefaultNode node = new ASTDefaultNode();
-    enterNode(node);
+        lexer.expect(TokenType.TOK_SWITCH);
+        lexer.expect(TokenType.TOK_LPAREN);
+        parseAssignExpr();
+        lexer.expect(TokenType.TOK_RPAREN);
+        lexer.expect(TokenType.TOK_LBRACE);
+        parseCases();
+        if (ASTDefaultNode.getSelectionSet().contains(lexer.getToken().getType())) {
+            parseDefault();
+        }
+        lexer.expect(TokenType.TOK_RBRACE);
 
-    lexer.expect(TokenType.TOK_DEFAULT);
-    lexer.expect(TokenType.TOK_COLON);
-    parseStmtLst();
+        exitNode(node);
+        return node;
+    }
 
-    exitNode(node);
-    return node;
+    public ASTCasesNode parseCases() {
+        ASTCasesNode node = new ASTCasesNode();
+        enterNode(node);
 
-  }
+        while (ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())) {
+            lexer.expect(TokenType.TOK_CASE);
+            lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
+            lexer.expect(TokenType.TOK_COLON);
+            parseStmtLst();
+        }
+
+        exitNode(node);
+        return node;
+    }
+
+    public ASTDefaultNode parseDefault() {
+        ASTDefaultNode node = new ASTDefaultNode();
+        enterNode(node);
+
+        lexer.expect(TokenType.TOK_DEFAULT);
+        lexer.expect(TokenType.TOK_COLON);
+        parseStmtLst();
+
+        exitNode(node);
+        return node;
+
+    }
+
     // ToDo: Add more parse methods here
     public ASTIFStmtNode parseIfStmt() {
         ASTIFStmtNode node = new ASTIFStmtNode();
@@ -253,34 +254,22 @@ public class Parser implements IParser {
     public void parseAssignExpr() {
     }
 
-  public ASTWhileLoopNode parseWhileLoop() {
-    ASTWhileLoopNode node = new ASTWhileLoopNode();
-    enterNode(node);
+    public ASTWhileLoopNode parseWhileLoop() {
+        ASTWhileLoopNode node = new ASTWhileLoopNode();
+        enterNode(node);
 
-    lexer.expect(TokenType.TOK_WHILE);
-    lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
-    lexer.expect(TokenType.TOK_RPAREN);
-    lexer.expect(TokenType.TOK_LBRACE);
-    parseStmtLst();
-    lexer.expect(TokenType.TOK_RBRACE);
+        lexer.expect(TokenType.TOK_WHILE);
+        lexer.expect(TokenType.TOK_LPAREN);
+        parseAssignExpr();
+        lexer.expect(TokenType.TOK_RPAREN);
+        lexer.expect(TokenType.TOK_LBRACE);
+        parseStmtLst();
+        lexer.expect(TokenType.TOK_RBRACE);
 
-    exitNode(node);
-    return node;
-  }
-
-  private void enterNode(ASTNode node) {
-    if (!parentStack.isEmpty()) {
-      // Make sure the node is not pushed twice
-      assert parentStack.peek() != node;
-      // Link parent and child nodes, so we can traverse the tree
-      ASTNode parent = parentStack.peek();
-      parent.addChild(node);
-      node.setParent(parent);
+        exitNode(node);
+        return node;
     }
-    // Push the node to the stack
-    parentStack.push(node);
-  }
+
     private void enterNode(ASTNode node) {
         if (!parentStack.isEmpty()) {
             // Make sure the node is not pushed twice
