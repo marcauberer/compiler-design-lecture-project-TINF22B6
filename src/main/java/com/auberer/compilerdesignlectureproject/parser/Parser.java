@@ -67,7 +67,7 @@ public class Parser implements IParser {
 
     // Parse the statement
     // ToDo: Team 7: Uncomment as soon as varDecl and assignExpr work
-    /*Set<TokenType> varDeclSelectionSet = ASTVarDeclNode.getSelectionSet();
+    Set<TokenType> varDeclSelectionSet = ASTVarDeclNode.getSelectionSet();
     Set<TokenType> assignExprSelectionSet = ASTAssignExprNode.getSelectionSet();
     if (varDeclSelectionSet.contains(lexer.getToken().getType())) {
       parseVarDecl();
@@ -75,7 +75,7 @@ public class Parser implements IParser {
       parseAssignExpr();
     } else {
       log.error("Unexpected token in statement");
-    }*/
+    }
 
     exitNode(node);
     return node;
@@ -121,11 +121,37 @@ public class Parser implements IParser {
   }
 
   // ToDo: Add more parse methods here
-
   // ToDo: Method stub for other teams to rely on. Team 7: Implement this method
-  public void parseAssignExpr() {
+  public ASTAssignExprNode parseAssignExpr() {
+
+    ASTAssignExprNode node = new ASTAssignExprNode();
+    enterNode(node);
+
+    String identifier = lexer.getToken().getText();
+    lexer.expect(TokenType.TOK_IDENTIFIER);
+    lexer.advance();
+    lexer.expect(TokenType.TOK_ASSIGN);
+    lexer.advance();
+
+    String expression = lexer.getToken().getText();
+    //Hier eigentlich expression und identifier weitergeben, aber wie?
+    exitNode(node);
+    return node;
   }
 
+  public ASTVarDeclNode parseVarDecl() {
+    ASTVarDeclNode node = new ASTVarDeclNode();
+    enterNode(node);
+
+    ASTTypeNode typeNode = parseType();
+
+    String identifier = lexer.getToken().getText();
+    lexer.expect(TokenType.TOK_IDENTIFIER);
+    lexer.advance();
+    //Hier eigentlich typenode und identifier weitergeben, aber wie?
+    exitNode(node);
+    return node;
+  }
   private void enterNode(ASTNode node) {
     if (!parentStack.isEmpty()) {
       // Make sure the node is not pushed twice

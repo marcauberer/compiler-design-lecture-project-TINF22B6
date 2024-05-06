@@ -32,9 +32,11 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  T visitType(ASTTypeNode node) {
-    return visitChildren(node);
-  }
+  T visitType(ASTTypeNode node) {return visitChildren(node);}
+
+  T visitVarDeclNode(ASTVarDeclNode node) {return visitChildren(node);}
+
+  T visitAssignExprNode(ASTAssignExprNode node) {return visitChildren(node);}
 
   // ToDo: Add additional visit methods here
 
