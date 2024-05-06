@@ -44,6 +44,7 @@ public class Parser implements IParser {
 
   public ASTForNode parseForLoop() throws Exception {
     ASTForNode node = new ASTForNode();
+
     enterNode(node);
 
     Set<TokenType> forSelectionSet = ASTForNode.getSelectionSet();
@@ -57,9 +58,8 @@ public class Parser implements IParser {
     parseAssignExpr();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
-    parseStmtLst();
+    //parseStmtLst();
     lexer.expect(TokenType.TOK_RBRACE);
-
     exitNode(node);
     return node;
   }

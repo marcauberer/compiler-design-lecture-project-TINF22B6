@@ -3,12 +3,14 @@ package com.auberer.compilerdesignlectureproject.parser;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTForNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +23,7 @@ import org.mockito.Spy;
 public class ForNodeTest {
 
     @Spy
-    private Parser parser; // Use spy to allow partial mocking
+    private Parser parser;
 
     @Mock
     private Lexer lexer;
@@ -32,6 +34,8 @@ public class ForNodeTest {
         parser = new Parser(lexer);
         parser = spy(parser);
     }
+
+    // Test fails, but we don't know why and can't fix it
 
     @Test
     @DisplayName("Test for node")
@@ -47,6 +51,7 @@ public class ForNodeTest {
         doNothing().when(parser).parseAssignExpr();
         doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
         doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
+        doReturn(mock(ASTStmtLstNode.class)).when(parser).parseStmtLst();
         doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
 
         // Execute parse method
@@ -62,6 +67,7 @@ public class ForNodeTest {
         verify(parser, times(1)).parseAssignExpr();
         verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
         verify(lexer, times(1)).expect(TokenType.TOK_LBRACE);
+        verify(parser, times(1)).parseStmtLst();
         verify(lexer, times(1)).expect(TokenType.TOK_RBRACE);
         assertNotNull(printForNode);
         assertInstanceOf(ASTForNode.class, printForNode);
