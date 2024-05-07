@@ -199,17 +199,16 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_RBRACE);
     parseAfterIf();
 
-
     exitNode(node);
     return node;
   }
 
-  public ASTElse parseElseStmt() {
-    ASTElse node = new ASTElse();
+  public ASTAfterIf parseAfterIf() {
+    ASTAfterIf node = new ASTAfterIf();
     enterNode(node);
-    lexer.expect(TokenType.TOK_LBRACE);
-    parseAssignExpr();
-    lexer.expect(TokenType.TOK_RBRACE);
+
+    parseEPre();
+    parseEPost();
 
     exitNode(node);
     return node;
@@ -238,17 +237,17 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTAfterIf parseAfterIf() {
-    ASTAfterIf node = new ASTAfterIf();
+  public ASTElse parseElseStmt() {
+    ASTElse node = new ASTElse();
     enterNode(node);
-
-    parseEPre();
-    parseEPost();
-
+    lexer.expect(TokenType.TOK_LBRACE);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_RBRACE);
 
     exitNode(node);
     return node;
   }
+
 
   // ToDo: Method stub for other teams to rely on. Team 7: Implement this method
   public void parseAssignExpr() {
