@@ -13,16 +13,8 @@ public class ASTLogicalExpressionNode extends ASTNode{
     }
 
     public static Set<TokenType> getSelectionSet() {
-        return Set.of(
-                TokenType.TOK_PLUS,
-                TokenType.TOK_MINUS,
-                TokenType.TOK_INT_LIT,
-                TokenType.TOK_DOUBLE_LIT,
-                TokenType.TOK_STRING_LIT,
-                TokenType.TOK_IDENTIFIER,
-                TokenType.TOK_CALL,
-                TokenType.TOK_PRINT,
-                TokenType.TOK_LPAREN
-        );
+        Set<TokenType> selectionSet = new HashSet<>();
+        selectionSet.addAll(ASTPrefixExprNode.getSelectionSet());
+        return selectionSet;
     }
 }

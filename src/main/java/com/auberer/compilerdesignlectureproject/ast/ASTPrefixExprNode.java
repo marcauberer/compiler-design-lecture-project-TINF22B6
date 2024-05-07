@@ -12,16 +12,10 @@ public class ASTPrefixExprNode extends ASTNode{
     }
 
     public static Set<TokenType> getSelectionSet() {
-        return Set.of(
-                TokenType.TOK_PLUS,
-                TokenType.TOK_MINUS,
-                TokenType.TOK_INT_LIT,
-                TokenType.TOK_DOUBLE_LIT,
-                TokenType.TOK_STRING_LIT,
-                TokenType.TOK_IDENTIFIER,
-                TokenType.TOK_CALL,
-                TokenType.TOK_PRINT,
-                TokenType.TOK_LPAREN
-        );
+        Set<TokenType> followSet = Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS);
+        Set<TokenType> selectionSet = new HashSet<>();
+        selectionSet.addAll(ASTAtomicExprNode.getSelectionSet());
+        selectionSet.addAll(followSet);
+        return selectionSet;
     }
 }
