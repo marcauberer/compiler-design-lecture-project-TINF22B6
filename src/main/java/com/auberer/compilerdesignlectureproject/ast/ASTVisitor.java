@@ -60,11 +60,15 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  T visitDoWhile(ASTDoWhileLoopNode node) {
+  T visitDoWhileLoop(ASTDoWhileLoopNode node) {
     return visitChildren(node);
   }
 
   T visitWhileLoop(ASTWhileLoopNode node) {
+    return visitChildren(node);
+  }
+
+  T visitForLoop(ASTForNode node) {
     return visitChildren(node);
   }
 

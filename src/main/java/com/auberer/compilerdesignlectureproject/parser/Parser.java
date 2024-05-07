@@ -57,6 +57,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_LBRACE);
     parseStmtLst();
     lexer.expect(TokenType.TOK_RBRACE);
+
     exitNode(node);
     return node;
   }
@@ -114,7 +115,7 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTTypeNode parseType() throws Exception {
+  public ASTTypeNode parseType() {
     ASTTypeNode node = new ASTTypeNode();
     enterNode(node);
 

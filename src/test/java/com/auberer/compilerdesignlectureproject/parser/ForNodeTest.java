@@ -35,48 +35,32 @@ public class ForNodeTest {
         parser = spy(parser);
     }
 
-    // Test fails, but we don't know why and can't fix it
-
     @Test
     @DisplayName("Test for node")
     void testForNode() {
-        try {
+        // Arrange
+        doNothing().when(lexer).expect(TokenType.TOK_FOR);
+        doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
+        doNothing().when(parser).parseAssignExpr();
+        doNothing().when(lexer).expect(TokenType.TOK_SEMICOLON);
+        doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
+        doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
+        doReturn(null).when(parser).parseStmtLst();
+        doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
 
-            // Arrange
-            doNothing().when(lexer).advance();
-            doNothing().when(lexer).expect(TokenType.TOK_FOR);
-            doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-            doNothing().when(parser).parseAssignExpr();
-            doNothing().when(lexer).expect(TokenType.TOK_SEMICOLON);
-            doNothing().when(parser).parseAssignExpr();
-            doNothing().when(lexer).expect(TokenType.TOK_SEMICOLON);
-            doNothing().when(parser).parseAssignExpr();
-            doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
-            doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
-            doReturn(null).when(parser).parseStmtLst();
-            doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
+        // Execute parse method
+        ASTForNode printForNode = parser.parseForLoop();
 
-            // Execute parse method
-            ASTForNode printForNode = parser.parseForLoop();
-
-            // Assert
-            verify(lexer, times(1)).expect(TokenType.TOK_FOR);
-            verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
-            verify(parser, times(1)).parseAssignExpr();
-            verify(lexer, times(1)).expect(TokenType.TOK_SEMICOLON);
-            verify(parser, times(1)).parseAssignExpr();
-            verify(lexer, times(1)).expect(TokenType.TOK_SEMICOLON);
-            verify(parser, times(1)).parseAssignExpr();
-            verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
-            verify(lexer, times(1)).expect(TokenType.TOK_LBRACE);
-            verify(parser, times(1)).parseStmtLst();
-            verify(lexer, times(1)).expect(TokenType.TOK_RBRACE);
-            assertNotNull(printForNode);
-            assertInstanceOf(ASTForNode.class, printForNode);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Assert
+        verify(lexer, times(1)).expect(TokenType.TOK_FOR);
+        verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
+        verify(parser, times(3)).parseAssignExpr();
+        verify(lexer, times(2)).expect(TokenType.TOK_SEMICOLON);
+        verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
+        verify(lexer, times(1)).expect(TokenType.TOK_LBRACE);
+        verify(parser, times(1)).parseStmtLst();
+        verify(lexer, times(1)).expect(TokenType.TOK_RBRACE);
+        assertNotNull(printForNode);
+        assertInstanceOf(ASTForNode.class, printForNode);
     }
-
 }

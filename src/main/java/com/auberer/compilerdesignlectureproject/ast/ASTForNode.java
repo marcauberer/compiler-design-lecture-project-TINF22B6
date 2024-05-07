@@ -7,11 +7,10 @@ public class ASTForNode extends ASTNode {
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visitFor(this);
+        return visitor.visitForLoop(this);
     }
 
     public static Set<TokenType> getSelectionSet() {
         return Set.of(TokenType.TOK_FOR);
     }
-
 }
