@@ -205,6 +205,70 @@ public class Parser implements IParser {
 
   }
 
+  // ToDo: Add more parse methods here
+  public ASTIFStmtNode parseIfStmt() {
+    ASTIFStmtNode node = new ASTIFStmtNode();
+    enterNode(node);
+
+    lexer.expect(TokenType.TOK_IF);
+    lexer.expect(TokenType.TOK_LPAREN);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_RPAREN);
+    lexer.expect(TokenType.TOK_LBRACE);
+    parseStmtLst();
+    lexer.expect(TokenType.TOK_RBRACE);
+    parseAfterIf();
+
+    exitNode(node);
+    return node;
+  }
+
+  public ASTAfterIf parseAfterIf() {
+    ASTAfterIf node = new ASTAfterIf();
+    enterNode(node);
+
+    parseEPre();
+    parseEPost();
+
+    exitNode(node);
+    return node;
+  }
+
+  public ASTEPre parseEPre() {
+    ASTEPre node = new ASTEPre();
+    enterNode(node);
+    lexer.expect(TokenType.TOK_ELSE);
+
+    exitNode(node);
+    return node;
+  }
+
+  public ASTEPost parseEPost() {
+    ASTEPost node = new ASTEPost();
+    enterNode(node);
+
+    if (ASTIFStmtNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      parseIfStmt();
+    } else {
+      parseElseStmt();
+    }
+
+    exitNode(node);
+    return node;
+  }
+
+  public ASTElse parseElseStmt() {
+    ASTElse node = new ASTElse();
+    enterNode(node);
+    lexer.expect(TokenType.TOK_LBRACE);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_RBRACE);
+
+    exitNode(node);
+    return node;
+  }
+
+
   // ToDo: Method stub for other teams to rely on. Team 7: Implement this method
   public void parseAssignExpr() {
   }
