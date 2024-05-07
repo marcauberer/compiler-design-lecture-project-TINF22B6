@@ -4,7 +4,7 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
 import java.util.Set;
 
-public class ASTAssignExpr extends ASTNode {
+public class ASTAssignExprNode extends ASTNode {
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {

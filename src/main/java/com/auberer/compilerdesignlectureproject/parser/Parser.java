@@ -6,7 +6,6 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.Stack;
 
@@ -206,21 +205,8 @@ public class Parser implements IParser {
     return node;
   }
 
-  private void enterNode(ASTNode node) {
-    if (!parentStack.isEmpty()) {
-      // Make sure the node is not pushed twice
-      assert parentStack.peek() != node;
-      // Link parent and child nodes, so we can traverse the tree
-      ASTNode parent = parentStack.peek();
-      parent.addChild(node);
-      node.setParent(parent);
-    }
-    // Push the node to the stack
-    parentStack.push(node);
-  }
-
-  public ASTFctDef parseFctDef() {
-    ASTFctDef node = new ASTFctDef();
+  public ASTFctDefNode parseFctDef() {
+    ASTFctDefNode node = new ASTFctDefNode();
     enterNode(node);
 
     // Parse the print builtin
@@ -228,7 +214,7 @@ public class Parser implements IParser {
     parseType();
     lexer.expect(TokenType.TOK_IDENTIFIER);
     lexer.expect(TokenType.TOK_LPAREN);
-    if(ASTParamLst.getSelectionSet().contains(lexer.getToken().getType())) {
+    if (ASTParamLstNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseParamLst();
     }
     lexer.expect(TokenType.TOK_RPAREN);
@@ -239,8 +225,8 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTParamLst parseParamLst() {
-    ASTParamLst node = new ASTParamLst();
+  public ASTParamLstNode parseParamLst() {
+    ASTParamLstNode node = new ASTParamLstNode();
     enterNode(node);
 
     parseType();
@@ -254,13 +240,13 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTLogic parseLogic() {
-    ASTLogic node = new ASTLogic();
+  public ASTLogicNode parseLogic() {
+    ASTLogicNode node = new ASTLogicNode();
     enterNode(node);
 
     parseStmtLst();
     lexer.expect(TokenType.TOK_RETURN);
-    if(ASTAssignExpr.getSelectionSet().contains(lexer.getToken().getType())) {
+    if (ASTAssignExprNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseParamLst();
     }
     lexer.expect(TokenType.TOK_SEMICOLON);
@@ -268,14 +254,14 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTFctCall parseFctCall() {
-    ASTFctCall node = new ASTFctCall();
+  public ASTFctCallNode parseFctCall() {
+    ASTFctCallNode node = new ASTFctCallNode();
     enterNode(node);
 
     lexer.expect(TokenType.TOK_CALL);
     lexer.expect(TokenType.TOK_IDENTIFIER);
     lexer.expect(TokenType.TOK_LPAREN);
-    if(ASTCallParams.getSelectionSet().contains(lexer.getToken().getType())) {
+    if (ASTCallParamsNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseCallParams();
     }
     lexer.expect(TokenType.TOK_RPAREN);
@@ -284,8 +270,8 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTCallParams parseCallParams() {
-    ASTCallParams node = new ASTCallParams();
+  public ASTCallParamsNode parseCallParams() {
+    ASTCallParamsNode node = new ASTCallParamsNode();
     enterNode(node);
 
     parseAssignExpr();
@@ -295,6 +281,19 @@ public class Parser implements IParser {
     }
     exitNode(node);
     return node;
+  }
+
+  private void enterNode(ASTNode node) {
+    if (!parentStack.isEmpty()) {
+      // Make sure the node is not pushed twice
+      assert parentStack.peek() != node;
+      // Link parent and child nodes, so we can traverse the tree
+      ASTNode parent = parentStack.peek();
+      parent.addChild(node);
+      node.setParent(parent);
+    }
+    // Push the node to the stack
+    parentStack.push(node);
   }
 
   private void exitNode(ASTNode node) {

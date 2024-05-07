@@ -4,14 +4,14 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
 import java.util.Set;
 
-public class ASTParamLst extends ASTNode {
+public class ASTLogicNode extends ASTNode {
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visitParamLst(this);
+        return visitor.visitLogic(this);
     }
 
     public static Set<TokenType> getSelectionSet() {
-        return ASTTypeNode.getSelectionSet();
+        return ASTStmtLstNode.getSelectionSet();
     }
 }

@@ -36,19 +36,29 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  T visitFctDef(ASTFctDef node) {
+  T visitFctDef(ASTFctDefNode node) {
     return visitChildren(node);
   }
 
-  T visitParamLst(ASTParamLst node) {return visitChildren(node);}
+  T visitParamLst(ASTParamLstNode node) {
+    return visitChildren(node);
+  }
 
-  T visitLogic(ASTLogic node) {return visitChildren(node);}
+  T visitLogic(ASTLogicNode node) {
+    return visitChildren(node);
+  }
 
-  T visitFctCall(ASTFctCall node) {return visitChildren(node);}
+  T visitFctCall(ASTFctCallNode node) {
+    return visitChildren(node);
+  }
 
-  T visitCallParams(ASTCallParams node) {return visitChildren(node);}
+  T visitCallParams(ASTCallParamsNode node) {
+    return visitChildren(node);
+  }
 
-  T visitAssignExpr(ASTAssignExpr node) {return visitChildren(node);}
+  T visitAssignExpr(ASTAssignExprNode node) {
+    return visitChildren(node);
+  }
 
   T visitDoWhile(ASTDoWhileLoopNode node) {
     return visitChildren(node);

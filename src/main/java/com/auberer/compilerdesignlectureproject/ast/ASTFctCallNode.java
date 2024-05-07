@@ -4,14 +4,16 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
 import java.util.Set;
 
-public class ASTCallParams extends ASTNode {
+import static com.auberer.compilerdesignlectureproject.lexer.TokenType.TOK_CALL;
+
+public class ASTFctCallNode extends ASTNode {
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visitCallParams(this);
+        return visitor.visitFctCall(this);
     }
 
     public static Set<TokenType> getSelectionSet() {
-        return ASTAssignExpr.getSelectionSet();
+        return Set.of(TOK_CALL);
     }
 }
