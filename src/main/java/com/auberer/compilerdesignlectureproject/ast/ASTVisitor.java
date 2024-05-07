@@ -50,6 +50,26 @@ public class ASTVisitor<T> {
 
   T visitAssignExpr(ASTAssignExpr node) {return visitChildren(node);}
 
+  T visitDoWhile(ASTDoWhileLoopNode node) {
+    return visitChildren(node);
+  }
+
+  T visitWhileLoop(ASTWhileLoopNode node) {
+    return visitChildren(node);
+  }
+
+  T visitSwitchStmt(ASTSwitchStmtNode node) {
+    return visitChildren(node);
+  }
+
+  T visitCases(ASTCasesNode node) {
+    return visitChildren(node);
+  }
+
+  T visitDefault(ASTDefaultNode node) {
+    return visitChildren(node);
+  }
+
   // ToDo: Add additional visit methods here
 
 }
