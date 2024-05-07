@@ -33,11 +33,8 @@ public class ParseAssignExprNodeTest {
     @Test
     @DisplayName("Test assign Expression")
     void testassignexpr() {
-        doNothing().when(lexer).advance();
         doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
-        doNothing().when(lexer).advance();
         doNothing().when(lexer).expect(TokenType.TOK_ASSIGN);
-        doNothing().when(lexer).advance();
         doReturn(mock(ASTAssignExprNode.class)).when(parser).parseAssignExpr();
 
         // Execute parse method

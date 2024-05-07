@@ -13,12 +13,6 @@ public class ASTVarDeclNode extends ASTNode{
     }
 
     public static Set<TokenType> getSelectionSet() {
-        return Set.of(
-                TokenType.TOK_TYPE_INT,
-                TokenType.TOK_TYPE_DOUBLE,
-                TokenType.TOK_TYPE_STRING,
-                TokenType.TOK_TYPE_EMPTY);
+        return  ASTTypeNode.getSelectionSet();
     }
-
-
 }

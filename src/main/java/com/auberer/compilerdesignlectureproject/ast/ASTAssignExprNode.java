@@ -14,7 +14,6 @@ public class ASTAssignExprNode extends ASTNode {
 
     public static Set<TokenType> getSelectionSet() {
         return Set.of(
-                TokenType.TOK_IDENTIFIER);
-
+                TokenType.TOK_IDENTIFIER, ASTlogicalExpressionNode.getSelectionSet());
     }
 }

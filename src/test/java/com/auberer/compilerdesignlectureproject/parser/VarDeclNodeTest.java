@@ -34,9 +34,7 @@ public class VarDeclNodeTest {
     @Test
     @DisplayName("Test assign Expression")
     void testassignexpr() {
-        doNothing().when(lexer).advance();
         doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
-        doNothing().when(lexer).advance();
         doReturn(mock(ASTVarDeclNode.class)).when(parser).parseVarDecl();
 
         // Execute parse method

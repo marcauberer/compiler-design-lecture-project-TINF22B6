@@ -134,7 +134,6 @@ public class Parser implements IParser {
     lexer.advance();
 
     String expression = lexer.getToken().getText();
-    //Hier eigentlich expression und identifier weitergeben, aber wie?
     exitNode(node);
     return node;
   }
@@ -142,13 +141,13 @@ public class Parser implements IParser {
   public ASTVarDeclNode parseVarDecl() {
     ASTVarDeclNode node = new ASTVarDeclNode();
     enterNode(node);
-
     ASTTypeNode typeNode = parseType();
-
-    String identifier = lexer.getToken().getText();
-    lexer.expect(TokenType.TOK_IDENTIFIER);
     lexer.advance();
-    //Hier eigentlich typenode und identifier weitergeben, aber wie?
+    lexer.expect(TokenType.TOK_IDENTIFIER);
+    String identifier = lexer.getToken().getText();
+    lexer.advance();
+    lexer.expect(TokenType.TOK_ASSIGN);
+    lexer.advance();
     exitNode(node);
     return node;
   }
