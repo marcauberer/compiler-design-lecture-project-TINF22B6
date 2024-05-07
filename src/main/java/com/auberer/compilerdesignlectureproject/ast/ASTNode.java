@@ -10,11 +10,6 @@ import java.util.stream.Collectors;
 @Data
 public abstract class ASTNode implements IVisitable {
 
-
-  ASTNode parent;
-  ArrayList<ASTNode> children;
-  CodeLoc codeLoc;
-
   public void addChild(ASTNode child) {
     children.add(child);
     child.setParent(this);

@@ -9,9 +9,9 @@ printBuiltinCall: PRINT LPAREN assignExpr RPAREN;
 
 // If statement (team 1)
 ifStmt: IF LPAREN assignExpr RPAREN LBRACE stmtLst RBRACE afterIf?;
-afterIf: ePre ePost;
-ePre: ELSE;
-ePost: ifStmt | else;
+afterIf: elsePre elsePost;
+elsePre: ELSE;
+elsePost: ifStmt | else;
 else: LBRACE stmtLst RBRACE;
 
 // While loop (team 2)

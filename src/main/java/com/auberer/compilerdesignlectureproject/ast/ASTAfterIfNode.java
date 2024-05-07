@@ -4,15 +4,14 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
 import java.util.Set;
 
-public class ASTEPre extends ASTNode {
-
+public class ASTAfterIfNode extends ASTNode {
   public static Set<TokenType> getSelectionSet() {
-
-    return Set.of(TokenType.TOK_ELSE);
+    return ASTElsePreNode.getSelectionSet();
   }
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
-    return visitor.visitEPre(this);
+    return visitor.visitAfterIf(this);
   }
 }
+

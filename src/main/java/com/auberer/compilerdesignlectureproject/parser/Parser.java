@@ -205,9 +205,8 @@ public class Parser implements IParser {
 
   }
 
-  // ToDo: Add more parse methods here
-  public ASTIFStmtNode parseIfStmt() {
-    ASTIFStmtNode node = new ASTIFStmtNode();
+  public ASTIfStmtNode parseIfStmt() {
+    ASTIfStmtNode node = new ASTIfStmtNode();
     enterNode(node);
 
     lexer.expect(TokenType.TOK_IF);
@@ -217,37 +216,40 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_LBRACE);
     parseStmtLst();
     lexer.expect(TokenType.TOK_RBRACE);
-    parseAfterIf();
+    if (ASTAfterIfNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      parseAfterIf();
+    }
 
     exitNode(node);
     return node;
   }
 
-  public ASTAfterIf parseAfterIf() {
-    ASTAfterIf node = new ASTAfterIf();
+  public ASTAfterIfNode parseAfterIf() {
+    ASTAfterIfNode node = new ASTAfterIfNode();
     enterNode(node);
 
-    parseEPre();
-    parseEPost();
+    parseElsePre();
+    parseElsePost();
 
     exitNode(node);
     return node;
   }
 
-  public ASTEPre parseEPre() {
-    ASTEPre node = new ASTEPre();
+  public ASTElsePreNode parseElsePre() {
+    ASTElsePreNode node = new ASTElsePreNode();
     enterNode(node);
+
     lexer.expect(TokenType.TOK_ELSE);
 
     exitNode(node);
     return node;
   }
 
-  public ASTEPost parseEPost() {
-    ASTEPost node = new ASTEPost();
+  public ASTElsePostNode parseElsePost() {
+    ASTElsePostNode node = new ASTElsePostNode();
     enterNode(node);
 
-    if (ASTIFStmtNode.getSelectionSet().contains(lexer.getToken().getType())) {
+    if (ASTIfStmtNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseIfStmt();
     } else {
       parseElseStmt();
@@ -257,17 +259,17 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTElse parseElseStmt() {
-    ASTElse node = new ASTElse();
+  public ASTElseNode parseElseStmt() {
+    ASTElseNode node = new ASTElseNode();
     enterNode(node);
+
     lexer.expect(TokenType.TOK_LBRACE);
-    parseAssignExpr();
+    parseStmtLst();
     lexer.expect(TokenType.TOK_RBRACE);
 
     exitNode(node);
     return node;
   }
-
 
   // ToDo: Method stub for other teams to rely on. Team 7: Implement this method
   public void parseAssignExpr() {

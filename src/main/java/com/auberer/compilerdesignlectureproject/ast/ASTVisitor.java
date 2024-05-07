@@ -107,27 +107,27 @@ public class ASTVisitor<T> {
   T visitAtomicExpr(ASTAtomicExprNode node) {
     return visitChildren(node);
   }
-  
+
+  T visitIf(ASTIfStmtNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAfterIf(ASTAfterIfNode node) {
+    return visitChildren(node);
+  }
+
+  T visitEPre(ASTElsePreNode node) {
+    return visitChildren(node);
+  }
+
+  T visitEPost(ASTElsePostNode node) {
+    return visitChildren(node);
+  }
+
+  T visitElse(ASTElseNode node) {
+    return visitChildren(node);
+  }
+
   // ToDo: Add additional visit methods here
-  T visitIf(ASTIFStmtNode node) {
-    return visitChildren(node);
-  }
-
-  T visitAfterIf(ASTAfterIf node) {
-    return visitChildren(node);
-  }
-
-  T visitEPre(ASTEPre node) {
-    return visitChildren(node);
-  }
-
-  T visitEPost(ASTEPost node) {
-    return visitChildren(node);
-  }
-
-  T visitElse(ASTElse node) {
-    return visitChildren(node);
-  }
-
 
 }
