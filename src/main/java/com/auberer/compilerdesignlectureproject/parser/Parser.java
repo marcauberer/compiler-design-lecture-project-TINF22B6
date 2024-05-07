@@ -103,7 +103,7 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTPrintBuiltinCallNode parsePrintBuiltinCall() throws Exception {
+  public ASTPrintBuiltinCallNode parsePrintBuiltinCall() {
     ASTPrintBuiltinCallNode node = new ASTPrintBuiltinCallNode();
     enterNode(node);
 

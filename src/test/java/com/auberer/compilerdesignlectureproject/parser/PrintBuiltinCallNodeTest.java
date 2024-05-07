@@ -30,7 +30,7 @@ public class PrintBuiltinCallNodeTest {
 
   @Test
   @DisplayName("Test print builtin call")
-  void testPrintBuiltinCall() throws Exception {
+  void testPrintBuiltinCall() {
     // Arrange
     doNothing().when(lexer).advance();
     doNothing().when(lexer).expect(TokenType.TOK_PRINT);
