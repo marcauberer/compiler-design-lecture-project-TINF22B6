@@ -205,6 +205,84 @@ public class Parser implements IParser {
     return node;
   }
 
+  public ASTFctDefNode parseFctDef() {
+    ASTFctDefNode node = new ASTFctDefNode();
+    enterNode(node);
+
+    // Parse the print builtin
+    lexer.expect(TokenType.TOK_FUNC);
+    parseType();
+    lexer.expect(TokenType.TOK_IDENTIFIER);
+    lexer.expect(TokenType.TOK_LPAREN);
+    if (ASTParamLstNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      parseParamLst();
+    }
+    lexer.expect(TokenType.TOK_RPAREN);
+    parseLogic();
+    lexer.expect(TokenType.TOK_CNUF);
+
+    exitNode(node);
+    return node;
+  }
+
+  public ASTParamLstNode parseParamLst() {
+    ASTParamLstNode node = new ASTParamLstNode();
+    enterNode(node);
+
+    parseType();
+    lexer.expect(TokenType.TOK_IDENTIFIER);
+    while (lexer.getToken().getType() == TokenType.TOK_COMMA) {
+      lexer.expect(TokenType.TOK_COMMA);
+      parseType();
+      lexer.expect(TokenType.TOK_IDENTIFIER);
+    }
+    exitNode(node);
+    return node;
+  }
+
+  public ASTLogicNode parseLogic() {
+    ASTLogicNode node = new ASTLogicNode();
+    enterNode(node);
+
+    parseStmtLst();
+    lexer.expect(TokenType.TOK_RETURN);
+    if (ASTAssignExprNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      parseParamLst();
+    }
+    lexer.expect(TokenType.TOK_SEMICOLON);
+    exitNode(node);
+    return node;
+  }
+
+  public ASTFctCallNode parseFctCall() {
+    ASTFctCallNode node = new ASTFctCallNode();
+    enterNode(node);
+
+    lexer.expect(TokenType.TOK_CALL);
+    lexer.expect(TokenType.TOK_IDENTIFIER);
+    lexer.expect(TokenType.TOK_LPAREN);
+    if (ASTCallParamsNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      parseCallParams();
+    }
+    lexer.expect(TokenType.TOK_RPAREN);
+
+    exitNode(node);
+    return node;
+  }
+
+  public ASTCallParamsNode parseCallParams() {
+    ASTCallParamsNode node = new ASTCallParamsNode();
+    enterNode(node);
+
+    parseAssignExpr();
+    while (lexer.getToken().getType() == TokenType.TOK_COMMA) {
+      lexer.expect(TokenType.TOK_COMMA);
+      parseAssignExpr();
+    }
+    exitNode(node);
+    return node;
+  }
+
   private void enterNode(ASTNode node) {
     if (!parentStack.isEmpty()) {
       // Make sure the node is not pushed twice

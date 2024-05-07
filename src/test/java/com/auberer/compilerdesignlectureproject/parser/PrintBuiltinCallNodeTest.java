@@ -3,6 +3,7 @@ package com.auberer.compilerdesignlectureproject.parser;
 import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,20 @@ public class PrintBuiltinCallNodeTest {
   @Test
   @DisplayName("Integration test")
   void testPrintBuiltinCallIntegrated() {
-    // ToDo: Implement integration test to test reader, lexer and parser together
-}
+    String code = "print();";
+
+    // Create a Reader and Lexer
+    Reader reader = new Reader(code);
+    Lexer lexer = new Lexer(reader);
+
+    // Create a Parser
+    Parser parser = new Parser(lexer);
+
+    // Parse the code
+    ASTPrintBuiltinCallNode printBuiltinCallNode = parser.parsePrintBuiltinCall();
+
+    // Assert the result
+    assertNotNull(printBuiltinCallNode);
+    assertInstanceOf(ASTPrintBuiltinCallNode.class, printBuiltinCallNode);
+  }
 }
