@@ -1,5 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
+import com.auberer.compilerdesignlectureproject.ast.ASTAdditiveExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
@@ -22,52 +23,39 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 public class AdditiveExprNodeTest {
-    @Spy
-    private Parser parser; // Use spy to allow partial mocking
+  @Spy
+  private Parser parser; // Use spy to allow partial mocking
 
-    @Mock
-    private Lexer lexer;
+  @Mock
+  private Lexer lexer;
 
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    parser = new Parser(lexer);
+    parser = spy(parser);
+  }
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        parser = new Parser(lexer);
-        parser = spy(parser);
-    }
+  @Test
+  @DisplayName("Test additive expression")
+  void testAdditiveExpr() {
+    List<Token> tokenList = new LinkedList<>();
+    tokenList.add(new Token(TokenType.TOK_INT_LIT, "1", new CodeLoc(1, 1)));
+    tokenList.add(new Token(TokenType.TOK_PLUS, "", new CodeLoc(1, 2)));
+    tokenList.add(new Token(TokenType.TOK_INT_LIT, "2", new CodeLoc(1, 3)));
 
-    @Test
-    @DisplayName("Test switch statement cases")
-    void testCases() {
+    // Arrange
+    doReturn(null).when(parser).parseMultiplicativeExpression();
+    doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
+    doReturn(tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
 
-        //TODO Token List anpassen
-        List<Token> tokenList = new LinkedList<>();
-        for(int i = 0; i < 3; i++){
-            Token token = new Token(TokenType.TOK_CASE, String.valueOf(i), new CodeLoc(1,1));
-            tokenList.add(token);
-        }
-        tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "end", new CodeLoc(1, 1)));
+    // Execute parse method
+    ASTAdditiveExprNode additiveExprNode = parser.parseAdditiveExpression();
 
-        // Arrange
-
-        //TODO Statement Abfrage vervollständigen
-        doNothing().when(lexer).advance();
-        doNothing().when(parser).parseMultiplicativeExpression();
-        doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
-        doNothing().when(parser).parseMultiplicativeExpression();
-
-
-        // Execute parse method
-        ASTAdditiveExprNode additiveExprNode = parser.parseAdditiveExpression();
-
-        // Assert
-
-        //TODO Statement Durchlauf anpassen
-        verify(parser, times(3)).parseMultiplicativeExpression();
-        verify(lexer, times(3)).expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
-        verify(parser, times(3)).parseMultiplicativeExpression();
-
-        assertNotNull(additiveExprNode);
-        assertInstanceOf(ASTAdditiveExprNode.class, additiveExprNode);
-    }
+    // Assert
+    verify(parser, times(2)).parseMultiplicativeExpression();
+    verify(lexer, times(1)).expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
+    assertNotNull(additiveExprNode);
+    assertInstanceOf(ASTAdditiveExprNode.class, additiveExprNode);
+  }
 }

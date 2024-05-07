@@ -80,11 +80,11 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  T visitLogicalExpr(ASTLogicalExpressionNode node) {
+  T visitLogicalExpr(ASTLogicalExprNode node) {
     return visitChildren(node);
   }
 
-  T visitCompareExpr(ASTcompareExprNode node) {
+  T visitCompareExpr(ASTCompareExprNode node) {
     return visitChildren(node);
   }
 

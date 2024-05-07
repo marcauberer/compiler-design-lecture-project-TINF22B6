@@ -303,17 +303,8 @@ public class Parser implements IParser {
     parentStack.pop();
   }
 
-  public void parseFctCall(){
-
-  }
-
-  public void printBuiltinCall(){
-
-  }
-
-
-  public ASTLogicalExpressionNode parseLogicalExpression() {
-    ASTLogicalExpressionNode node = new ASTLogicalExpressionNode();
+  public ASTLogicalExprNode parseLogicalExpression() {
+    ASTLogicalExprNode node = new ASTLogicalExprNode();
     enterNode(node);
     parseCompareExpression();
     while (lexer.getToken().getType()==TokenType.TOK_LOGICAL_AND || lexer.getToken().getType()==TokenType.TOK_LOGICAL_OR) {
@@ -324,8 +315,8 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTcompareExprNode parseCompareExpression() {
-    ASTcompareExprNode node = new ASTcompareExprNode();
+  public ASTCompareExprNode parseCompareExpression() {
+    ASTCompareExprNode node = new ASTCompareExprNode();
     enterNode(node);
     parseAdditiveExpression();
     if (lexer.getToken().getType()==TokenType.TOK_EQUAL || lexer.getToken().getType()==TokenType.TOK_NOT_EQUAL) {

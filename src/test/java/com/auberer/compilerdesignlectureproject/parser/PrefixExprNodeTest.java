@@ -1,6 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTMultiplicativeExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTPrefixExprNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -28,7 +29,6 @@ public class PrefixExprNodeTest {
     @Mock
     private Lexer lexer;
 
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -37,33 +37,23 @@ public class PrefixExprNodeTest {
     }
 
     @Test
-    @DisplayName("Test switch statement cases")
-    void testCases() {
-
-        //TODO Token List anpassen
+    @DisplayName("Test prefix expression")
+    void testPrefixExpr() {
         List<Token> tokenList = new LinkedList<>();
-        for(int i = 0; i < 3; i++){
-            Token token = new Token(TokenType.TOK_CASE, String.valueOf(i), new CodeLoc(1,1));
-            tokenList.add(token);
-        }
-        tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "end", new CodeLoc(1, 1)));
+        tokenList.add(new Token(TokenType.TOK_MINUS, "", new CodeLoc(1, 1)));
+        tokenList.add(new Token(TokenType.TOK_INT_LIT, "4", new CodeLoc(1, 2)));
 
         // Arrange
-
-        //TODO Statement Abfrage vervollständigen
-        doNothing().when(lexer).advance();
+        doReturn(null).when(parser).parseAtomicExpression();
         doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
-        doNothing().when(parser).parseLogicalExpression();
+        doReturn(tokenList.get(0), tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
 
         // Execute parse method
         ASTPrefixExprNode prefixExprNode = parser.parsePrefixExpression();
 
         // Assert
-
-        //TODO Statement Durchlauf anpassen
-        verify(lexer, times(3)).expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
-        verify(parser, times(3)).parseLogicalExpression();
-
+        verify(parser, times(1)).parseAtomicExpression();
+        verify(lexer, times(1)).expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
         assertNotNull(prefixExprNode);
         assertInstanceOf(ASTPrefixExprNode.class, prefixExprNode);
     }

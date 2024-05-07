@@ -1,6 +1,8 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
+import com.auberer.compilerdesignlectureproject.ast.ASTAtomicExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -28,7 +30,6 @@ public class AtomicExprNodeTest {
     @Mock
     private Lexer lexer;
 
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -37,31 +38,17 @@ public class AtomicExprNodeTest {
     }
 
     @Test
-    @DisplayName("Test switch statement cases")
-    void testCases() {
-
-        //TODO Token List anpassen
-        List<Token> tokenList = new LinkedList<>();
-        for(int i = 0; i < 3; i++){
-            Token token = new Token(TokenType.TOK_CASE, String.valueOf(i), new CodeLoc(1,1));
-            tokenList.add(token);
-        }
-        tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "end", new CodeLoc(1, 1)));
-
+    @DisplayName("Test atomic expression")
+    void testAtomicExpr() {
         // Arrange
-
-        //TODO Statement Abfrage vervollständigen
-        doNothing().when(lexer).advance();
-        doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT, TokenType.TOK_IDENTIFIER, TokenType.TOK_LPAREN))
+        doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
+        doReturn(new Token(TokenType.TOK_IDENTIFIER, "test", new CodeLoc(1, 1))).when(lexer).getToken();
 
         // Execute parse method
         ASTAtomicExprNode atomicExprNode = parser.parseAtomicExpression();
 
         // Assert
-
-        //TODO Statement Durchlauf anpassen
-        verify(lexer, times(3)).expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT, TokenType.TOK_IDENTIFIER, TokenType.TOK_LPAREN));
-
+        verify(lexer, times(1)).expect(TokenType.TOK_IDENTIFIER);
         assertNotNull(atomicExprNode);
         assertInstanceOf(ASTAtomicExprNode.class, atomicExprNode);
     }
