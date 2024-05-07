@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 public abstract class ASTNode implements IVisitable {
 
 
+  ASTNode parent;
+  ArrayList<ASTNode> children;
+  CodeLoc codeLoc;
+
   public void addChild(ASTNode child) {
     children.add(child);
     child.setParent(this);
@@ -25,9 +29,5 @@ public abstract class ASTNode implements IVisitable {
   public <T> T getChild(Class<T> targetClass, int idx) {
     return getChildren(targetClass).get(idx);
   }
-
-  ASTNode parent;
-  ArrayList<ASTNode> children;
-  CodeLoc codeLoc;
   // SymbolType symbolType = SymbolType(TY_INVALID);
 }

@@ -68,6 +68,7 @@ public class ASTVisitor<T> {
   T visitEPre(ASTEPre node) {
     return visitChildren(node);
   }
+
   T visitEPost(ASTEPost node) {
     return visitChildren(node);
   }
@@ -75,7 +76,6 @@ public class ASTVisitor<T> {
   T visitElse(ASTElse node) {
     return visitChildren(node);
   }
-
 
 
 }
