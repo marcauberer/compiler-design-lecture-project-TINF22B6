@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="CompilerDesignLectureProject" type="Application" factoryName="Application" nameIsGenerated="true">
+  <configuration default="false" name="Run Default" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.auberer.compilerdesignlectureproject.CompilerDesignLectureProject" />
     <module name="compiler-design-lecture-project" />
-    <option name="PROGRAM_PARAMETERS" value="-antlr ./test.tinf" />
+    <option name="PROGRAM_PARAMETERS" value="./test.tinf" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.auberer.compilerdesignlectureproject.*" />
