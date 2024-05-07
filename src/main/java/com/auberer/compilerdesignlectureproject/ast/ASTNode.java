@@ -4,6 +4,7 @@ import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
@@ -29,5 +30,9 @@ public abstract class ASTNode implements IVisitable {
   public <T> T getChild(Class<T> targetClass, int idx) {
     return getChildren(targetClass).get(idx);
   }
+
+  ASTNode parent;
+  List<ASTNode> children = new ArrayList<>();
+  CodeLoc codeLoc;
   // SymbolType symbolType = SymbolType(TY_INVALID);
 }

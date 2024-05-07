@@ -7,7 +7,7 @@ import java.util.Set;
 public class ASTDoWhileLoopNode extends ASTNode {
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
-    return visitor.visitDoWhile(this);
+    return visitor.visitDoWhileLoop(this);
   }
 
   public static Set<TokenType> getSelectionSet() {

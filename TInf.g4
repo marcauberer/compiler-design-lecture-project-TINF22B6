@@ -45,12 +45,13 @@ compareExpr: additiveExpr ((EQUAL | NOT_EQUAL) additiveExpr)?;
 additiveExpr: multiplicativeExpr ((PLUS | MINUS) multiplicativeExpr)*;
 multiplicativeExpr: prefixExpr ((MUL | DIV) prefixExpr)*;
 prefixExpr: (PLUS | MINUS)? atomicExpr;
-atomicExpr: INT_LIT | DOUBLE_LIT | STRING_LIT | IDENTIFIER | fctCall | printBuiltinCall | LPAREN assignExpr RPAREN;
+atomicExpr: INT_LIT | DOUBLE_LIT | STRING_LIT | TRUE | FALSE | IDENTIFIER | fctCall | printBuiltinCall | LPAREN assignExpr RPAREN;
 
 // Terminals
 TYPE_INT: 'int';
 TYPE_DOUBLE: 'double';
 TYPE_STRING: 'string';
+TYPE_BOOL: 'bool';
 TYPE_EMPTY: 'empty';
 IF: 'if';
 ELSE: 'else';
@@ -65,6 +66,8 @@ CASE: 'case';
 DEFAULT: 'default';
 CALL: 'call';
 PRINT: 'print';
+TRUE: 'true';
+FALSE: 'false';
 LBRACE: '{';
 RBRACE: '}';
 LPAREN: '(';

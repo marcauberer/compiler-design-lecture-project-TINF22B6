@@ -36,11 +36,39 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  T visitDoWhile(ASTDoWhileLoopNode node) {
+  T visitFctDef(ASTFctDefNode node) {
+    return visitChildren(node);
+  }
+
+  T visitParamLst(ASTParamLstNode node) {
+    return visitChildren(node);
+  }
+
+  T visitLogic(ASTLogicNode node) {
+    return visitChildren(node);
+  }
+
+  T visitFctCall(ASTFctCallNode node) {
+    return visitChildren(node);
+  }
+
+  T visitCallParams(ASTCallParamsNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAssignExpr(ASTAssignExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitDoWhileLoop(ASTDoWhileLoopNode node) {
     return visitChildren(node);
   }
 
   T visitWhileLoop(ASTWhileLoopNode node) {
+    return visitChildren(node);
+  }
+
+  T visitForLoop(ASTForNode node) {
     return visitChildren(node);
   }
 
@@ -56,6 +84,30 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
+  T visitLogicalExpr(ASTLogicalExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitCompareExpr(ASTCompareExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAdditiveExpr(ASTAdditiveExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitMultiplicativeExpr(ASTMultiplicativeExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitPrefixExpr(ASTPrefixExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAtomicExpr(ASTAtomicExprNode node) {
+    return visitChildren(node);
+  }
+  
   // ToDo: Add additional visit methods here
   T visitIf(ASTIFStmtNode node) {
     return visitChildren(node);

@@ -5,6 +5,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,8 @@ public class TypeNodeTest {
 
   @Test
   @DisplayName("Test type")
-  void testType() {
-    // Arrange
+  void testType() throws Exception {
+    // Arrange+
     doReturn(new Token(TokenType.TOK_TYPE_EMPTY, "", new CodeLoc(3, 14))).when(lexer).getToken();
     doNothing().when(lexer).expect(TokenType.TOK_TYPE_EMPTY);
 
@@ -50,6 +51,19 @@ public class TypeNodeTest {
   @Test
   @DisplayName("Integration test")
   void testTypeIntegrated() {
-    // ToDo: Implement integration test to test reader, lexer and parser together
+    String code = "int";
+
+    // Create a Reader and Lexer
+    Reader reader = new Reader(code);
+    Lexer lexer = new Lexer(reader);
+
+    // Create a Parser
+    Parser parser = new Parser(lexer);
+
+    // Parse the code
+    ASTTypeNode typeNode = parser.parseType();
+
+    // Assert the result
+    assertEquals(ASTTypeNode.DataType.INT, typeNode.getType());
   }
 }
