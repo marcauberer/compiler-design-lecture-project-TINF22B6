@@ -42,6 +42,25 @@ public class Parser implements IParser {
     return node;
   }
 
+  public ASTForNode parseForLoop() {
+    ASTForNode node = new ASTForNode();
+    enterNode(node);
+
+    lexer.expect(TokenType.TOK_FOR);
+    lexer.expect(TokenType.TOK_LPAREN);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_SEMICOLON);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_SEMICOLON);
+    parseAssignExpr();
+    lexer.expect(TokenType.TOK_RPAREN);
+    lexer.expect(TokenType.TOK_LBRACE);
+    parseStmtLst();
+    lexer.expect(TokenType.TOK_RBRACE);
+    exitNode(node);
+    return node;
+  }
+
   public ASTStmtLstNode parseStmtLst() {
     ASTStmtLstNode node = new ASTStmtLstNode();
     enterNode(node);
@@ -95,7 +114,7 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTTypeNode parseType() {
+  public ASTTypeNode parseType() throws Exception {
     ASTTypeNode node = new ASTTypeNode();
     enterNode(node);
 
