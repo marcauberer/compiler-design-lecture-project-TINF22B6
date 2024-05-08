@@ -36,7 +36,95 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  public T visitDoWhile(ASTDoWhileLoopNode node) {
+  T visitFctDef(ASTFctDefNode node) {
+    return visitChildren(node);
+  }
+
+  T visitParamLst(ASTParamLstNode node) {
+    return visitChildren(node);
+  }
+
+  T visitLogic(ASTLogicNode node) {
+    return visitChildren(node);
+  }
+
+  T visitFctCall(ASTFctCallNode node) {
+    return visitChildren(node);
+  }
+
+  T visitCallParams(ASTCallParamsNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAssignExpr(ASTAssignExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitDoWhileLoop(ASTDoWhileLoopNode node) {
+    return visitChildren(node);
+  }
+
+  T visitWhileLoop(ASTWhileLoopNode node) {
+    return visitChildren(node);
+  }
+
+  T visitForLoop(ASTForNode node) {
+    return visitChildren(node);
+  }
+
+  T visitSwitchStmt(ASTSwitchStmtNode node) {
+    return visitChildren(node);
+  }
+
+  T visitCases(ASTCasesNode node) {
+    return visitChildren(node);
+  }
+
+  T visitDefault(ASTDefaultNode node) {
+    return visitChildren(node);
+  }
+
+  T visitLogicalExpr(ASTLogicalExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitCompareExpr(ASTCompareExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAdditiveExpr(ASTAdditiveExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitMultiplicativeExpr(ASTMultiplicativeExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitPrefixExpr(ASTPrefixExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAtomicExpr(ASTAtomicExprNode node) {
+    return visitChildren(node);
+  }
+
+  T visitIf(ASTIfStmtNode node) {
+    return visitChildren(node);
+  }
+
+  T visitAfterIf(ASTAfterIfNode node) {
+    return visitChildren(node);
+  }
+
+  T visitEPre(ASTElsePreNode node) {
+    return visitChildren(node);
+  }
+
+  T visitEPost(ASTElsePostNode node) {
+    return visitChildren(node);
+  }
+
+  T visitElse(ASTElseNode node) {
     return visitChildren(node);
   }
 

@@ -9,8 +9,10 @@ printBuiltinCall: PRINT LPAREN assignExpr RPAREN;
 
 // If statement (team 1)
 ifStmt: IF LPAREN assignExpr RPAREN LBRACE stmtLst RBRACE afterIf?;
-afterIf: ELSE ifStmt | else;
-else: ELSE LBRACE stmtLst RBRACE;
+afterIf: elsePre elsePost;
+elsePre: ELSE;
+elsePost: ifStmt | else;
+else: LBRACE stmtLst RBRACE;
 
 // While loop (team 2)
 whileLoop: WHILE LPAREN assignExpr RPAREN LBRACE stmtLst RBRACE;
@@ -43,12 +45,13 @@ compareExpr: additiveExpr ((EQUAL | NOT_EQUAL) additiveExpr)?;
 additiveExpr: multiplicativeExpr ((PLUS | MINUS) multiplicativeExpr)*;
 multiplicativeExpr: prefixExpr ((MUL | DIV) prefixExpr)*;
 prefixExpr: (PLUS | MINUS)? atomicExpr;
-atomicExpr: INT_LIT | DOUBLE_LIT | STRING_LIT | IDENTIFIER | fctCall | printBuiltinCall | LPAREN assignExpr RPAREN;
+atomicExpr: INT_LIT | DOUBLE_LIT | STRING_LIT | TRUE | FALSE | IDENTIFIER | fctCall | printBuiltinCall | LPAREN assignExpr RPAREN;
 
 // Terminals
 TYPE_INT: 'int';
 TYPE_DOUBLE: 'double';
 TYPE_STRING: 'string';
+TYPE_BOOL: 'bool';
 TYPE_EMPTY: 'empty';
 IF: 'if';
 ELSE: 'else';
@@ -63,6 +66,8 @@ CASE: 'case';
 DEFAULT: 'default';
 CALL: 'call';
 PRINT: 'print';
+TRUE: 'true';
+FALSE: 'false';
 LBRACE: '{';
 RBRACE: '}';
 LPAREN: '(';

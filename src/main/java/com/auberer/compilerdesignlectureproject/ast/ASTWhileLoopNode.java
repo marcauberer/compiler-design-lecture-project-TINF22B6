@@ -2,15 +2,16 @@ package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
+import java.util.HashSet;
 import java.util.Set;
 
-public class ASTDoWhileLoopNode extends ASTNode {
+public class ASTWhileLoopNode extends ASTNode {
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
-    return visitor.visitDoWhileLoop(this);
+    return visitor.visitWhileLoop(this);
   }
 
   public static Set<TokenType> getSelectionSet() {
-    return Set.of(TokenType.TOK_DO);
+    return Set.of(TokenType.TOK_WHILE);
   }
 }
