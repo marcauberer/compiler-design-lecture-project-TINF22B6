@@ -121,26 +121,31 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
   @Override
   public Void visitFctDef(TInfParser.FctDefContext ctx) {
+    //TODO: Implement
     return super.visitFctDef(ctx);
   }
 
   @Override
   public Void visitParamLst(TInfParser.ParamLstContext ctx) {
+    //TODO: Implement
     return super.visitParamLst(ctx);
   }
 
   @Override
   public Void visitLogic(TInfParser.LogicContext ctx) {
+    //TODO: Implement
     return super.visitLogic(ctx);
   }
 
   @Override
   public Void visitFctCall(TInfParser.FctCallContext ctx) {
+    //TODO: Implement
     return super.visitFctCall(ctx);
   }
 
   @Override
   public Void visitCallParams(TInfParser.CallParamsContext ctx) {
+    //TODO: Implement
     return super.visitCallParams(ctx);
   }
 
