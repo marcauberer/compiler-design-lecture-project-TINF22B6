@@ -91,7 +91,13 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
   @Override
   public Void visitWhileLoop(TInfParser.WhileLoopContext ctx) {
-    return super.visitWhileLoop(ctx);
+    ASTWhileLoopNode node = new ASTWhileLoopNode();
+    enterNode(node);
+
+    visitChildren(ctx);
+
+    exitNode(node);
+    return null;
   }
 
   @Override
