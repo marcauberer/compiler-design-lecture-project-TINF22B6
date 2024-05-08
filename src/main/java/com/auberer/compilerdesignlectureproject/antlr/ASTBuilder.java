@@ -76,17 +76,41 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
   @Override
   public Void visitIfStmt(TInfParser.IfStmtContext ctx) {
-    return super.visitIfStmt(ctx);
+    ASTIfStmtNode node = new ASTIfStmtNode();
+    enterNode(node);
+
+    visitChildren(ctx);
+
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitAfterIf(TInfParser.AfterIfContext ctx) {
-    return super.visitAfterIf(ctx);
+    ASTAfterIfNode node = new ASTAfterIfNode();
+    enterNode(node);
+
+    visitChildren(ctx);
+
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitElse(TInfParser.ElseContext ctx) {
-    return super.visitElse(ctx);
+    ASTElseNode node = new ASTElseNode();
+    enterNode(node);
+
+    if (node.getParent() instanceof ASTIfStmtNode) {
+      node.setAstAfterIfContext(ASTAfterIfContext.IF_BEFORE);
+    } else {
+      node.setAstAfterIfContext(ASTAfterIfContext.ELSE_BEFORE);
+    }
+
+    visitChildren(ctx);
+
+    exitNode(node);
+    return null;
   }
 
   @Override
