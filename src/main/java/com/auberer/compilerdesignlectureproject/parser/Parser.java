@@ -271,15 +271,15 @@ public class Parser implements IParser {
     return node;
   }
 
-  // ToDo: Method stub for other teams to rely on. Team 7: Implement this method
   public ASTVarDeclNode parseVarDecl() {
     ASTVarDeclNode node = new ASTVarDeclNode();
     enterNode(node);
 
-    ASTTypeNode typeNode = parseType();
-    node.setMember(lexer.getToken().getText());
+    parseType();
+    node.setVariableName(lexer.getToken().getText());
     lexer.expect(TokenType.TOK_IDENTIFIER);
-    if (lexer.getToken().getType()== TokenType.TOK_ASSIGN) {
+    if (lexer.getToken().getType() == TokenType.TOK_ASSIGN) {
+      lexer.expect(TokenType.TOK_ASSIGN);
       parseAssignExpr();
     }
 
@@ -288,13 +288,12 @@ public class Parser implements IParser {
   }
 
   public ASTAssignExprNode parseAssignExpr() {
-
     ASTAssignExprNode node = new ASTAssignExprNode();
     enterNode(node);
-    if (lexer.getToken().getType() == TokenType.TOK_IDENTIFIER) {
-      node.setMember(lexer.getToken().getText());
-      lexer.expect(TokenType.TOK_IDENTIFIER);
 
+    if (lexer.getToken().getType() == TokenType.TOK_IDENTIFIER) {
+      node.setVariableName(lexer.getToken().getText());
+      lexer.expect(TokenType.TOK_IDENTIFIER);
       lexer.expect(TokenType.TOK_ASSIGN);
     }
     parseLogicalExpression();

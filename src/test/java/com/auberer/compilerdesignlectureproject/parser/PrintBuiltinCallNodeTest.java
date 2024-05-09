@@ -36,7 +36,7 @@ public class PrintBuiltinCallNodeTest {
     doNothing().when(lexer).advance();
     doNothing().when(lexer).expect(TokenType.TOK_PRINT);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-    doNothing().when(parser).parseAssignExpr();
+    doReturn(null).when(parser).parseAssignExpr();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
 
     // Execute parse method

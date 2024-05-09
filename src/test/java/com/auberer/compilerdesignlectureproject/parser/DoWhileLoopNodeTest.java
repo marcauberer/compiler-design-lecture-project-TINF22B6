@@ -41,7 +41,7 @@ public class DoWhileLoopNodeTest {
         doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
         doNothing().when(lexer).expect(TokenType.TOK_WHILE);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-        doNothing().when(parser).parseAssignExpr();
+        doReturn(null).when(parser).parseAssignExpr();
         doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
         doNothing().when(lexer).expect(TokenType.TOK_SEMICOLON);
 

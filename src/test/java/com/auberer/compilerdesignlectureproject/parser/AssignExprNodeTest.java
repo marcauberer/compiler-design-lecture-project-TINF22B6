@@ -1,6 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.ast.ASTAssignExprNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -12,8 +12,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class AssignExprNodeTest {
@@ -31,11 +33,36 @@ public class AssignExprNodeTest {
     }
 
     @Test
-    @DisplayName("Test assign Expression")
-    void testassignexpr() {
+    @DisplayName("Test assign expression without optional")
+    void testAssignExprWithoutOptional() {
+        List<Token> tokenList = new LinkedList<>();
+        tokenList.add(new Token(TokenType.TOK_INVALID, "", new CodeLoc(1, 1)));
+
+        doReturn(tokenList.getFirst()).when(lexer).getToken();
+        doReturn(null).when(parser).parseLogicalExpression();
+
+        // Execute parse method
+        ASTAssignExprNode printAssignExpression = parser.parseAssignExpr();
+
+        // Assert
+        verify(lexer, times(1)).getToken();
+        verify(parser, times(1)).parseLogicalExpression();
+        assertNotNull(printAssignExpression);
+        assertInstanceOf(ASTAssignExprNode.class, printAssignExpression);
+        // Ensure the variable name is empty
+        assertNull(printAssignExpression.getVariableName());
+    }
+
+    @Test
+    @DisplayName("Test assign expression with optional")
+    void testAssignExprWithOptional() {
+        List<Token> tokenList = new LinkedList<>();
+        tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "xyz", new CodeLoc(1, 1)));
+
+        doReturn(tokenList.getFirst()).when(lexer).getToken();
         doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
         doNothing().when(lexer).expect(TokenType.TOK_ASSIGN);
-        doNothing().when(parser).parseLogicalExpression();
+        doReturn(null).when(parser).parseLogicalExpression();
 
         // Execute parse method
         ASTAssignExprNode printAssignExpression = parser.parseAssignExpr();
@@ -46,6 +73,7 @@ public class AssignExprNodeTest {
         verify(parser, times(1)).parseLogicalExpression();
         assertNotNull(printAssignExpression);
         assertInstanceOf(ASTAssignExprNode.class, printAssignExpression);
+        // Ensure the variable name is correct
+        assertEquals("xyz", printAssignExpression.getVariableName());
     }
-
 }

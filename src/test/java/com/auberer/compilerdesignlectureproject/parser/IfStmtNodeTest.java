@@ -43,7 +43,7 @@ public class IfStmtNodeTest {
     // Arrange
     doNothing().when(lexer).expect(TokenType.TOK_IF);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-    doNothing().when(parser).parseAssignExpr();
+    doReturn(null).when(parser).parseAssignExpr();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
     doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
     doReturn(null).when(parser).parseStmtLst();
@@ -75,7 +75,7 @@ public class IfStmtNodeTest {
     // Arrange
     doNothing().when(lexer).expect(TokenType.TOK_IF);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-    doNothing().when(parser).parseAssignExpr();
+    doReturn(null).when(parser).parseAssignExpr();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
     doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
     doReturn(null).when(parser).parseStmtLst();
@@ -111,7 +111,7 @@ public class IfStmtNodeTest {
     // Arrange
     doNothing().when(lexer).expect(TokenType.TOK_IF);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-    doNothing().when(parser).parseAssignExpr();
+    doReturn(null).when(parser).parseAssignExpr();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
     doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
     doReturn(null).when(parser).parseStmtLst();

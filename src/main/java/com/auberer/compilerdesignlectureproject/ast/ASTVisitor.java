@@ -56,6 +56,10 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
+  T visitVarDecl(ASTVarDeclNode node) {
+    return visitChildren(node);
+  }
+
   T visitAssignExpr(ASTAssignExprNode node) {
     return visitChildren(node);
   }
@@ -127,7 +131,5 @@ public class ASTVisitor<T> {
   T visitElse(ASTElseNode node) {
     return visitChildren(node);
   }
-
-  // ToDo: Add additional visit methods here
 
 }
