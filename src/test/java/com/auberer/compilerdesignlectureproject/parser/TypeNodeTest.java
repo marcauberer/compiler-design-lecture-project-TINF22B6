@@ -41,7 +41,7 @@ public class TypeNodeTest {
     ASTTypeNode printBuiltinCallNode = parser.parseType();
 
     // Assert
-    verify(lexer, times(4)).getToken();
+    verify(lexer, times(1)).getToken();
     verify(lexer, times(1)).expect(TokenType.TOK_TYPE_EMPTY);
     assertNotNull(printBuiltinCallNode);
     assertInstanceOf(ASTTypeNode.class, printBuiltinCallNode);

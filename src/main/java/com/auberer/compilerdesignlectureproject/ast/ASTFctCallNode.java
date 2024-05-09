@@ -7,7 +7,6 @@ import java.util.Set;
 import static com.auberer.compilerdesignlectureproject.lexer.TokenType.TOK_CALL;
 
 public class ASTFctCallNode extends ASTNode {
-
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
         return visitor.visitFctCall(this);

@@ -18,9 +18,9 @@ public class ASTStmtLstNode extends ASTNode {
     // The selection set of stmtLst contains the selection set of stmt and the follow set of stmtLst
     Set<TokenType> selectionSet = new HashSet<>();
     selectionSet.addAll(ASTStmtNode.getSelectionSet());
-    // ToDo: Add selection set of ifStmt
-    selectionSet.addAll(ASTDoWhileLoopNode.getSelectionSet());
+    selectionSet.addAll(ASTIfStmtNode.getSelectionSet());
     selectionSet.addAll(ASTWhileLoopNode.getSelectionSet());
+    selectionSet.addAll(ASTDoWhileLoopNode.getSelectionSet());
     selectionSet.addAll(ASTForNode.getSelectionSet());
     selectionSet.addAll(ASTSwitchStmtNode.getSelectionSet());
     selectionSet.addAll(followSet);

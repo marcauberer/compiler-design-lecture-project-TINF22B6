@@ -8,19 +8,18 @@ import java.util.Set;
 
 public class ASTAssignExprNode extends ASTNode {
 
-    @Getter
-    @Setter
-    String variableName;
+  @Getter
+  @Setter
+  String variableName;
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
+  @Override
+  public <T> T accept(ASTVisitor<T> visitor) {
+    return visitor.visitAssignExpr(this);
+  }
 
-        return visitor.visitAssignExpr(this);
-    }
-
-    public static Set<TokenType> getSelectionSet() {
-        Set<TokenType> identifier = ASTLogicalExprNode.getSelectionSet();
-        identifier.add(TokenType.TOK_IDENTIFIER);
-        return identifier;
-    }
+  public static Set<TokenType> getSelectionSet() {
+    Set<TokenType> identifier = ASTLogicalExprNode.getSelectionSet();
+    identifier.add(TokenType.TOK_IDENTIFIER);
+    return identifier;
+  }
 }

@@ -2,7 +2,6 @@ package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class ASTMultiplicativeExprNode extends ASTNode{
@@ -12,8 +11,6 @@ public class ASTMultiplicativeExprNode extends ASTNode{
     }
 
     public static Set<TokenType> getSelectionSet() {
-        Set<TokenType> selectionSet = new HashSet<>();
-        selectionSet.addAll(ASTPrefixExprNode.getSelectionSet());
-        return selectionSet;
+      return ASTCompareExprNode.getSelectionSet();
     }
 }
