@@ -1,0 +1,74 @@
+package com.auberer.compilerdesignlectureproject.parser;
+
+import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
+import com.auberer.compilerdesignlectureproject.lexer.Lexer;
+import com.auberer.compilerdesignlectureproject.lexer.Token;
+import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
+
+public class FunctionDefinitionTest {
+    @Spy
+    private Parser parser; // Use spy to allow partial mocking
+
+    @Mock
+    private Lexer lexer;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        parser = new Parser(lexer);
+        parser = spy(parser);
+    }
+
+    @Test
+    @DisplayName("Test logical expression")
+    void testLogicalExpr() {
+        List<Token> tokenList = new LinkedList<>();
+        tokenList.add(new Token(TokenType.TOK_TYPE_INT, "", new CodeLoc(1, 1)));
+        tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "", new CodeLoc(1, 2)));
+
+        /*
+        func empty myfunction()
+            return;
+        cnuf
+         */
+
+        doNothing().when(lexer).expect(TokenType.TOK_FUNC);
+        doReturn(null).when(parser).parseType();
+        doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
+        doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
+        doReturn(null).when(parser).parseParamLst();
+        doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
+        doReturn(null).when(parser).parseStmtLst();
+        doNothing().when(lexer).expect(TokenType.TOK_RETURN);
+        doNothing().when(lexer).expect(TokenType.TOK_SEMICOLON);
+        doNothing().when(lexer).expect(TokenType.TOK_CNUF);
+        doReturn(tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
+
+        ASTFctDefNode astFctDefNode = parser.parseFctDef();
+        assertNotNull(astFctDefNode);
+
+        verify(lexer, times(1)).expect(TokenType.TOK_FUNC);
+        verify(parser, times(1)).parseType();
+        verify(lexer, times(1)).expect(TokenType.TOK_IDENTIFIER);
+        verify(parser, times(1)).parseParamLst();
+        verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
+        verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
+        verify(parser, times(1)).parseStmtLst();
+        verify(lexer, times(1)).expect(TokenType.TOK_RETURN);
+        verify(lexer, times(1)).expect(TokenType.TOK_SEMICOLON);
+        verify(lexer, times(1)).expect(TokenType.TOK_CNUF);
+    }
+}

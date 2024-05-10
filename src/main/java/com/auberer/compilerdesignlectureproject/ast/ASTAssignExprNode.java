@@ -12,6 +12,6 @@ public class ASTAssignExprNode extends ASTNode {
     }
 
     public static Set<TokenType> getSelectionSet() {
-        return null;
+        return Set.of();
     }
 }
