@@ -13,6 +13,8 @@ public abstract class StateMachine implements IStateMachine {
   private final List<Transition> transitions = new ArrayList<>();
   @Getter
   private State currentState;
+  @Getter
+  private String acceptedInput = "";
   @Setter
   @Getter
   private boolean traceEnabled = false;
@@ -91,6 +93,7 @@ public abstract class StateMachine implements IStateMachine {
 
       // Check if the transition matches the input
       if (transition.matches(input)) {
+        acceptedInput += input;
         transitionToState(transition.getToState(), input);
         return;
       }
@@ -98,6 +101,7 @@ public abstract class StateMachine implements IStateMachine {
 
     // If no transition was found, but an else transition is present, perform the else transition
     if (elseTransition != null) {
+      acceptedInput += input;
       transitionToState(elseTransition.getToState(), input);
       return;
     }
@@ -113,6 +117,7 @@ public abstract class StateMachine implements IStateMachine {
         .filter(State::isStartState)
         .findFirst()
         .orElse(null);
+    acceptedInput = "";
   }
 
   /**

@@ -54,11 +54,11 @@ public class PrintBuiltinCallNodeTest {
   @Test
   @DisplayName("Integration test")
   void testPrintBuiltinCallIntegrated() {
-    String code = "print();";
+    String code = "print(123);";
 
     // Create a Reader and Lexer
     Reader reader = new Reader(code);
-    Lexer lexer = new Lexer(reader);
+    Lexer lexer = new Lexer(reader, false);
 
     // Create a Parser
     Parser parser = new Parser(lexer);
