@@ -3,7 +3,7 @@ package com.auberer.compilerdesignlectureproject;
 import com.auberer.compilerdesignlectureproject.antlr.ASTBuilder;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfLexer;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfParser;
-import com.auberer.compilerdesignlectureproject.ast.ASTNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTVisualizer;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
@@ -36,7 +36,7 @@ public class CompilerDesignLectureProject {
       String[] positionalArgs = cli.getArgs();
       Path path = Paths.get(positionalArgs[0]).toAbsolutePath();
 
-      ASTNode ast;
+      ASTEntryNode ast;
       if (cli.hasOption("antlr")) {
         System.out.println("Compiling with ANTLR parser...");
         ast = parseWithANTLRParser(path);
@@ -51,7 +51,7 @@ public class CompilerDesignLectureProject {
         System.out.println("Dumping AST...");
         assert ast != null;
         ASTVisualizer visualizer = new ASTVisualizer();
-        String dot = visualizer.visit(ast);
+        String dot = visualizer.visitEntry(ast);
         System.out.println(dot);
       }
     } catch (ParseException e) {
@@ -66,7 +66,7 @@ public class CompilerDesignLectureProject {
     }
   }
 
-  static ASTNode parseWithOwnParser(Path path, boolean dumpTokens) {
+  static ASTEntryNode parseWithOwnParser(Path path, boolean dumpTokens) {
     // Create a new Reader object with the given file path
     Reader reader = new Reader(path);
 
@@ -78,7 +78,7 @@ public class CompilerDesignLectureProject {
     return parser.parse();
   }
 
-  static ASTNode parseWithANTLRParser(Path path) {
+  static ASTEntryNode parseWithANTLRParser(Path path) {
     try {
       // Setup ANTLR
       ANTLRInputStream input = new ANTLRFileStream(path.toString());

@@ -3,6 +3,8 @@ package com.auberer.compilerdesignlectureproject.antlr;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfBaseVisitor;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfParser;
 import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Stack;
 
@@ -14,7 +16,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitEntry(TInfParser.EntryContext ctx) {
     ASTEntryNode node = new ASTEntryNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
@@ -25,7 +27,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitStmtLst(TInfParser.StmtLstContext ctx) {
     ASTStmtLstNode node = new ASTStmtLstNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
@@ -36,7 +38,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitStmt(TInfParser.StmtContext ctx) {
     ASTStmtNode node = new ASTStmtNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
@@ -47,7 +49,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitType(TInfParser.TypeContext ctx) {
     ASTTypeNode node = new ASTTypeNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     if (ctx.TYPE_INT() != null) {
       node.setType(ASTTypeNode.DataType.INT);
@@ -66,7 +68,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitPrintBuiltinCall(TInfParser.PrintBuiltinCallContext ctx) {
     ASTPrintBuiltinCallNode node = new ASTPrintBuiltinCallNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
@@ -92,7 +94,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitWhileLoop(TInfParser.WhileLoopContext ctx) {
     ASTWhileLoopNode node = new ASTWhileLoopNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
@@ -103,7 +105,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitDoWhileLoop(TInfParser.DoWhileLoopContext ctx) {
     ASTDoWhileLoopNode node = new ASTDoWhileLoopNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
@@ -196,7 +198,11 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     return super.visitAtomicExpr(ctx);
   }
 
-  private void enterNode(ASTNode node) {
+  private void enterNode(ASTNode node, ParserRuleContext ctx) {
+    // Attach CodeLoc to AST node
+    CodeLoc codeLoc = new CodeLoc(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+    node.setCodeLoc(codeLoc);
+
     if (!parentStack.isEmpty()) {
       // Make sure the node is not pushed twice
       assert parentStack.peek() != node;

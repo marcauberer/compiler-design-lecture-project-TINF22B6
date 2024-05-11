@@ -90,7 +90,7 @@ public class Parser implements IParser {
       } else if (switchStmtSelectionSet.contains(tokenType)) {
         parseSwitchStmt();
       } else {
-        assert false : "Unexpected token in statement list";
+        break;
       }
     }
 
@@ -544,6 +544,9 @@ public class Parser implements IParser {
   }
 
   private void enterNode(ASTNode node) {
+    // Attach CodeLoc to AST node
+    node.setCodeLoc(lexer.getToken().getCodeLoc());
+
     if (!parentStack.isEmpty()) {
       // Make sure the node is not pushed twice
       assert parentStack.peek() != node;

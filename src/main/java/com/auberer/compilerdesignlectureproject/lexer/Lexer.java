@@ -175,6 +175,7 @@ public class Lexer implements ILexer {
   public void expectOneOf(Set<TokenType> expectedTypes) throws RuntimeException {
     if (!expectedTypes.contains(curToken.getType()))
       throw new RuntimeException("Unexpected token: " + curToken.getType() + " at " + curToken.getCodeLoc() + ". Expected one of: " + expectedTypes);
+    advance();
   }
 
   @Override
