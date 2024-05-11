@@ -7,7 +7,7 @@ import java.util.Set;
 public class ASTElsePreNode extends ASTNode {
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
-    return visitor.visitEPre(this);
+    return visitor.visitElsePre(this);
   }
 
   public static Set<TokenType> getSelectionSet() {

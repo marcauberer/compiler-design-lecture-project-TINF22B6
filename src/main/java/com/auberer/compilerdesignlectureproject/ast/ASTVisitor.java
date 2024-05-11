@@ -120,11 +120,11 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  T visitEPre(ASTElsePreNode node) {
+  T visitElsePre(ASTElsePreNode node) {
     return visitChildren(node);
   }
 
-  T visitEPost(ASTElsePostNode node) {
+  T visitElsePost(ASTElsePostNode node) {
     return visitChildren(node);
   }
 
