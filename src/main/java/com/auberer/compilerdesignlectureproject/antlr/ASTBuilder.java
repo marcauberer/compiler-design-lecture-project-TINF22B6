@@ -116,7 +116,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitForLoop(TInfParser.ForLoopContext ctx) {
     ASTForNode node = new ASTForNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
