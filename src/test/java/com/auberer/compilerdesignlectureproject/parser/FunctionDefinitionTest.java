@@ -33,11 +33,16 @@ public class FunctionDefinitionTest {
     }
 
     @Test
-    @DisplayName("Test logical expression")
-    void testLogicalExpr() {
+    @DisplayName("Test function definition")
+    void testFunctionDefinition() {
         List<Token> tokenList = new LinkedList<>();
-        tokenList.add(new Token(TokenType.TOK_TYPE_INT, "", new CodeLoc(1, 1)));
-        tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "", new CodeLoc(1, 2)));
+        tokenList.add(new Token(TokenType.TOK_FUNC, "", new CodeLoc(1, 1)));
+        tokenList.add(new Token(TokenType.TOK_TYPE_INT, "", new CodeLoc(1, 2)));
+        tokenList.add(new Token(TokenType.TOK_TYPE_INT, "", new CodeLoc(1, 2)));
+        tokenList.add(new Token(TokenType.TOK_TYPE_INT, "", new CodeLoc(1, 2)));
+        tokenList.add(new Token(TokenType.TOK_TYPE_INT, "", new CodeLoc(1, 2)));
+        tokenList.add(new Token(TokenType.TOK_RPAREN, "", new CodeLoc(1, 3)));
+        tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "", new CodeLoc(1, 4)));
 
         /*
         func empty myfunction()
@@ -49,20 +54,25 @@ public class FunctionDefinitionTest {
         doReturn(null).when(parser).parseType();
         doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-        doReturn(null).when(parser).parseParamLst();
         doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
         doReturn(null).when(parser).parseStmtLst();
         doNothing().when(lexer).expect(TokenType.TOK_RETURN);
         doNothing().when(lexer).expect(TokenType.TOK_SEMICOLON);
         doNothing().when(lexer).expect(TokenType.TOK_CNUF);
-        doReturn(tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
+        doReturn(
+            tokenList.get(0),
+            tokenList.get(1),
+            tokenList.get(2),
+            tokenList.get(3),
+            tokenList.get(4)
+        ).when(lexer).getToken();
 
         ASTFctDefNode astFctDefNode = parser.parseFctDef();
         assertNotNull(astFctDefNode);
 
         verify(lexer, times(1)).expect(TokenType.TOK_FUNC);
-        verify(parser, times(1)).parseType();
-        verify(lexer, times(1)).expect(TokenType.TOK_IDENTIFIER);
+        verify(parser, times(2)).parseType();
+        verify(lexer, times(2)).expect(TokenType.TOK_IDENTIFIER);
         verify(parser, times(1)).parseParamLst();
         verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
         verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);

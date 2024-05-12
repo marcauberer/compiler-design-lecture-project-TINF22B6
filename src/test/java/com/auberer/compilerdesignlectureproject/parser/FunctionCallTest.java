@@ -1,9 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTFctCallNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTIfStmtNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -15,14 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 public class FunctionCallTest {
 
@@ -40,10 +31,8 @@ public class FunctionCallTest {
     }
 
     @Test
-    @DisplayName("Test logical expression")
+    @DisplayName("Test function call")
     void testFunctionCall() {
-
-
         Token identifier = (new Token(TokenType.TOK_IDENTIFIER, "", new CodeLoc(1, 1)));
 
         doNothing().when(lexer).expect(TokenType.TOK_CALL);
@@ -51,10 +40,7 @@ public class FunctionCallTest {
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
         doReturn(null).when(parser).parseCallParams();
         doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
-
-
         doReturn(identifier).when(lexer).getToken();
-
 
         ASTFctCallNode astFctCallNode = parser.parseFctCall();
         assertNotNull(astFctCallNode);
@@ -65,8 +51,7 @@ public class FunctionCallTest {
         verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
         verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
 
-        // todo: set expected calls to 1, when assign expression node is implemented
-        verify(parser, times(0)).parseCallParams();
+        verify(parser, times(1)).parseCallParams();
     }
 
 }
