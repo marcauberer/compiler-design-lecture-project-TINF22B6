@@ -2,7 +2,9 @@ package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
+import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +35,7 @@ public class PrintBuiltinCallNodeTest {
   @DisplayName("Test print builtin call")
   void testPrintBuiltinCall() {
     // Arrange
+    doReturn(new Token(TokenType.TOK_PRINT, "", new CodeLoc(1, 1))).when(lexer).getToken();
     doNothing().when(lexer).advance();
     doNothing().when(lexer).expect(TokenType.TOK_PRINT);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);

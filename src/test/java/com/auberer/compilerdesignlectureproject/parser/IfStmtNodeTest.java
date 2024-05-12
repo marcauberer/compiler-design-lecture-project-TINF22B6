@@ -48,7 +48,7 @@ public class IfStmtNodeTest {
     doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
     doReturn(null).when(parser).parseStmtLst();
     doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
-    doReturn(tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
+    doReturn(tokenList.get(0), tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
 
     // Execute parse method
     ASTIfStmtNode ifStmtNode = parser.parseIfStmt();
@@ -104,9 +104,18 @@ public class IfStmtNodeTest {
   @DisplayName("Test If-ElseIf-Else Stmt")
   void testIfElseIfStmt() {
     List<Token> tokenList = new LinkedList<>();
-    tokenList.add(new Token(TokenType.TOK_ELSE, "", new CodeLoc(1, 1)));
-    tokenList.add(new Token(TokenType.TOK_IF, "", new CodeLoc(1, 2)));
-    tokenList.add(new Token(TokenType.TOK_ELSE, "", new CodeLoc(1, 3)));
+    tokenList.add(new Token(TokenType.TOK_IF, "", new CodeLoc(1, 1)));
+    tokenList.add(new Token(TokenType.TOK_ELSE, "", new CodeLoc(1, 2)));
+    tokenList.add(new Token(TokenType.TOK_ELSE, "", new CodeLoc(1, 2)));
+    tokenList.add(new Token(TokenType.TOK_ELSE, "", new CodeLoc(1, 2)));
+    tokenList.add(new Token(TokenType.TOK_IF, "", new CodeLoc(1, 3)));
+    tokenList.add(new Token(TokenType.TOK_IF, "", new CodeLoc(1, 3)));
+    tokenList.add(new Token(TokenType.TOK_IF, "", new CodeLoc(1, 3)));
+    tokenList.add(new Token(TokenType.TOK_ELSE, "", new CodeLoc(1, 4)));
+    tokenList.add(new Token(TokenType.TOK_ELSE, "", new CodeLoc(1, 4)));
+    tokenList.add(new Token(TokenType.TOK_ELSE, "", new CodeLoc(1, 4)));
+    tokenList.add(new Token(TokenType.TOK_LBRACE, "", new CodeLoc(1, 5)));
+    tokenList.add(new Token(TokenType.TOK_LBRACE, "", new CodeLoc(1, 5)));
 
     // Arrange
     doNothing().when(lexer).expect(TokenType.TOK_IF);
@@ -117,7 +126,20 @@ public class IfStmtNodeTest {
     doReturn(null).when(parser).parseStmtLst();
     doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
     doNothing().when(lexer).expect(TokenType.TOK_ELSE);
-    doReturn(tokenList.get(0), tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
+    doReturn(
+        tokenList.get(0),
+        tokenList.get(1),
+        tokenList.get(2),
+        tokenList.get(3),
+        tokenList.get(4),
+        tokenList.get(5),
+        tokenList.get(6),
+        tokenList.get(7),
+        tokenList.get(8),
+        tokenList.get(9),
+        tokenList.get(10),
+        tokenList.get(11)
+    ).when(lexer).getToken();
 
     // Execute parse method
     ASTIfStmtNode ifStmtNode = parser.parseIfStmt();

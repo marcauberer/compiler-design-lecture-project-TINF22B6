@@ -33,7 +33,7 @@ public class TypeNodeTest {
   @Test
   @DisplayName("Test type")
   void testType() {
-    // Arrange+
+    // Arrange
     doReturn(new Token(TokenType.TOK_TYPE_EMPTY, "", new CodeLoc(3, 14))).when(lexer).getToken();
     doNothing().when(lexer).expect(TokenType.TOK_TYPE_EMPTY);
 
@@ -41,7 +41,7 @@ public class TypeNodeTest {
     ASTTypeNode printBuiltinCallNode = parser.parseType();
 
     // Assert
-    verify(lexer, times(1)).getToken();
+    verify(lexer, times(2)).getToken();
     verify(lexer, times(1)).expect(TokenType.TOK_TYPE_EMPTY);
     assertNotNull(printBuiltinCallNode);
     assertInstanceOf(ASTTypeNode.class, printBuiltinCallNode);

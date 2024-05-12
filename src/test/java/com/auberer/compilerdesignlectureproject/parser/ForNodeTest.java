@@ -2,7 +2,9 @@ package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTForNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
+import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,7 @@ public class ForNodeTest {
     @DisplayName("Test for node")
     void testForNode() {
         // Arrange
+        doReturn(new Token(TokenType.TOK_FOR, "", new CodeLoc(1, 1))).when(lexer).getToken();
         doNothing().when(lexer).expect(TokenType.TOK_FOR);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
         doReturn(null).when(parser).parseAssignExpr();
