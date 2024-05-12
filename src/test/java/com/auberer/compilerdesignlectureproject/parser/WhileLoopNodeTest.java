@@ -1,9 +1,10 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTWhileLoopNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
+import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,15 +34,14 @@ class WhileLoopNodeTest {
   @Test
   @DisplayName("Test While Loop")
   void testWhileLoop() {
-    doNothing().when(lexer).advance();
+    doReturn(new Token(TokenType.TOK_WHILE, "", new CodeLoc(1, 1))).when(lexer).getToken();
     doNothing().when(lexer).expect(TokenType.TOK_WHILE);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-    doNothing().when(parser).parseAssignExpr();
+    doReturn(null).when(parser).parseAssignExpr();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
     doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
     doReturn(null).when(parser).parseStmtLst();
     doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
-
 
     // Execute parse method
     ASTWhileLoopNode astWhileLoopNode = parser.parseWhileLoop();

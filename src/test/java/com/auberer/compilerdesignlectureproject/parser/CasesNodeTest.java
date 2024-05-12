@@ -53,7 +53,7 @@ public class CasesNodeTest {
         doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
         doNothing().when(lexer).expect(TokenType.TOK_COLON);
         doReturn(mock(ASTStmtLstNode.class)).when(parser).parseStmtLst();
-        doReturn(tokenList.get(0), tokenList.get(1), tokenList.get(2), tokenList.get(3)).when(lexer).getToken();
+        doReturn(tokenList.get(0), tokenList.get(0), tokenList.get(1), tokenList.get(2), tokenList.get(3)).when(lexer).getToken();
 
 
         // Execute parse method

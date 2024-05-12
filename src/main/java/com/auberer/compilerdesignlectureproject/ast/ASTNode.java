@@ -29,5 +29,5 @@ public abstract class ASTNode implements IVisitable {
   ASTNode parent;
   List<ASTNode> children = new ArrayList<>();
   CodeLoc codeLoc;
-  // SymbolType symbolType = SymbolType(TY_INVALID);
+  // Type type = Type(TY_INVALID);
 }

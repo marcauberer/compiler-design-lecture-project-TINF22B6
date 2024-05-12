@@ -1,24 +1,20 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import com.auberer.compilerdesignlectureproject.ast.ASTForNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
+import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
 public class ForNodeTest {
 
@@ -39,9 +35,10 @@ public class ForNodeTest {
     @DisplayName("Test for node")
     void testForNode() {
         // Arrange
+        doReturn(new Token(TokenType.TOK_FOR, "", new CodeLoc(1, 1))).when(lexer).getToken();
         doNothing().when(lexer).expect(TokenType.TOK_FOR);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-        doNothing().when(parser).parseAssignExpr();
+        doReturn(null).when(parser).parseAssignExpr();
         doNothing().when(lexer).expect(TokenType.TOK_SEMICOLON);
         doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
         doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
