@@ -141,27 +141,51 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
   @Override
   public Void visitFctDef(TInfParser.FctDefContext ctx) {
-    return super.visitFctDef(ctx);
+    ASTFctDefNode node = new ASTFctDefNode();
+    enterNode(node);
+    node.setName(ctx.IDENTIFIER().toString());
+    visitChildren(ctx);
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitParamLst(TInfParser.ParamLstContext ctx) {
-    return super.visitParamLst(ctx);
+    ASTParamLstNode node = new ASTParamLstNode();
+    enterNode(node);
+    for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
+      node.addParamName(ctx.IDENTIFIER(i).toString());
+    }
+    visitChildren(ctx);
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitLogic(TInfParser.LogicContext ctx) {
-    return super.visitLogic(ctx);
+    ASTLogicNode node = new ASTLogicNode();
+    enterNode(node);
+    visitChildren(ctx);
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitFctCall(TInfParser.FctCallContext ctx) {
-    return super.visitFctCall(ctx);
+    ASTFctCallNode node = new ASTFctCallNode();
+    enterNode(node);
+    visitChildren(ctx);
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitCallParams(TInfParser.CallParamsContext ctx) {
-    return super.visitCallParams(ctx);
+    ASTFctCallNode node = new ASTFctCallNode();
+    enterNode(node);
+    visitChildren(ctx);
+    exitNode(node);
+    return null;
   }
 
   @Override
