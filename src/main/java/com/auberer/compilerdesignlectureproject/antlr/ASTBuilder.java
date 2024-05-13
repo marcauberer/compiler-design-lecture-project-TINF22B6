@@ -3,6 +3,7 @@ package com.auberer.compilerdesignlectureproject.antlr;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfBaseVisitor;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfParser;
 import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.ast.ASTAfterIfContext.DataType;
 
 import java.util.Stack;
 
@@ -102,9 +103,9 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     enterNode(node);
 
     if (node.getParent() instanceof ASTIfStmtNode) {
-      node.setAstAfterIfContext(ASTAfterIfContext.IF_BEFORE);
+      node.setType(DataType.ELSE_IF);
     } else {
-      node.setAstAfterIfContext(ASTAfterIfContext.ELSE_BEFORE);
+      node.setType(DataType.ELSE);
     }
 
     visitChildren(ctx);
