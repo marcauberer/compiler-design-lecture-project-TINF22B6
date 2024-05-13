@@ -303,27 +303,31 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     }
     else if (ctx.fctCall() != null) {
       ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.FCT_CALL);
+      Parser parser = new Parser();
+      parser.parseFctCall();
     }
     else if (ctx.printBuiltinCall() != null) {
       ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.PRINT_BUILT_IN_CALL);
+      Parser parser = new Parser();
+      parser.parsePrintBuiltinCall();
     }
     else if (ctx.assignExpr() != null) {
       ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.ASSIGN_EXPR);
+      Parser parser = new Parser();
+      parser.parseAssignExpr();
     }
-    else if (true) {
-      
+    else if (ctx.FALSE() != null) {
+      ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.FALSE);
+      ASTAtomicExprNode.setTrue_or_false(false);
     }
-    //wie davor fragen ob String, usw. ist
-    //Dementsprechend abspeichern
-
-    //außer wenn fctCall usw. dann:
-
-    //ctx.fctCall() == null; -- kein fctcall
-        //  und dann parseFCTcall
+    else if (ctx.TRUE() != null) {
+      ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.TRUE);
+      ASTAtomicExprNode.setTrue_or_false(true);
+    }
 
     exitNode(node);
     return null;
-  } //was kam an? entsprechend values speichern (felder im knoten anlegen)
+  }
 
   private void enterNode(ASTNode node) {
     if (!parentStack.isEmpty()) {
