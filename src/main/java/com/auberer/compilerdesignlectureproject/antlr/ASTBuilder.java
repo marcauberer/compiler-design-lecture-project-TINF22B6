@@ -3,6 +3,7 @@ package com.auberer.compilerdesignlectureproject.antlr;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfBaseVisitor;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfParser;
 import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.parser.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.atn.SemanticContext;
@@ -177,8 +178,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   }
 
   @Override
-  public Void visitLogicalExpr(TInfParser.LogicalExprContext ctx) { //enter node -- liste erstellen für operatoren -- loop über alle subnodes von ctx -- operatoren speichen und über operanden drüber gehen -- kinder besuchen -- exit node
-    List<ParseTree> operatorsList = new ArrayList<>();
+  public Void visitLogicalExpr(TInfParser.LogicalExprContext ctx) {
     ASTStmtNode node = new ASTStmtNode();
     enterNode(node);
 
@@ -187,12 +187,16 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
       if (child instanceof TerminalNode){
         TerminalNode terminalNode = (TerminalNode) child;
         Token token = terminalNode.getSymbol();
-        operatorsList.add(child);
+        if (token.getType() == TInfParser.LOGICAL_AND){
+          ASTLogicalExprNode.operatorsListAdd(ASTLogicalExprNode.LogicalOperator.AND);
+        }
+        else if (token.getType() == TInfParser.LOGICAL_OR){
+          ASTLogicalExprNode.operatorsListAdd(ASTLogicalExprNode.LogicalOperator.OR);
+        }
       } else if (child instanceof ParserRuleContext) {
         visit(child);
       }
     }
-
 
     exitNode(node);
 
@@ -202,19 +206,13 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitCompareExpr(TInfParser.CompareExprContext ctx) {
     ASTStmtNode node = new ASTStmtNode();
-    List<ParseTree> operatorsList = new ArrayList<>();
 
     enterNode(node);
-
-    for (int i = 0; i < ctx.getChildCount(); i++){
-      ParseTree child = ctx.getChild(i);
-      if (child instanceof TerminalNode){
-        TerminalNode terminalNode = (TerminalNode) child;
-        Token token = terminalNode.getSymbol();
-        operatorsList.add(child);
-      } else if (child instanceof ParserRuleContext) {
-        visit(child);
-      }
+    if (ctx.EQUAL() != null){
+      ASTCompareExprNode.setOperator(ASTCompareExprNode.CompareOperator.EQUAL);
+    }
+    else if (ctx.NOT_EQUAL() != null){
+      ASTCompareExprNode.setOperator(ASTCompareExprNode.CompareOperator.NOT_EQUAL);
     }
 
     exitNode(node);
@@ -226,16 +224,19 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitAdditiveExpr(TInfParser.AdditiveExprContext ctx) {
     ASTStmtNode node = new ASTStmtNode();
-    List<ParseTree> operatorsList = new ArrayList<>();
 
     enterNode(node);
-
     for (int i = 0; i < ctx.getChildCount(); i++){
       ParseTree child = ctx.getChild(i);
       if (child instanceof TerminalNode){
         TerminalNode terminalNode = (TerminalNode) child;
         Token token = terminalNode.getSymbol();
-        operatorsList.add(child);
+        if (token.getType() == TInfParser.PLUS){
+          ASTAdditiveExprNode.operatorsListAdd(ASTAdditiveExprNode.AdditiveOperator.PLUS);
+        }
+        else if (token.getType() == TInfParser.MINUS){
+          ASTAdditiveExprNode.operatorsListAdd(ASTAdditiveExprNode.AdditiveOperator.MINUS);
+        }
       } else if (child instanceof ParserRuleContext) {
         visit(child);
       }
@@ -249,7 +250,6 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitMultiplicativeExpr(TInfParser.MultiplicativeExprContext ctx) {
     ASTStmtNode node = new ASTStmtNode();
-    List<ParseTree> operatorsList = new ArrayList<>();
 
     enterNode(node);
 
@@ -258,7 +258,12 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
       if (child instanceof TerminalNode){
         TerminalNode terminalNode = (TerminalNode) child;
         Token token = terminalNode.getSymbol();
-        operatorsList.add(child);
+        if (token.getType() == TInfParser.MUL){
+          ASTMultiplicativeExprNode.operatorsListAdd(ASTMultiplicativeExprNode.MultiplicativeOperator.MUL);
+        }
+        else if (token.getType() == TInfParser.DIV){
+          ASTMultiplicativeExprNode.operatorsListAdd(ASTMultiplicativeExprNode.MultiplicativeOperator.DIV);
+        }
       } else if (child instanceof ParserRuleContext) {
         visit(child);
       }
@@ -273,14 +278,14 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitPrefixExpr(TInfParser.PrefixExprContext ctx) {
     ASTStmtNode node = new ASTStmtNode();
-    TerminalNode terminalNode;
+
     enterNode(node);
 
-    if (ctx.equals(ctx.PLUS())) {
-        terminalNode = ctx.PLUS();
+    if (ctx.PLUS() != null) {
+        ASTPrefixExprNode.setOperator(ASTPrefixExprNode.PrefixOperator.PLUS);
     }
-    else if (ctx.equals(ctx.MINUS())) {
-      terminalNode = ctx.MINUS();
+    else if (ctx.MINUS() != null) {
+      ASTPrefixExprNode.setOperator(ASTPrefixExprNode.PrefixOperator.MINUS);
     }
 
     exitNode(node);
@@ -293,6 +298,42 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     ASTStmtNode node = new ASTStmtNode();
 
     enterNode(node);
+
+    if (ctx.INT_LIT() != null){
+      ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.INT_LIT);
+      ASTAtomicExprNode.setInt_lit(Integer.valueOf(ctx.STRING_LIT().toString()));
+    }
+    else if (ctx.DOUBLE_LIT() != null){
+      ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.DOUBLE_LIT);
+      ASTAtomicExprNode.setDouble_lit(Double.parseDouble(ctx.STRING_LIT().toString()));
+    }
+    else if (ctx.STRING_LIT() != null){
+      ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.STRING_LIT);
+      ASTAtomicExprNode.setString_lit(ctx.STRING_LIT().toString());
+    }
+    else if (ctx.IDENTIFIER() != null) {
+      ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.IDENTIFIER);
+      ASTAtomicExprNode.setIdentifier(ctx.STRING_LIT().toString());
+    }
+    else if (ctx.fctCall() != null) {
+      ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.FCT_CALL);
+    }
+    else if (ctx.printBuiltinCall() != null) {
+      ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.PRINT_BUILT_IN_CALL);
+    }
+    else if (ctx.assignExpr() != null) {
+      ASTAtomicExprNode.setOperator(ASTAtomicExprNode.AtomicOperator.ASSIGN_EXPR);
+    }
+    else if (true) {
+      
+    }
+    //wie davor fragen ob String, usw. ist
+    //Dementsprechend abspeichern
+
+    //außer wenn fctCall usw. dann:
+
+    //ctx.fctCall() == null; -- kein fctcall
+        //  und dann parseFCTcall
 
     exitNode(node);
     return null;
