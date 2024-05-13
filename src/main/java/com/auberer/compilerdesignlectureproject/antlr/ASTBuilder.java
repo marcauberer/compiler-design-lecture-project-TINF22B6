@@ -161,7 +161,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
     ASTVarDeclNode node = new ASTVarDeclNode();
     enterNode(node);
-
+    ctx.IDENTIFIER().toString();
     visitChildren(ctx);
 
     exitNode(node);
@@ -173,7 +173,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
     ASTAssignExprNode node = new ASTAssignExprNode();
     enterNode(node);
-
+    ctx.IDENTIFIER().toString();
     visitChildren(ctx);
 
     exitNode(node);
