@@ -3,9 +3,15 @@ package com.auberer.compilerdesignlectureproject.antlr;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfBaseVisitor;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfParser;
 import com.auberer.compilerdesignlectureproject.ast.*;
-import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.atn.SemanticContext;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
+import org.w3c.dom.Node;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class ASTBuilder extends TInfBaseVisitor<Void> {
@@ -16,7 +22,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitEntry(TInfParser.EntryContext ctx) {
     ASTEntryNode node = new ASTEntryNode();
-    enterNode(node, ctx);
+    enterNode(node);
 
     visitChildren(ctx);
 
@@ -27,7 +33,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitStmtLst(TInfParser.StmtLstContext ctx) {
     ASTStmtLstNode node = new ASTStmtLstNode();
-    enterNode(node, ctx);
+    enterNode(node);
 
     visitChildren(ctx);
 
@@ -38,7 +44,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitStmt(TInfParser.StmtContext ctx) {
     ASTStmtNode node = new ASTStmtNode();
-    enterNode(node, ctx);
+    enterNode(node);
 
     visitChildren(ctx);
 
@@ -49,7 +55,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitType(TInfParser.TypeContext ctx) {
     ASTTypeNode node = new ASTTypeNode();
-    enterNode(node, ctx);
+    enterNode(node);
 
     if (ctx.TYPE_INT() != null) {
       node.setType(ASTTypeNode.DataType.INT);
@@ -68,7 +74,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitPrintBuiltinCall(TInfParser.PrintBuiltinCallContext ctx) {
     ASTPrintBuiltinCallNode node = new ASTPrintBuiltinCallNode();
-    enterNode(node, ctx);
+    enterNode(node);
 
     visitChildren(ctx);
 
@@ -93,35 +99,17 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
   @Override
   public Void visitWhileLoop(TInfParser.WhileLoopContext ctx) {
-    ASTWhileLoopNode node = new ASTWhileLoopNode();
-    enterNode(node, ctx);
-
-    visitChildren(ctx);
-
-    exitNode(node);
-    return null;
+    return super.visitWhileLoop(ctx);
   }
 
   @Override
   public Void visitDoWhileLoop(TInfParser.DoWhileLoopContext ctx) {
-    ASTDoWhileLoopNode node = new ASTDoWhileLoopNode();
-    enterNode(node, ctx);
-
-    visitChildren(ctx);
-
-    exitNode(node);
-    return null;
+    return super.visitDoWhileLoop(ctx);
   }
 
   @Override
   public Void visitForLoop(TInfParser.ForLoopContext ctx) {
-    ASTForNode node = new ASTForNode();
-    enterNode(node, ctx);
-
-    visitChildren(ctx);
-
-    exitNode(node);
-    return null;
+    return super.visitForLoop(ctx);
   }
 
   @Override
@@ -141,61 +129,27 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
   @Override
   public Void visitFctDef(TInfParser.FctDefContext ctx) {
-    ASTFctDefNode node = new ASTFctDefNode();
-    enterNode(node, ctx);
-
-    node.setName(ctx.IDENTIFIER().toString());
-    visitChildren(ctx);
-
-    exitNode(node);
-    return null;
+    return super.visitFctDef(ctx);
   }
 
   @Override
   public Void visitParamLst(TInfParser.ParamLstContext ctx) {
-    ASTParamLstNode node = new ASTParamLstNode();
-    enterNode(node, ctx);
-
-    for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
-      node.addParamName(ctx.IDENTIFIER(i).toString());
-    }
-    visitChildren(ctx);
-
-    exitNode(node);
-    return null;
+    return super.visitParamLst(ctx);
   }
 
   @Override
   public Void visitLogic(TInfParser.LogicContext ctx) {
-    ASTLogicNode node = new ASTLogicNode();
-    enterNode(node, ctx);
-
-    visitChildren(ctx);
-
-    exitNode(node);
-    return null;
+    return super.visitLogic(ctx);
   }
 
   @Override
   public Void visitFctCall(TInfParser.FctCallContext ctx) {
-    ASTFctCallNode node = new ASTFctCallNode();
-    enterNode(node, ctx);
-
-    visitChildren(ctx);
-
-    exitNode(node);
-    return null;
+    return super.visitFctCall(ctx);
   }
 
   @Override
   public Void visitCallParams(TInfParser.CallParamsContext ctx) {
-    ASTFctCallNode node = new ASTFctCallNode();
-    enterNode(node, ctx);
-
-    visitChildren(ctx);
-
-    exitNode(node);
-    return null;
+    return super.visitCallParams(ctx);
   }
 
   @Override
@@ -223,40 +177,128 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   }
 
   @Override
-  public Void visitLogicalExpr(TInfParser.LogicalExprContext ctx) {
-    return super.visitLogicalExpr(ctx);
-  }
+  public Void visitLogicalExpr(TInfParser.LogicalExprContext ctx) { //enter node -- liste erstellen für operatoren -- loop über alle subnodes von ctx -- operatoren speichen und über operanden drüber gehen -- kinder besuchen -- exit node
+    List<ParseTree> operatorsList = new ArrayList<>();
+    ASTStmtNode node = new ASTStmtNode();
+    enterNode(node);
 
+    for (int i = 0; i < ctx.getChildCount(); i++){
+      ParseTree child = ctx.getChild(i);
+      if (child instanceof TerminalNode){
+        TerminalNode terminalNode = (TerminalNode) child;
+        Token token = terminalNode.getSymbol();
+        operatorsList.add(child);
+      } else if (child instanceof ParserRuleContext) {
+        visit(child);
+      }
+    }
+
+
+    exitNode(node);
+
+    return null;
+
+  }
   @Override
   public Void visitCompareExpr(TInfParser.CompareExprContext ctx) {
-    return super.visitCompareExpr(ctx);
+    ASTStmtNode node = new ASTStmtNode();
+    List<ParseTree> operatorsList = new ArrayList<>();
+
+    enterNode(node);
+
+    for (int i = 0; i < ctx.getChildCount(); i++){
+      ParseTree child = ctx.getChild(i);
+      if (child instanceof TerminalNode){
+        TerminalNode terminalNode = (TerminalNode) child;
+        Token token = terminalNode.getSymbol();
+        operatorsList.add(child);
+      } else if (child instanceof ParserRuleContext) {
+        visit(child);
+      }
+    }
+
+    exitNode(node);
+
+    return null;
+
   }
 
   @Override
   public Void visitAdditiveExpr(TInfParser.AdditiveExprContext ctx) {
-    return super.visitAdditiveExpr(ctx);
+    ASTStmtNode node = new ASTStmtNode();
+    List<ParseTree> operatorsList = new ArrayList<>();
+
+    enterNode(node);
+
+    for (int i = 0; i < ctx.getChildCount(); i++){
+      ParseTree child = ctx.getChild(i);
+      if (child instanceof TerminalNode){
+        TerminalNode terminalNode = (TerminalNode) child;
+        Token token = terminalNode.getSymbol();
+        operatorsList.add(child);
+      } else if (child instanceof ParserRuleContext) {
+        visit(child);
+      }
+    }
+    exitNode(node);
+
+    return null;
+
   }
 
   @Override
   public Void visitMultiplicativeExpr(TInfParser.MultiplicativeExprContext ctx) {
-    return super.visitMultiplicativeExpr(ctx);
+    ASTStmtNode node = new ASTStmtNode();
+    List<ParseTree> operatorsList = new ArrayList<>();
+
+    enterNode(node);
+
+    for (int i = 0; i < ctx.getChildCount(); i++){
+      ParseTree child = ctx.getChild(i);
+      if (child instanceof TerminalNode){
+        TerminalNode terminalNode = (TerminalNode) child;
+        Token token = terminalNode.getSymbol();
+        operatorsList.add(child);
+      } else if (child instanceof ParserRuleContext) {
+        visit(child);
+      }
+    }
+
+
+    exitNode(node);
+
+    return null;
   }
 
   @Override
   public Void visitPrefixExpr(TInfParser.PrefixExprContext ctx) {
-    return super.visitPrefixExpr(ctx);
+    ASTStmtNode node = new ASTStmtNode();
+    TerminalNode terminalNode;
+    enterNode(node);
+
+    if (ctx.equals(ctx.PLUS())) {
+        terminalNode = ctx.PLUS();
+    }
+    else if (ctx.equals(ctx.MINUS())) {
+      terminalNode = ctx.MINUS();
+    }
+
+    exitNode(node);
+
+    return null;
   }
 
   @Override
   public Void visitAtomicExpr(TInfParser.AtomicExprContext ctx) {
-    return super.visitAtomicExpr(ctx);
-  }
+    ASTStmtNode node = new ASTStmtNode();
 
-  private void enterNode(ASTNode node, ParserRuleContext ctx) {
-    // Attach CodeLoc to AST node
-    CodeLoc codeLoc = new CodeLoc(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-    node.setCodeLoc(codeLoc);
+    enterNode(node);
 
+    exitNode(node);
+    return null;
+  } //was kam an? entsprechend values speichern (felder im knoten anlegen)
+
+  private void enterNode(ASTNode node) {
     if (!parentStack.isEmpty()) {
       // Make sure the node is not pushed twice
       assert parentStack.peek() != node;
