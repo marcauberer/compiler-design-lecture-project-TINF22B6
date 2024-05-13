@@ -1,7 +1,5 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTAdditiveExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTMultiplicativeExprNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
@@ -21,7 +19,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 public class MultiplicativeExprNodeTest {
     @Spy
@@ -48,7 +45,7 @@ public class MultiplicativeExprNodeTest {
         // Arrange
         doReturn(null).when(parser).parsePrefixExpression();
         doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_MUL, TokenType.TOK_DIV));
-        doReturn(tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
+        doReturn(tokenList.get(1), tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
 
         // Execute parse method
         ASTMultiplicativeExprNode multiplicativeExprNode = parser.parseMultiplicativeExpression();

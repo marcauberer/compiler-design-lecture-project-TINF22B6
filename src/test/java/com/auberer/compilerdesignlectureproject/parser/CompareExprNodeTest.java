@@ -1,7 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTCompareExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTMultiplicativeExprNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -20,7 +19,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 public class CompareExprNodeTest {
     @Spy
@@ -47,7 +45,7 @@ public class CompareExprNodeTest {
         // Arrange
         doReturn(null).when(parser).parseAdditiveExpression();
         doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_EQUAL, TokenType.TOK_NOT_EQUAL));
-        doReturn(tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
+        doReturn(tokenList.get(1), tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
 
         // Execute parse method
         ASTCompareExprNode compareExprNode = parser.parseCompareExpression();

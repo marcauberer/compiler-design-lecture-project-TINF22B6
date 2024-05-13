@@ -8,7 +8,7 @@ import java.util.Set;
 public class ASTElsePostNode extends ASTNode {
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
-    return visitor.visitEPost(this);
+    return visitor.visitElsePost(this);
   }
 
   public static Set<TokenType> getSelectionSet() {

@@ -34,8 +34,7 @@ public class Parser implements IParser {
 
     // Parse all the tokens until the end of the input file
     while (!lexer.isEOF()) {
-      // ToDo: Team 6: Uncomment the following line as soon as function definitions work
-      // parseFctDef();
+      parseFctDef();
     }
 
     exitNode(node);
@@ -66,14 +65,32 @@ public class Parser implements IParser {
     ASTStmtLstNode node = new ASTStmtLstNode();
     enterNode(node);
 
-    // Parse all statements until the end of the statement list
+    // Retrieve all relevant selection sets
     Set<TokenType> stmtLstSelectionSet = ASTStmtLstNode.getSelectionSet();
     Set<TokenType> stmtSelectionSet = ASTStmtNode.getSelectionSet();
-    while (!stmtLstSelectionSet.contains(lexer.getToken().getType())) {
-      if (stmtSelectionSet.contains(lexer.getToken().getType())) {
+    Set<TokenType> ifStmtSelectionSet = ASTIfStmtNode.getSelectionSet();
+    Set<TokenType> whileLoopSelectionSet = ASTWhileLoopNode.getSelectionSet();
+    Set<TokenType> doWhileLoopSelectionSet = ASTDoWhileLoopNode.getSelectionSet();
+    Set<TokenType> forLoopSelectionSet = ASTForNode.getSelectionSet();
+    Set<TokenType> switchStmtSelectionSet = ASTSwitchStmtNode.getSelectionSet();
+
+    // Parse all statements until the end of the statement list
+    while (stmtLstSelectionSet.contains(lexer.getToken().getType())) {
+      TokenType tokenType = lexer.getToken().getType();
+      if (stmtSelectionSet.contains(tokenType)) {
         parseStmt();
+      } else if (ifStmtSelectionSet.contains(tokenType)) {
+        parseIfStmt();
+      } else if (whileLoopSelectionSet.contains(tokenType)) {
+        parseWhileLoop();
+      } else if (doWhileLoopSelectionSet.contains(tokenType)) {
+        parseDoWhile();
+      } else if (forLoopSelectionSet.contains(tokenType)) {
+        parseForLoop();
+      } else if (switchStmtSelectionSet.contains(tokenType)) {
+        parseSwitchStmt();
       } else {
-        assert false : "Unexpected token in statement list";
+        break;
       }
     }
 
@@ -86,15 +103,15 @@ public class Parser implements IParser {
     enterNode(node);
 
     // Parse the statement
-    Set<TokenType> varDeclSelectionSet = ASTVarDeclNode.getSelectionSet();
-    Set<TokenType> assignExprSelectionSet = ASTAssignExprNode.getSelectionSet();
-    if (varDeclSelectionSet.contains(lexer.getToken().getType())) {
+    TokenType tokenType = lexer.getToken().getType();
+    if (ASTVarDeclNode.getSelectionSet().contains(tokenType)) {
       parseVarDecl();
-    } else if (assignExprSelectionSet.contains(lexer.getToken().getType())) {
+    } else if (ASTAssignExprNode.getSelectionSet().contains(tokenType)) {
       parseAssignExpr();
     } else {
       assert false : "Unexpected token in statement";
     }
+    lexer.expect(TokenType.TOK_SEMICOLON);
 
     exitNode(node);
     return node;
@@ -369,7 +386,7 @@ public class Parser implements IParser {
     parseStmtLst();
     lexer.expect(TokenType.TOK_RETURN);
     if (ASTAssignExprNode.getSelectionSet().contains(lexer.getToken().getType())) {
-      parseParamLst();
+      parseAssignExpr();
     }
     lexer.expect(TokenType.TOK_SEMICOLON);
     exitNode(node);
@@ -467,8 +484,8 @@ public class Parser implements IParser {
 
     if (lexer.getToken().getType() == TokenType.TOK_PLUS || lexer.getToken().getType() == TokenType.TOK_MINUS) {
       lexer.expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
-      parseAtomicExpression();
     }
+    parseAtomicExpression();
 
     exitNode(node);
     return node;
@@ -527,6 +544,9 @@ public class Parser implements IParser {
   }
 
   private void enterNode(ASTNode node) {
+    // Attach CodeLoc to AST node
+    node.setCodeLoc(lexer.getToken().getCodeLoc());
+
     if (!parentStack.isEmpty()) {
       // Make sure the node is not pushed twice
       assert parentStack.peek() != node;

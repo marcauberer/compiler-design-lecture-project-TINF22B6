@@ -45,7 +45,7 @@ public class AssignExprNodeTest {
         ASTAssignExprNode printAssignExpression = parser.parseAssignExpr();
 
         // Assert
-        verify(lexer, times(1)).getToken();
+        verify(lexer, times(2)).getToken();
         verify(parser, times(1)).parseLogicalExpression();
         assertNotNull(printAssignExpression);
         assertInstanceOf(ASTAssignExprNode.class, printAssignExpression);

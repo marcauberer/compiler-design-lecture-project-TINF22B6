@@ -41,7 +41,7 @@ public class VarDeclNodeTest {
         tokenList.add(new Token(TokenType.TOK_INVALID, "", new CodeLoc(1, 2)));
 
         doReturn(null).when(parser).parseType();
-        doReturn(tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
+        doReturn(tokenList.get(0), tokenList.get(0), tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
         doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
 
         // Execute parse method
@@ -49,7 +49,7 @@ public class VarDeclNodeTest {
 
         // Assert
         verify(parser, times(1)).parseType();
-        verify(lexer, times(2)).getToken();
+        verify(lexer, times(3)).getToken();
         verify(lexer, times(1)).expect(TokenType.TOK_IDENTIFIER);
         assertNotNull(printVarDeclNode);
         assertInstanceOf(ASTVarDeclNode.class, printVarDeclNode);
@@ -65,7 +65,7 @@ public class VarDeclNodeTest {
         tokenList.add(new Token(TokenType.TOK_ASSIGN, "", new CodeLoc(1, 1)));
 
         doReturn(null).when(parser).parseType();
-        doReturn(tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
+        doReturn(tokenList.get(0), tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
         doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
         doNothing().when(lexer).expect(TokenType.TOK_ASSIGN);
         doReturn(null).when(parser).parseAssignExpr();
@@ -75,7 +75,7 @@ public class VarDeclNodeTest {
 
         // Assert
         verify(parser, times(1)).parseType();
-        verify(lexer, times(2)).getToken();
+        verify(lexer, times(3)).getToken();
         verify(lexer, times(1)).expect(TokenType.TOK_IDENTIFIER);
         verify(lexer, times(1)).expect(TokenType.TOK_ASSIGN);
         verify(parser, times(1)).parseAssignExpr();
