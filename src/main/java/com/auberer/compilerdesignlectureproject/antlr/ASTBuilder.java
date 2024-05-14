@@ -200,12 +200,26 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
   @Override
   public Void visitVarDecl(TInfParser.VarDeclContext ctx) {
-    return super.visitVarDecl(ctx);
+
+    ASTVarDeclNode node = new ASTVarDeclNode();
+    enterNode(node);
+    ctx.IDENTIFIER().toString();
+    visitChildren(ctx);
+
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitAssignExpr(TInfParser.AssignExprContext ctx) {
-    return super.visitAssignExpr(ctx);
+
+    ASTAssignExprNode node = new ASTAssignExprNode();
+    enterNode(node);
+    ctx.IDENTIFIER().toString();
+    visitChildren(ctx);
+
+    exitNode(node);
+    return null;
   }
 
   @Override
