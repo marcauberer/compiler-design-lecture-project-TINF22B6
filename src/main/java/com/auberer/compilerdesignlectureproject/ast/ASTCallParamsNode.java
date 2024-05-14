@@ -5,13 +5,12 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import java.util.Set;
 
 public class ASTCallParamsNode extends ASTNode {
+  @Override
+  public <T> T accept(ASTVisitor<T> visitor) {
+    return visitor.visitCallParams(this);
+  }
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visitCallParams(this);
-    }
-
-    public static Set<TokenType> getSelectionSet() {
-        return ASTAssignExprNode.getSelectionSet();
-    }
+  public static Set<TokenType> getSelectionSet() {
+    return ASTAssignExprNode.getSelectionSet();
+  }
 }

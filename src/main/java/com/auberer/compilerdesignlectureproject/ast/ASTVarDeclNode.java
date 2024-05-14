@@ -4,25 +4,20 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
-public class ASTParamLstNode extends ASTNode {
+public class ASTVarDeclNode extends ASTNode{
 
-    List<String> paramNames;
+    @Getter
+    @Setter
+    String variableName;
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visitParamLst(this);
+        return visitor.visitVarDecl(this);
     }
 
     public static Set<TokenType> getSelectionSet() {
-        return ASTTypeNode.getSelectionSet();
-    }
-
-    public void addParamName(String paramNames) {
-        this.paramNames.add(paramNames);
+        return  ASTTypeNode.getSelectionSet();
     }
 }

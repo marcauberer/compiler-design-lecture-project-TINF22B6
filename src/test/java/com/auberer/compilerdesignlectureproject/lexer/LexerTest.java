@@ -13,7 +13,7 @@ public class LexerTest {
   public void testAll() {
     String input = "if else while while\n3.21 123 1234 \"string\"identifier";
     Reader reader = new Reader(input);
-    Lexer lexer = new Lexer(reader);
+    Lexer lexer = new Lexer(reader, false);
     assert !lexer.isEOF();
     assertDoesNotThrow(() -> lexer.expect(TokenType.TOK_IF));
     assertDoesNotThrow(() -> lexer.expect(TokenType.TOK_ELSE));

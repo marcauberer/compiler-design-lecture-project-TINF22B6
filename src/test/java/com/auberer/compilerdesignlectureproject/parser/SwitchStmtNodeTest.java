@@ -40,7 +40,7 @@ public class SwitchStmtNodeTest {
         doNothing().when(lexer).advance();
         doNothing().when(lexer).expect(TokenType.TOK_SWITCH);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-        doNothing().when(parser).parseAssignExpr();
+        doReturn(null).when(parser).parseAssignExpr();
         doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
         doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
         doReturn(new ASTDefaultNode()).when(parser).parseDefault();
