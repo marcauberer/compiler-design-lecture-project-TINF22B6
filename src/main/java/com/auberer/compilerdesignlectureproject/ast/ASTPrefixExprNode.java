@@ -1,11 +1,21 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Setter
 public class ASTPrefixExprNode extends ASTNode {
+
+  public enum PrefixOperator {
+    PLUS,
+    MINUS
+  }
+
+  public PrefixOperator operator;
+
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visitPrefixExpr(this);

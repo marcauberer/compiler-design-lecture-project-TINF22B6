@@ -5,6 +5,9 @@ import com.auberer.compilerdesignlectureproject.antlr.gen.TInfParser;
 import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.Stack;
 
@@ -224,32 +227,144 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
 
   @Override
   public Void visitLogicalExpr(TInfParser.LogicalExprContext ctx) {
-    return super.visitLogicalExpr(ctx);
+    ASTLogicalExprNode node = new ASTLogicalExprNode();
+    enterNode(node, ctx);
+
+    for (int i = 0; i < ctx.getChildCount(); i++){
+      ParseTree child = ctx.getChild(i);
+      if (child instanceof TerminalNode){
+        TerminalNode terminalNode = (TerminalNode) child;
+        Token token = terminalNode.getSymbol();
+        if (token.getType() == TInfParser.LOGICAL_AND) {
+          node.operatorsListAdd(ASTLogicalExprNode.LogicalOperator.AND);
+        } else if (token.getType() == TInfParser.LOGICAL_OR) {
+          node.operatorsListAdd(ASTLogicalExprNode.LogicalOperator.OR);
+        }
+      } else if (child instanceof ParserRuleContext) {
+        visit(child);
+      }
+    }
+
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitCompareExpr(TInfParser.CompareExprContext ctx) {
-    return super.visitCompareExpr(ctx);
+    ASTCompareExprNode node = new ASTCompareExprNode();
+    enterNode(node, ctx);
+
+    if (ctx.EQUAL() != null) {
+      node.setOperator(ASTCompareExprNode.CompareOperator.EQUAL);
+    } else if (ctx.NOT_EQUAL() != null) {
+      node.setOperator(ASTCompareExprNode.CompareOperator.NOT_EQUAL);
+    }
+
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitAdditiveExpr(TInfParser.AdditiveExprContext ctx) {
-    return super.visitAdditiveExpr(ctx);
+    ASTAdditiveExprNode node = new ASTAdditiveExprNode();
+    enterNode(node, ctx);
+
+    for (int i = 0; i < ctx.getChildCount(); i++){
+      ParseTree child = ctx.getChild(i);
+      if (child instanceof TerminalNode){
+        TerminalNode terminalNode = (TerminalNode) child;
+        Token token = terminalNode.getSymbol();
+        if (token.getType() == TInfParser.PLUS){
+          node.operatorsListAdd(ASTAdditiveExprNode.AdditiveOperator.PLUS);
+        }
+        else if (token.getType() == TInfParser.MINUS){
+          node.operatorsListAdd(ASTAdditiveExprNode.AdditiveOperator.MINUS);
+        }
+      } else if (child instanceof ParserRuleContext) {
+        visit(child);
+      }
+    }
+
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitMultiplicativeExpr(TInfParser.MultiplicativeExprContext ctx) {
-    return super.visitMultiplicativeExpr(ctx);
+    ASTMultiplicativeExprNode node = new ASTMultiplicativeExprNode();
+    enterNode(node, ctx);
+
+    for (int i = 0; i < ctx.getChildCount(); i++){
+      ParseTree child = ctx.getChild(i);
+      if (child instanceof TerminalNode){
+        TerminalNode terminalNode = (TerminalNode) child;
+        Token token = terminalNode.getSymbol();
+        if (token.getType() == TInfParser.MUL){
+          node.operatorsListAdd(ASTMultiplicativeExprNode.MultiplicativeOperator.MUL);
+        }
+        else if (token.getType() == TInfParser.DIV){
+          node.operatorsListAdd(ASTMultiplicativeExprNode.MultiplicativeOperator.DIV);
+        }
+      } else if (child instanceof ParserRuleContext) {
+        visit(child);
+      }
+    }
+
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitPrefixExpr(TInfParser.PrefixExprContext ctx) {
-    return super.visitPrefixExpr(ctx);
+    ASTPrefixExprNode node = new ASTPrefixExprNode();
+    enterNode(node, ctx);
+
+    if (ctx.PLUS() != null) {
+      node.setOperator(ASTPrefixExprNode.PrefixOperator.PLUS);
+    } else if (ctx.MINUS() != null) {
+      node.setOperator(ASTPrefixExprNode.PrefixOperator.MINUS);
+    }
+
+    exitNode(node);
+    return null;
   }
 
   @Override
   public Void visitAtomicExpr(TInfParser.AtomicExprContext ctx) {
-    return super.visitAtomicExpr(ctx);
+    ASTAtomicExprNode node = new ASTAtomicExprNode();
+    enterNode(node, ctx);
+
+    if (ctx.INT_LIT() != null){
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.INT_LIT);
+      node.setIntLit(Integer.parseInt(ctx.STRING_LIT().toString()));
+    } else if (ctx.DOUBLE_LIT() != null) {
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.DOUBLE_LIT);
+      node.setDoubleLit(Double.parseDouble(ctx.STRING_LIT().toString()));
+    } else if (ctx.STRING_LIT() != null) {
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.STRING_LIT);
+      node.setStringLit(ctx.STRING_LIT().toString());
+    } else if (ctx.IDENTIFIER() != null) {
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.IDENTIFIER);
+      node.setIdentifier(ctx.STRING_LIT().toString());
+    } else if (ctx.fctCall() != null) {
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.FCT_CALL);
+      visit(ctx.fctCall());
+    } else if (ctx.printBuiltinCall() != null) {
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.PRINT_BUILTIN_CALL);
+      visit(ctx.printBuiltinCall());
+    } else if (ctx.assignExpr() != null) {
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.ASSIGN_EXPR);
+      visit(ctx.assignExpr());
+    } else if (ctx.FALSE() != null) {
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+      node.setBoolLit(false);
+    } else if (ctx.TRUE() != null) {
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+      node.setBoolLit(true);
+    }
+
+    exitNode(node);
+    return null;
   }
 
   private void enterNode(ASTNode node, ParserRuleContext ctx) {
