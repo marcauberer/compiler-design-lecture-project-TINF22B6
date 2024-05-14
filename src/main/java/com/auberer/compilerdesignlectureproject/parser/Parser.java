@@ -276,8 +276,10 @@ public class Parser implements IParser {
     enterNode(node);
 
     if (ASTIfStmtNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      node.setType(ASTElsePostNode.ElseType.ELSE_IF);
       parseIfStmt();
     } else {
+      node.setType(ASTElsePostNode.ElseType.ELSE);
       parseElseStmt();
     }
 

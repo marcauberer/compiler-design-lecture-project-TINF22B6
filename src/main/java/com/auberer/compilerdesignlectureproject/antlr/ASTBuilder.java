@@ -82,7 +82,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitIfStmt(TInfParser.IfStmtContext ctx) {
     ASTIfStmtNode node = new ASTIfStmtNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
@@ -93,7 +93,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   @Override
   public Void visitAfterIf(TInfParser.AfterIfContext ctx) {
     ASTAfterIfNode node = new ASTAfterIfNode();
-    enterNode(node);
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
@@ -102,15 +102,33 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
   }
 
   @Override
+  public Void visitElsePre(TInfParser.ElsePreContext ctx) {
+    ASTElsePreNode node = new ASTElsePreNode();
+    enterNode(node, ctx);
+
+    visitChildren(ctx);
+
+    exitNode(node);
+    return null;
+  }
+
+  @Override
+  public Void visitElsePost(TInfParser.ElsePostContext ctx) {
+    ASTElsePostNode node = new ASTElsePostNode();
+    enterNode(node, ctx);
+
+    visitChildren(ctx);
+
+    node.setType(ctx.ifStmt() != null ? ASTElsePostNode.ElseType.ELSE_IF : ASTElsePostNode.ElseType.ELSE);
+
+    exitNode(node);
+    return null;
+  }
+
+  @Override
   public Void visitElse(TInfParser.ElseContext ctx) {
     ASTElseNode node = new ASTElseNode();
-    enterNode(node);
-
-    if (node.getParent() instanceof ASTIfStmtNode) {
-      node.setType(DataType.ELSE_IF);
-    } else {
-      node.setType(DataType.ELSE);
-    }
+    enterNode(node, ctx);
 
     visitChildren(ctx);
 
