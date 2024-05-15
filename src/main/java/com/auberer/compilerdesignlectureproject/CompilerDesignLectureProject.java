@@ -95,7 +95,6 @@ public class CompilerDesignLectureProject {
       ASTBuilder astBuilder = new ASTBuilder();
       astBuilder.visitEntry(entryContext);
 
-      // ToDo: Change return type of ASTBuilder to ASTNode
       return null;
     } catch (Exception e) {
       e.printStackTrace();
