@@ -11,46 +11,46 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.Stack;
 
-public class ASTBuilder extends TInfBaseVisitor<Void> {
+public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
 
   // Stack to keep track of the parent nodes
   Stack<ASTNode> parentStack = new Stack<>();
 
   @Override
-  public Void visitEntry(TInfParser.EntryContext ctx) {
+  public ASTNode visitEntry(TInfParser.EntryContext ctx) {
     ASTEntryNode node = new ASTEntryNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitStmtLst(TInfParser.StmtLstContext ctx) {
+  public ASTNode visitStmtLst(TInfParser.StmtLstContext ctx) {
     ASTStmtLstNode node = new ASTStmtLstNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitStmt(TInfParser.StmtContext ctx) {
+  public ASTNode visitStmt(TInfParser.StmtContext ctx) {
     ASTStmtNode node = new ASTStmtNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitType(TInfParser.TypeContext ctx) {
+  public ASTNode visitType(TInfParser.TypeContext ctx) {
     ASTTypeNode node = new ASTTypeNode();
     enterNode(node, ctx);
 
@@ -65,55 +65,55 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     }
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitPrintBuiltinCall(TInfParser.PrintBuiltinCallContext ctx) {
+  public ASTNode visitPrintBuiltinCall(TInfParser.PrintBuiltinCallContext ctx) {
     ASTPrintBuiltinCallNode node = new ASTPrintBuiltinCallNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitIfStmt(TInfParser.IfStmtContext ctx) {
+  public ASTNode visitIfStmt(TInfParser.IfStmtContext ctx) {
     ASTIfStmtNode node = new ASTIfStmtNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitAfterIf(TInfParser.AfterIfContext ctx) {
+  public ASTNode visitAfterIf(TInfParser.AfterIfContext ctx) {
     ASTAfterIfNode node = new ASTAfterIfNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitElsePre(TInfParser.ElsePreContext ctx) {
+  public ASTNode visitElsePre(TInfParser.ElsePreContext ctx) {
     ASTElsePreNode node = new ASTElsePreNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitElsePost(TInfParser.ElsePostContext ctx) {
+  public ASTNode visitElsePost(TInfParser.ElsePostContext ctx) {
     ASTElsePostNode node = new ASTElsePostNode();
     enterNode(node, ctx);
 
@@ -122,70 +122,70 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     node.setType(ctx.ifStmt() != null ? ASTElsePostNode.ElseType.ELSE_IF : ASTElsePostNode.ElseType.ELSE);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitElse(TInfParser.ElseContext ctx) {
+  public ASTNode visitElse(TInfParser.ElseContext ctx) {
     ASTElseNode node = new ASTElseNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitWhileLoop(TInfParser.WhileLoopContext ctx) {
+  public ASTNode visitWhileLoop(TInfParser.WhileLoopContext ctx) {
     ASTWhileLoopNode node = new ASTWhileLoopNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitDoWhileLoop(TInfParser.DoWhileLoopContext ctx) {
+  public ASTNode visitDoWhileLoop(TInfParser.DoWhileLoopContext ctx) {
     ASTDoWhileLoopNode node = new ASTDoWhileLoopNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitForLoop(TInfParser.ForLoopContext ctx) {
+  public ASTNode visitForLoop(TInfParser.ForLoopContext ctx) {
     ASTForNode node = new ASTForNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitSwitchStmt(TInfParser.SwitchStmtContext ctx) {
+  public ASTNode visitSwitchStmt(TInfParser.SwitchStmtContext ctx) {
     return super.visitSwitchStmt(ctx);
   }
 
   @Override
-  public Void visitCases(TInfParser.CasesContext ctx) {
+  public ASTNode visitCases(TInfParser.CasesContext ctx) {
     return super.visitCases(ctx);
   }
 
   @Override
-  public Void visitDefault(TInfParser.DefaultContext ctx) {
+  public ASTNode visitDefault(TInfParser.DefaultContext ctx) {
     return super.visitDefault(ctx);
   }
 
   @Override
-  public Void visitFctDef(TInfParser.FctDefContext ctx) {
+  public ASTNode visitFctDef(TInfParser.FctDefContext ctx) {
     ASTFctDefNode node = new ASTFctDefNode();
     enterNode(node, ctx);
 
@@ -193,11 +193,11 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitParamLst(TInfParser.ParamLstContext ctx) {
+  public ASTNode visitParamLst(TInfParser.ParamLstContext ctx) {
     ASTParamLstNode node = new ASTParamLstNode();
     enterNode(node, ctx);
 
@@ -207,44 +207,44 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitLogic(TInfParser.LogicContext ctx) {
+  public ASTNode visitLogic(TInfParser.LogicContext ctx) {
     ASTLogicNode node = new ASTLogicNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitFctCall(TInfParser.FctCallContext ctx) {
+  public ASTNode visitFctCall(TInfParser.FctCallContext ctx) {
     ASTFctCallNode node = new ASTFctCallNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitCallParams(TInfParser.CallParamsContext ctx) {
+  public ASTNode visitCallParams(TInfParser.CallParamsContext ctx) {
     ASTFctCallNode node = new ASTFctCallNode();
     enterNode(node, ctx);
 
     visitChildren(ctx);
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitVarDecl(TInfParser.VarDeclContext ctx) {
+  public ASTNode visitVarDecl(TInfParser.VarDeclContext ctx) {
     ASTVarDeclNode node = new ASTVarDeclNode();
     enterNode(node, ctx);
 
@@ -252,11 +252,11 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     node.setVariableName(ctx.IDENTIFIER().toString());
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitAssignExpr(TInfParser.AssignExprContext ctx) {
+  public ASTNode visitAssignExpr(TInfParser.AssignExprContext ctx) {
     ASTAssignExprNode node = new ASTAssignExprNode();
     enterNode(node, ctx);
 
@@ -264,11 +264,11 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     node.setVariableName(ctx.IDENTIFIER().toString());
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitLogicalExpr(TInfParser.LogicalExprContext ctx) {
+  public ASTNode visitLogicalExpr(TInfParser.LogicalExprContext ctx) {
     ASTLogicalExprNode node = new ASTLogicalExprNode();
     enterNode(node, ctx);
 
@@ -288,11 +288,11 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     }
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitCompareExpr(TInfParser.CompareExprContext ctx) {
+  public ASTNode visitCompareExpr(TInfParser.CompareExprContext ctx) {
     ASTCompareExprNode node = new ASTCompareExprNode();
     enterNode(node, ctx);
 
@@ -303,11 +303,11 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     }
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitAdditiveExpr(TInfParser.AdditiveExprContext ctx) {
+  public ASTNode visitAdditiveExpr(TInfParser.AdditiveExprContext ctx) {
     ASTAdditiveExprNode node = new ASTAdditiveExprNode();
     enterNode(node, ctx);
 
@@ -328,11 +328,11 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     }
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitMultiplicativeExpr(TInfParser.MultiplicativeExprContext ctx) {
+  public ASTNode visitMultiplicativeExpr(TInfParser.MultiplicativeExprContext ctx) {
     ASTMultiplicativeExprNode node = new ASTMultiplicativeExprNode();
     enterNode(node, ctx);
 
@@ -353,11 +353,11 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     }
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitPrefixExpr(TInfParser.PrefixExprContext ctx) {
+  public ASTNode visitPrefixExpr(TInfParser.PrefixExprContext ctx) {
     ASTPrefixExprNode node = new ASTPrefixExprNode();
     enterNode(node, ctx);
 
@@ -368,11 +368,11 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     }
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   @Override
-  public Void visitAtomicExpr(TInfParser.AtomicExprContext ctx) {
+  public ASTNode visitAtomicExpr(TInfParser.AtomicExprContext ctx) {
     ASTAtomicExprNode node = new ASTAtomicExprNode();
     enterNode(node, ctx);
 
@@ -406,7 +406,7 @@ public class ASTBuilder extends TInfBaseVisitor<Void> {
     }
 
     exitNode(node);
-    return null;
+    return node;
   }
 
   private void enterNode(ASTNode node, ParserRuleContext ctx) {
