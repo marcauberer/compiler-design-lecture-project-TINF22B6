@@ -12,4 +12,21 @@ public class ASTForNode extends ASTNode {
     public static Set<TokenType> getSelectionSet() {
         return Set.of(TokenType.TOK_FOR);
     }
+
+
+    public ASTStmtLstNode getBody() {
+        return getChild(ASTStmtLstNode.class, 0);
+    }
+
+    public ASTAssignExprNode getInitialization() {
+        return getChild(ASTAssignExprNode.class, 0);
+    }
+
+    public ASTAssignExprNode getCondition() {
+        return getChild(ASTAssignExprNode.class, 1);
+    }
+
+    public ASTAssignExprNode getIncrement() {
+        return getChild(ASTAssignExprNode.class, 2);
+    }
 }
