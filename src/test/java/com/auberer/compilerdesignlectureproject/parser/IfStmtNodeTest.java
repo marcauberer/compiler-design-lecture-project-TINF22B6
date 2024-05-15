@@ -165,7 +165,7 @@ public class IfStmtNodeTest {
   void integrationsTest() {
       // Create a new Reader object with the given file path
       Reader reader = new Reader("""
-              if (true = false) {
+              if (true == false) {
                   print("XSLT");
               }
               """);
