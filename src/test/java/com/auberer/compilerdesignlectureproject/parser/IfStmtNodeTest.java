@@ -1,10 +1,13 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
+import com.auberer.compilerdesignlectureproject.ast.ASTAssignExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTIfStmtNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -156,6 +159,28 @@ public class IfStmtNodeTest {
 
     assertNotNull(ifStmtNode);
     assertInstanceOf(ASTIfStmtNode.class, ifStmtNode);
+  }
+
+  @Test
+  void integrationsTest() {
+      // Create a new Reader object with the given file path
+      Reader reader = new Reader("""
+              if (true = false) {
+                  print("XSLT");
+              }
+              """);
+
+      // Create lexer and parser
+      Lexer lexer = new Lexer(reader, false);
+      Parser parser = new Parser(lexer);
+
+    // Execute parse method
+    ASTIfStmtNode ifStmtNode = parser.parseIfStmt();
+
+    assertNotNull(ifStmtNode);
+    assertInstanceOf(ASTIfStmtNode.class, ifStmtNode);
+    assertInstanceOf(ASTAssignExprNode.class, ifStmtNode.getCondition());
+    assertInstanceOf(ASTStmtLstNode.class, ifStmtNode.getBody());
   }
 
 }
