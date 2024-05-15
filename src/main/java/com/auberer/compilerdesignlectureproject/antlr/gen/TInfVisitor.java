@@ -53,6 +53,18 @@ public interface TInfVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAfterIf(TInfParser.AfterIfContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link TInfParser#elsePre}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElsePre(TInfParser.ElsePreContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link TInfParser#elsePost}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElsePost(TInfParser.ElsePostContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link TInfParser#else}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -3,15 +3,15 @@ package com.auberer.compilerdesignlectureproject;
 import com.auberer.compilerdesignlectureproject.antlr.ASTBuilder;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfLexer;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfParser;
+import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTVisualizer;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
+import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +21,7 @@ public class CompilerDesignLectureProject {
     Options cliOptions = new Options()
         .addOption("h", "help", false, "Print this help text")
         .addOption("antlr", "use-antlr-parser", false, "Use ANTLR generated parser")
+        .addOption("tokens", "dump-tokens", false, "Dump the lexed tokens")
         .addOption("ast", "dump-ast", false, "Dump the AST as dot file");
 
     DefaultParser cliParser = new DefaultParser();
@@ -35,15 +36,28 @@ public class CompilerDesignLectureProject {
       String[] positionalArgs = cli.getArgs();
       Path path = Paths.get(positionalArgs[0]).toAbsolutePath();
 
+      ASTEntryNode ast;
       if (cli.hasOption("antlr")) {
         System.out.println("Compiling with ANTLR parser...");
-        compileAntlrParser(path);
+        ast = parseWithANTLRParser(path);
       } else {
         System.out.println("Compiling with own parser...");
-        compileOwnParser(path);
+
+        boolean dumpTokens = cli.hasOption("tokens");
+        ast = parseWithOwnParser(path, dumpTokens);
       }
-    } catch (Exception e) {
+
+      if (cli.hasOption("ast")) {
+        System.out.println("Dumping AST...");
+        assert ast != null;
+        ASTVisualizer visualizer = new ASTVisualizer();
+        String dot = visualizer.visitEntry(ast);
+        System.out.println(dot);
+      }
+    } catch (ParseException e) {
       new HelpFormatter().printHelp("apache args...", cliOptions);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
 
     if (args.length == 0) {
@@ -52,24 +66,19 @@ public class CompilerDesignLectureProject {
     }
   }
 
-  static void compileOwnParser(Path path) {
+  static ASTEntryNode parseWithOwnParser(Path path, boolean dumpTokens) {
     // Create a new Reader object with the given file path
     Reader reader = new Reader(path);
 
-    // Trigger the lexer
-    Lexer lexer = new Lexer(reader);
+    // Create lexer and parser
+    Lexer lexer = new Lexer(reader, dumpTokens);
+    Parser parser = new Parser(lexer);
 
-    // Print the tokens
-    System.out.println("Tokens:");
-    while (!lexer.isEOF()) {
-      System.out.println(lexer.getToken());
-      lexer.advance();
-    }
-    // Print last token
-    System.out.println(lexer.getToken());
+    // Parse the input file
+    return parser.parse();
   }
 
-  static void compileAntlrParser(Path path) {
+  static ASTEntryNode parseWithANTLRParser(Path path) {
     try {
       // Setup ANTLR
       ANTLRInputStream input = new ANTLRFileStream(path.toString());
@@ -84,9 +93,13 @@ public class CompilerDesignLectureProject {
 
       // Transform parse tree to AST
       ASTBuilder astBuilder = new ASTBuilder();
-      astBuilder.visit(entryContext);
+      astBuilder.visitEntry(entryContext);
+
+      // ToDo: Change return type of ASTBuilder to ASTNode
+      return null;
     } catch (Exception e) {
       e.printStackTrace();
     }
+    return null;
   }
 }

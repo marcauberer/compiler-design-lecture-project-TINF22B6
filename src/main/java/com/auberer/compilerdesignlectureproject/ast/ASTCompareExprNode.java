@@ -1,19 +1,28 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import lombok.Setter;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-public class ASTCompareExprNode extends ASTNode{
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visitCompareExpr(this);
-    }
+@Setter
+public class ASTCompareExprNode extends ASTNode {
 
-    public static Set<TokenType> getSelectionSet() {
-        Set<TokenType> selectionSet = new HashSet<>();
-        selectionSet.addAll(ASTPrefixExprNode.getSelectionSet());
-        return selectionSet;
-    }
+  public enum CompareOperator {
+    EQUAL,
+    NOT_EQUAL,
+  }
+
+  public CompareOperator operator;
+
+  @Override
+  public <T> T accept(ASTVisitor<T> visitor) {
+    return visitor.visitCompareExpr(this);
+  }
+
+  public static Set<TokenType> getSelectionSet() {
+    return ASTPrefixExprNode.getSelectionSet();
+  }
 }
