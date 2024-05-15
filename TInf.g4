@@ -3,7 +3,7 @@ grammar TInf;
 // Given language constructs
 entry: fctDef*;
 stmtLst: (stmt | ifStmt | whileLoop | doWhileLoop | forLoop | switchStmt)*;
-stmt: (varDecl | assignExpr) SEMICOLON;
+stmt: (varDecl | assignStmt) SEMICOLON;
 type: TYPE_INT | TYPE_DOUBLE | TYPE_STRING | TYPE_EMPTY;
 printBuiltinCall: PRINT LPAREN logicalExpr RPAREN;
 
@@ -21,7 +21,7 @@ whileLoop: WHILE LPAREN logicalExpr RPAREN LBRACE stmtLst RBRACE;
 doWhileLoop: DO LBRACE stmtLst RBRACE WHILE LPAREN logicalExpr RPAREN SEMICOLON;
 
 // For loop (team 4)
-forLoop: FOR LPAREN assignExpr SEMICOLON logicalExpr SEMICOLON logicalExpr RPAREN LBRACE stmtLst RBRACE;
+forLoop: FOR LPAREN assignStmt SEMICOLON logicalExpr SEMICOLON logicalExpr RPAREN LBRACE stmtLst RBRACE;
 
 // Switch statement (team 5)
 switchStmt: SWITCH LPAREN logicalExpr RPAREN LBRACE cases default? RBRACE;
@@ -37,7 +37,7 @@ callParams: logicalExpr | logicalExpr COMMA callParams;
 
 // Variable declaration / assignment (team 7)
 varDecl: type IDENTIFIER (ASSIGN logicalExpr)?;
-assignExpr: (IDENTIFIER ASSIGN)? logicalExpr;
+assignStmt: (IDENTIFIER ASSIGN)? logicalExpr;
 
 // Expression loop (team 8)
 logicalExpr: compareExpr ((LOGICAL_AND | LOGICAL_OR) compareExpr)*;

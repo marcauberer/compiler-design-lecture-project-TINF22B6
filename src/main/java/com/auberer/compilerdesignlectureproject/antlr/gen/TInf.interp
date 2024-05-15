@@ -109,7 +109,7 @@ logic
 fctCall
 callParams
 varDecl
-assignExpr
+assignStmt
 logicalExpr
 compareExpr
 additiveExpr

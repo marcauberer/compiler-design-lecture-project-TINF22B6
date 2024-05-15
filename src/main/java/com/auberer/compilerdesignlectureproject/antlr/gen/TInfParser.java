@@ -30,7 +30,7 @@ public class TInfParser extends Parser {
 		RULE_else = 9, RULE_whileLoop = 10, RULE_doWhileLoop = 11, RULE_forLoop = 12, 
 		RULE_switchStmt = 13, RULE_cases = 14, RULE_default = 15, RULE_fctDef = 16, 
 		RULE_paramLst = 17, RULE_logic = 18, RULE_fctCall = 19, RULE_callParams = 20, 
-		RULE_varDecl = 21, RULE_assignExpr = 22, RULE_logicalExpr = 23, RULE_compareExpr = 24, 
+		RULE_varDecl = 21, RULE_assignStmt = 22, RULE_logicalExpr = 23, RULE_compareExpr = 24, 
 		RULE_additiveExpr = 25, RULE_multiplicativeExpr = 26, RULE_prefixExpr = 27, 
 		RULE_atomicExpr = 28;
 	private static String[] makeRuleNames() {
@@ -38,7 +38,7 @@ public class TInfParser extends Parser {
 			"entry", "stmtLst", "stmt", "type", "printBuiltinCall", "ifStmt", "afterIf", 
 			"elsePre", "elsePost", "else", "whileLoop", "doWhileLoop", "forLoop", 
 			"switchStmt", "cases", "default", "fctDef", "paramLst", "logic", "fctCall", 
-			"callParams", "varDecl", "assignExpr", "logicalExpr", "compareExpr", 
+			"callParams", "varDecl", "assignStmt", "logicalExpr", "compareExpr", 
 			"additiveExpr", "multiplicativeExpr", "prefixExpr", "atomicExpr"
 		};
 	}
@@ -309,8 +309,8 @@ public class TInfParser extends Parser {
 		public VarDeclContext varDecl() {
 			return getRuleContext(VarDeclContext.class,0);
 		}
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public AssignStmtContext assignStmt() {
+			return getRuleContext(AssignStmtContext.class,0);
 		}
 		public StmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -354,7 +354,7 @@ public class TInfParser extends Parser {
 			case STRING_LIT:
 				{
 				setState(76);
-				assignExpr();
+				assignStmt();
 				}
 				break;
 			default:
@@ -838,8 +838,8 @@ public class TInfParser extends Parser {
 	public static class ForLoopContext extends ParserRuleContext {
 		public TerminalNode FOR() { return getToken(TInfParser.FOR, 0); }
 		public TerminalNode LPAREN() { return getToken(TInfParser.LPAREN, 0); }
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public AssignStmtContext assignStmt() {
+			return getRuleContext(AssignStmtContext.class,0);
 		}
 		public List<TerminalNode> SEMICOLON() { return getTokens(TInfParser.SEMICOLON); }
 		public TerminalNode SEMICOLON(int i) {
@@ -879,7 +879,7 @@ public class TInfParser extends Parser {
 			setState(130);
 			match(LPAREN);
 			setState(131);
-			assignExpr();
+			assignStmt();
 			setState(132);
 			match(SEMICOLON);
 			setState(133);
@@ -1481,26 +1481,26 @@ public class TInfParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class AssignExprContext extends ParserRuleContext {
+	public static class AssignStmtContext extends ParserRuleContext {
 		public LogicalExprContext logicalExpr() {
 			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public TerminalNode IDENTIFIER() { return getToken(TInfParser.IDENTIFIER, 0); }
 		public TerminalNode ASSIGN() { return getToken(TInfParser.ASSIGN, 0); }
-		public AssignExprContext(ParserRuleContext parent, int invokingState) {
+		public AssignStmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_assignExpr; }
+		@Override public int getRuleIndex() { return RULE_assignStmt; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TInfVisitor ) return ((TInfVisitor<? extends T>)visitor).visitAssignExpr(this);
+			if ( visitor instanceof TInfVisitor ) return ((TInfVisitor<? extends T>)visitor).visitAssignStmt(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final AssignExprContext assignExpr() throws RecognitionException {
-		AssignExprContext _localctx = new AssignExprContext(_ctx, getState());
-		enterRule(_localctx, 44, RULE_assignExpr);
+	public final AssignStmtContext assignStmt() throws RecognitionException {
+		AssignStmtContext _localctx = new AssignStmtContext(_ctx, getState());
+		enterRule(_localctx, 44, RULE_assignStmt);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

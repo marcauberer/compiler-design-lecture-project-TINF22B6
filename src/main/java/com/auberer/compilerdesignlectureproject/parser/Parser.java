@@ -47,7 +47,7 @@ public class Parser implements IParser {
 
     lexer.expect(TokenType.TOK_FOR);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseAssignStmt();
     lexer.expect(TokenType.TOK_SEMICOLON);
     parseLogicalExpression();
     lexer.expect(TokenType.TOK_SEMICOLON);
@@ -106,8 +106,8 @@ public class Parser implements IParser {
     TokenType tokenType = lexer.getToken().getType();
     if (ASTVarDeclNode.getSelectionSet().contains(tokenType)) {
       parseVarDecl();
-    } else if (ASTAssignExprNode.getSelectionSet().contains(tokenType)) {
-      parseAssignExpr();
+    } else if (ASTAssignStmtNode.getSelectionSet().contains(tokenType)) {
+      parseAssignStmt();
     } else {
       assert false : "Unexpected token in statement";
     }
@@ -315,8 +315,8 @@ public class Parser implements IParser {
     return node;
   }
 
-  public ASTAssignExprNode parseAssignExpr() {
-    ASTAssignExprNode node = new ASTAssignExprNode();
+  public ASTAssignStmtNode parseAssignStmt() {
+    ASTAssignStmtNode node = new ASTAssignStmtNode();
     enterNode(node);
 
     if (lexer.getToken().getType() == TokenType.TOK_IDENTIFIER) {

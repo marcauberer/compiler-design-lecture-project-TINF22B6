@@ -77,7 +77,7 @@ public class DoWhileLoopNodeTest {
         ASTLogicalExprNode condition = doWhileLoopNode.getCondition();
         assert body.getChildren().size() == 2;
         assert body.getChildren().get(0).getChildren().getFirst() instanceof ASTVarDeclNode;
-        assert body.getChildren().get(1).getChildren().getFirst() instanceof ASTAssignExprNode;
+        assert body.getChildren().get(1).getChildren().getFirst() instanceof ASTAssignStmtNode;
         assert condition.getChildren().size() == 1;
         assert condition.getChild(ASTCompareExprNode.class, 0)
                 .getChild(ASTAdditiveExprNode.class, 0)

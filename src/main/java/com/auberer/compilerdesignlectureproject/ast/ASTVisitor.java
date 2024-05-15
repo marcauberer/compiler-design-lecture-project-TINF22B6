@@ -60,7 +60,7 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  T visitAssignExpr(ASTAssignExprNode node) {
+  T visitAssignStmt(ASTAssignStmtNode node) {
     return visitChildren(node);
   }
 

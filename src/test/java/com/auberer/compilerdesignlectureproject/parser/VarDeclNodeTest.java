@@ -34,8 +34,8 @@ public class VarDeclNodeTest {
     }
 
     @Test
-    @DisplayName("Test assign expression without optional")
-    void testAssignExprWithoutOptional() {
+    @DisplayName("Test assign statement without optional")
+    void testAssignStmtWithoutOptional() {
         List<Token> tokenList = new LinkedList<>();
         tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "variable", new CodeLoc(1, 1)));
         tokenList.add(new Token(TokenType.TOK_INVALID, "", new CodeLoc(1, 2)));
@@ -58,8 +58,8 @@ public class VarDeclNodeTest {
     }
 
     @Test
-    @DisplayName("Test assign expression with optional")
-    void testAssignExprWithOptional() {
+    @DisplayName("Test assign statement with optional")
+    void testAssignStmtWithOptional() {
         List<Token> tokenList = new LinkedList<>();
         tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "xyz", new CodeLoc(1, 1)));
         tokenList.add(new Token(TokenType.TOK_ASSIGN, "", new CodeLoc(1, 1)));
