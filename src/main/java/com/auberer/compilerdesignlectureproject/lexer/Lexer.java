@@ -45,6 +45,8 @@ public class Lexer implements ILexer {
     stateMachines.add(new KeywordStateMachine("default", TokenType.TOK_DEFAULT));
     stateMachines.add(new KeywordStateMachine("call", TokenType.TOK_CALL));
     stateMachines.add(new KeywordStateMachine("print", TokenType.TOK_PRINT));
+    stateMachines.add(new KeywordStateMachine("true", TokenType.TOK_TRUE));
+    stateMachines.add(new KeywordStateMachine("false", TokenType.TOK_FALSE));
     stateMachines.add(new PunctuationStateMachine("{", TokenType.TOK_LBRACE));
     stateMachines.add(new PunctuationStateMachine("}", TokenType.TOK_RBRACE));
     stateMachines.add(new PunctuationStateMachine("(", TokenType.TOK_LPAREN));
