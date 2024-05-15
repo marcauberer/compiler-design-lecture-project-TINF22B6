@@ -15,4 +15,8 @@ public class ASTFctCallNode extends ASTNode {
     public static Set<TokenType> getSelectionSet() {
         return Set.of(TOK_CALL);
     }
+
+    public ASTCallParamsNode getCallParams(){
+        return getChild(ASTCallParamsNode.class, 0);
+    }
 }

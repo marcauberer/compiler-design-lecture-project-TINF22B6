@@ -387,8 +387,8 @@ public class Parser implements IParser {
 
     parseStmtLst();
     lexer.expect(TokenType.TOK_RETURN);
-    if (ASTAssignExprNode.getSelectionSet().contains(lexer.getToken().getType())) {
-      parseAssignExpr();
+    if (ASTLogicalExprNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      parseLogicalExpression();
     }
     lexer.expect(TokenType.TOK_SEMICOLON);
     exitNode(node);

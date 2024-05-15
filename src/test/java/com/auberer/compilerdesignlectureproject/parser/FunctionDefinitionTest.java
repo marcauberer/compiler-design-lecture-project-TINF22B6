@@ -5,6 +5,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,5 +81,15 @@ public class FunctionDefinitionTest {
         verify(lexer, times(1)).expect(TokenType.TOK_RETURN);
         verify(lexer, times(1)).expect(TokenType.TOK_SEMICOLON);
         verify(lexer, times(1)).expect(TokenType.TOK_CNUF);
+    }
+
+    @Test
+    @DisplayName("Integration test for function call")
+    void testIntegrationTestForFunctionCall() {
+
+        String fctDef = "func int myFunc(int x) int i = 17; return x; cnuf";
+        Lexer lexer1 = new Lexer(new Reader(fctDef), true);
+        Parser parser1 = new Parser(lexer1);
+        parser1.parseFctDef();
     }
 }

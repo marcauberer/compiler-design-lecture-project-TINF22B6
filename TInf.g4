@@ -31,7 +31,7 @@ default: DEFAULT COLON stmtLst;
 // Function definition / call (team 6)
 fctDef: FUNC type IDENTIFIER LPAREN paramLst? RPAREN logic CNUF;
 paramLst: type IDENTIFIER (COMMA type IDENTIFIER)*;
-logic: stmtLst RETURN assignExpr? SEMICOLON;
+logic: stmtLst RETURN logicalExpr? SEMICOLON;
 fctCall: CALL IDENTIFIER LPAREN callParams? RPAREN;
 callParams: assignExpr | assignExpr COMMA callParams;
 
