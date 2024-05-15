@@ -18,7 +18,7 @@ public class ASTDoWhileLoopNode extends ASTNode {
     return getChild(ASTStmtLstNode.class, 0);
   }
 
-  public ASTAssignExprNode getCondition() {
-    return getChild(ASTAssignExprNode.class, 0);
+  public ASTLogicalExprNode getCondition() {
+    return getChild(ASTLogicalExprNode.class, 0);
   }
 }

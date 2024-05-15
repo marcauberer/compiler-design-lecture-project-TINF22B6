@@ -49,9 +49,9 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_LPAREN);
     parseAssignExpr();
     lexer.expect(TokenType.TOK_SEMICOLON);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_SEMICOLON);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
     parseStmtLst();
@@ -124,7 +124,7 @@ public class Parser implements IParser {
     // Parse the print builtin
     lexer.expect(TokenType.TOK_PRINT);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
 
     exitNode(node);
@@ -176,7 +176,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_RBRACE);
     lexer.expect(TokenType.TOK_WHILE);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_SEMICOLON);
 
@@ -190,7 +190,7 @@ public class Parser implements IParser {
 
     lexer.expect(TokenType.TOK_SWITCH);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
     parseCases();
@@ -237,7 +237,7 @@ public class Parser implements IParser {
 
     lexer.expect(TokenType.TOK_IF);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
     parseStmtLst();
@@ -308,7 +308,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_IDENTIFIER);
     if (lexer.getToken().getType() == TokenType.TOK_ASSIGN) {
       lexer.expect(TokenType.TOK_ASSIGN);
-      parseAssignExpr();
+      parseLogicalExpression();
     }
 
     exitNode(node);
@@ -336,7 +336,7 @@ public class Parser implements IParser {
 
     lexer.expect(TokenType.TOK_WHILE);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
     parseStmtLst();
@@ -387,8 +387,8 @@ public class Parser implements IParser {
 
     parseStmtLst();
     lexer.expect(TokenType.TOK_RETURN);
-    if (ASTAssignExprNode.getSelectionSet().contains(lexer.getToken().getType())) {
-      parseAssignExpr();
+    if (ASTLogicalExprNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      parseLogicalExpression();
     }
     lexer.expect(TokenType.TOK_SEMICOLON);
     exitNode(node);
@@ -415,10 +415,10 @@ public class Parser implements IParser {
     ASTCallParamsNode node = new ASTCallParamsNode();
     enterNode(node);
 
-    parseAssignExpr();
+    parseLogicalExpression();
     while (lexer.getToken().getType() == TokenType.TOK_COMMA) {
       lexer.expect(TokenType.TOK_COMMA);
-      parseAssignExpr();
+      parseLogicalExpression();
     }
     exitNode(node);
     return node;
@@ -524,7 +524,7 @@ public class Parser implements IParser {
       }
       case TokenType.TOK_LPAREN: {
         lexer.expect(TokenType.TOK_LPAREN);
-        parseAssignExpr();
+        parseLogicalExpression();
         lexer.expect(TokenType.TOK_RPAREN);
         break;
       }

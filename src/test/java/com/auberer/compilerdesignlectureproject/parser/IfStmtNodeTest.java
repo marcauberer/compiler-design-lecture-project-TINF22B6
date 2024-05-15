@@ -1,7 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTAssignExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTIfStmtNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
@@ -46,7 +46,7 @@ public class IfStmtNodeTest {
     // Arrange
     doNothing().when(lexer).expect(TokenType.TOK_IF);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-    doReturn(null).when(parser).parseAssignExpr();
+    doReturn(null).when(parser).parseLogicalExpression();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
     doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
     doReturn(null).when(parser).parseStmtLst();
@@ -59,7 +59,7 @@ public class IfStmtNodeTest {
     // Assert
     verify(lexer, times(1)).expect(TokenType.TOK_IF);
     verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
-    verify(parser, times(1)).parseAssignExpr();
+    verify(parser, times(1)).parseLogicalExpression();
     verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
     verify(lexer, times(1)).expect(TokenType.TOK_LBRACE);
     verify(parser, times(1)).parseStmtLst();
@@ -78,7 +78,7 @@ public class IfStmtNodeTest {
     // Arrange
     doNothing().when(lexer).expect(TokenType.TOK_IF);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-    doReturn(null).when(parser).parseAssignExpr();
+    doReturn(null).when(parser).parseLogicalExpression();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
     doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
     doReturn(null).when(parser).parseStmtLst();
@@ -92,7 +92,7 @@ public class IfStmtNodeTest {
     // Assert
     verify(lexer, times(1)).expect(TokenType.TOK_IF);
     verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
-    verify(parser, times(1)).parseAssignExpr();
+    verify(parser, times(1)).parseLogicalExpression();
     verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
     verify(lexer, times(2)).expect(TokenType.TOK_LBRACE);
     verify(parser, times(2)).parseStmtLst();
@@ -123,7 +123,7 @@ public class IfStmtNodeTest {
     // Arrange
     doNothing().when(lexer).expect(TokenType.TOK_IF);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-    doReturn(null).when(parser).parseAssignExpr();
+    doReturn(null).when(parser).parseLogicalExpression();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
     doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
     doReturn(null).when(parser).parseStmtLst();
@@ -150,7 +150,7 @@ public class IfStmtNodeTest {
     // Assert
     verify(lexer, times(2)).expect(TokenType.TOK_IF);
     verify(lexer, times(2)).expect(TokenType.TOK_LPAREN);
-    verify(parser, times(2)).parseAssignExpr();
+    verify(parser, times(2)).parseLogicalExpression();
     verify(lexer, times(2)).expect(TokenType.TOK_RPAREN);
     verify(lexer, times(3)).expect(TokenType.TOK_LBRACE);
     verify(parser, times(3)).parseStmtLst();
@@ -179,7 +179,7 @@ public class IfStmtNodeTest {
 
     assertNotNull(ifStmtNode);
     assertInstanceOf(ASTIfStmtNode.class, ifStmtNode);
-    assertInstanceOf(ASTAssignExprNode.class, ifStmtNode.getCondition());
+    assertInstanceOf(ASTLogicalExprNode.class, ifStmtNode.getCondition());
     assertInstanceOf(ASTStmtLstNode.class, ifStmtNode.getBody());
   }
 

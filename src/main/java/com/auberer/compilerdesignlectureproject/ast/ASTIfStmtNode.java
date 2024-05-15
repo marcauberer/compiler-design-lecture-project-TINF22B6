@@ -14,8 +14,8 @@ public class ASTIfStmtNode extends ASTNode {
         return visitor.visitIf(this);
     }
 
-    public ASTAssignExprNode getCondition() {
-        return getChild(ASTAssignExprNode.class, 0);
+    public ASTLogicalExprNode getCondition() {
+        return getChild(ASTLogicalExprNode.class, 0);
     }
 
     public ASTStmtLstNode getBody() {

@@ -394,9 +394,9 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     } else if (ctx.printBuiltinCall() != null) {
       node.setOperator(ASTAtomicExprNode.AtomicOperator.PRINT_BUILTIN_CALL);
       visit(ctx.printBuiltinCall());
-    } else if (ctx.assignExpr() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.ASSIGN_EXPR);
-      visit(ctx.assignExpr());
+    } else if (ctx.logicalExpr() != null) {
+      node.setOperator(ASTAtomicExprNode.AtomicOperator.LOGICAL_EXPR);
+      visit(ctx.logicalExpr());
     } else if (ctx.FALSE() != null) {
       node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
       node.setBoolLit(false);
