@@ -19,4 +19,8 @@ public class ASTFctCallNode extends ASTNode {
     public ASTCallParamsNode getCallParams(){
         return getChild(ASTCallParamsNode.class, 0);
     }
+
+    public ASTFctDefNode getDefinition(){
+        return getChild(ASTFctDefNode.class, 0);
+    }
 }

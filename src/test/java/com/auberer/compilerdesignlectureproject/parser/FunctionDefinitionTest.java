@@ -84,7 +84,7 @@ public class FunctionDefinitionTest {
     }
 
     @Test
-    @DisplayName("Integration test for function call")
+    @DisplayName("Integration test for function definition")
     void testIntegrationTestForFunctionCall() {
 
         String fctDef = "func int myFunc(int x) int i = 17; return x; cnuf";

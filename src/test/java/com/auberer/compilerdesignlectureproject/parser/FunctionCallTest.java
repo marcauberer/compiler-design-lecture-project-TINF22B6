@@ -55,5 +55,13 @@ public class FunctionCallTest {
         verify(parser, times(1)).parseCallParams();
     }
 
+    @Test
+    @DisplayName("Integration test for function call")
+    void testIntegrationTestForFunctionCall() {
 
+        String fctDef = "call myFunc(7);";
+        Lexer lexer1 = new Lexer(new Reader(fctDef), true);
+        Parser parser1 = new Parser(lexer1);
+        parser1.parseFctCall();
+    }
 }
