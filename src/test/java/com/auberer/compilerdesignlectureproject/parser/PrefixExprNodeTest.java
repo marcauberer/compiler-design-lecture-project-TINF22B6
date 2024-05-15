@@ -14,7 +14,6 @@ import org.mockito.Spy;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,7 +42,7 @@ public class PrefixExprNodeTest {
 
         // Arrange
         doReturn(null).when(parser).parseAtomicExpression();
-        doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
+        doNothing().when(lexer).expect(TokenType.TOK_MINUS);
         doReturn(tokenList.get(0), tokenList.get(0), tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
 
         // Execute parse method
@@ -51,7 +50,7 @@ public class PrefixExprNodeTest {
 
         // Assert
         verify(parser, times(1)).parseAtomicExpression();
-        verify(lexer, times(1)).expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
+        verify(lexer, times(1)).expect(TokenType.TOK_MINUS);
         assertNotNull(prefixExprNode);
         assertInstanceOf(ASTPrefixExprNode.class, prefixExprNode);
     }
