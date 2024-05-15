@@ -1,10 +1,13 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
+import com.auberer.compilerdesignlectureproject.ast.ASTAssignExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTWhileLoopNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,6 +65,15 @@ class WhileLoopNodeTest {
   @Test
   @DisplayName("Integration test")
   void testWhileLoopIntegrated() {
-    // ToDo: Implement integration test to test reader, lexer and parser together
+    String code = "while (1) { int i = 5 + 6; double d = 12.3 + i; i = -13; }";
+    Reader reader = new Reader(code);
+    Lexer lexer1 = new Lexer(reader, true);
+    Parser parser1 = new Parser(lexer1);
+    ASTWhileLoopNode astWhileLoopNode = parser1.parseWhileLoop();
+
+    assertNotNull(astWhileLoopNode);
+    assertInstanceOf(ASTWhileLoopNode.class, astWhileLoopNode);
+    assertInstanceOf(ASTAssignExprNode.class, astWhileLoopNode.getAssignExpr().getFirst());
+    astWhileLoopNode.getStmtLst().forEach(s -> assertInstanceOf(ASTStmtLstNode.class, s));
   }
 }
