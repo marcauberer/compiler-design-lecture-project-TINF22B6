@@ -14,15 +14,27 @@ public class ForNodeIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Reader reader = new Reader("for (int i = 0; i == 10; i++) { int x = 5 + i; }");
-        Lexer lexer = new Lexer(reader, true);
+        Reader reader = new Reader("for (int i = 0; i == 10; i++) {  } cnuf");
+        Lexer lexer = new Lexer(reader, false);
         parser = new Parser(lexer);
     }
 
-    // Integration test for ForNode
+    // Integration test for the ForNode
     @Test
     void testForNodeParsing() {
-        assertDoesNotThrow(() -> parser.parseForLoop());
+        ASTForNode forNode = assertDoesNotThrow(() -> parser.parseForLoop());
+
+        // Use the helper functions to get the body, initialization, condition, and increment
+        ASTStmtLstNode body = forNode.getBody();
+        ASTAssignStmtNode initialization = forNode.getInitialization();
+        ASTAssignStmtNode condition = forNode.getCondition();
+        ASTAssignStmtNode increment = forNode.getIncrement();
+
+        // Assert that the body, initialization, condition, and increment are not null
+        assertNotNull(body);
+        assertNotNull(initialization);
+        assertNotNull(condition);
+        assertNotNull(increment);
     }
 
     // Unit tests for ASTForNode methods
