@@ -1,10 +1,12 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTVarDeclNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,5 +77,19 @@ public class AssignStmtNodeTest {
         assertInstanceOf(ASTAssignStmtNode.class, assignStmt);
         // Ensure the variable name is correct
         assertEquals("xyz", assignStmt.getVariableName());
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void integrationTest() {
+        String code = "5";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, true);
+        Parser parser = new Parser(lexer);
+        ASTAssignStmtNode astAssignStmtNode = parser.parseAssignStmt();
+
+        assertNotNull(astAssignStmtNode);
+        assertInstanceOf(ASTAssignStmtNode.class, astAssignStmtNode);
+        assertInstanceOf(ASTAssignStmtNode.class, astAssignStmtNode.getLogical());
     }
 }

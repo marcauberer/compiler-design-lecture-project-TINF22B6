@@ -28,8 +28,8 @@ public class ASTVarDeclNode extends ASTNode {
         return getChild(ASTTypeNode.class, 0);
     }
 
-    public ASTAtomicExprNode getAssign() {
+    public ASTAssignStmtNode getAssign() {
 
-        return getChild(ASTAtomicExprNode.class, 0);
+        return getChild(ASTAssignStmtNode.class, 0);
     }
 }
