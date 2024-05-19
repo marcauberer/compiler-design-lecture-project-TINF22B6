@@ -22,4 +22,8 @@ public class ASTAssignStmtNode extends ASTNode {
     identifier.add(TokenType.TOK_IDENTIFIER);
     return identifier;
   }
+  public ASTLogicalExprNode getLogical() {
+
+    return getChild(ASTLogicalExprNode.class, 0);
+  }
 }
