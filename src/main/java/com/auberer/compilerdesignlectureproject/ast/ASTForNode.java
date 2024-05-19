@@ -18,15 +18,15 @@ public class ASTForNode extends ASTNode {
         return getChild(ASTStmtLstNode.class, 0);
     }
 
-    public ASTAssignExprNode getInitialization() {
-        return getChild(ASTAssignExprNode.class, 0);
+    public ASTAssignStmtNode getInitialization() {
+        return getChild(ASTAssignStmtNode.class, 0);
     }
 
-    public ASTAssignExprNode getCondition() {
-        return getChild(ASTAssignExprNode.class, 1);
+    public ASTAssignStmtNode getCondition() {
+        return getChild(ASTAssignStmtNode.class, 1);
     }
 
-    public ASTAssignExprNode getIncrement() {
-        return getChild(ASTAssignExprNode.class, 2);
+    public ASTAssignStmtNode getIncrement() {
+        return getChild(ASTAssignStmtNode.class, 2);
     }
 }

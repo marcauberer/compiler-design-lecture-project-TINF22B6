@@ -14,7 +14,7 @@ public class ForNodeIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Reader reader = new Reader("for (int i = 0; i < 10; i++) { int x = 5 + i; }");
+        Reader reader = new Reader("for (int i = 0; i == 10; i++) { int x = 5 + i; }");
         Lexer lexer = new Lexer(reader, true);
         parser = new Parser(lexer);
     }
