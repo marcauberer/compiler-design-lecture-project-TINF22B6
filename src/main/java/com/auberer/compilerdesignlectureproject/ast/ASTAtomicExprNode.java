@@ -42,12 +42,4 @@ public class ASTAtomicExprNode extends ASTNode {
         TokenType.TOK_LPAREN
     );
   }
-
-  public ASTTypeNode getType() {
-    return getChild(ASTTypeNode.class, 0);
-  }
-
-  public ASTAtomicExprNode getAtomicExpr() {
-    return getChild(ASTAtomicExprNode.class, 0);
-  }
 }
