@@ -1,6 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTAssignExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTForNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
@@ -9,18 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 public class ForNodeIntegrationTest {
     private Parser parser;
-    private Lexer lexer;
-    private Reader reader;
 
     @BeforeEach
     void setUp() {
-        reader = new Reader("for (int i = 0; i < 10; i++) { int x = 5 + i; }");
-        lexer = new Lexer(reader, true);
+        Reader reader = new Reader("for (int i = 0; i < 10; i++) { int x = 5 + i; }");
+        Lexer lexer = new Lexer(reader, true);
         parser = new Parser(lexer);
     }
 
@@ -29,7 +24,6 @@ public class ForNodeIntegrationTest {
     void testForNodeParsing() {
         assertDoesNotThrow(() -> parser.parseForLoop());
     }
-
 
     // Unit tests for ASTForNode methods
     @Test
@@ -43,7 +37,7 @@ public class ForNodeIntegrationTest {
     @Test
     void testGetInitialization() {
         ASTForNode forNode = new ASTForNode();
-        ASTAssignExprNode initialization = new ASTAssignExprNode();
+        ASTAssignStmtNode initialization = new ASTAssignStmtNode();
         forNode.addChild(initialization);
         assertEquals(initialization, forNode.getInitialization());
     }
@@ -51,8 +45,8 @@ public class ForNodeIntegrationTest {
     @Test
     void testGetCondition() {
         ASTForNode forNode = new ASTForNode();
-        ASTAssignExprNode condition = new ASTAssignExprNode();
-        forNode.addChild(new ASTAssignExprNode()); // initialization
+        ASTAssignStmtNode condition = new ASTAssignStmtNode();
+        forNode.addChild(new ASTAssignStmtNode()); // initialization
         forNode.addChild(condition);
         assertEquals(condition, forNode.getCondition());
     }
@@ -60,9 +54,9 @@ public class ForNodeIntegrationTest {
     @Test
     void testGetIncrement() {
         ASTForNode forNode = new ASTForNode();
-        ASTAssignExprNode increment = new ASTAssignExprNode();
-        forNode.addChild(new ASTAssignExprNode()); // initialization
-        forNode.addChild(new ASTAssignExprNode()); // condition
+        ASTAssignStmtNode increment = new ASTAssignStmtNode();
+        forNode.addChild(new ASTAssignStmtNode()); // initialization
+        forNode.addChild(new ASTAssignStmtNode()); // condition
         forNode.addChild(increment);
         assertEquals(increment, forNode.getIncrement());
     }
