@@ -22,11 +22,12 @@ public class ASTForNode extends ASTNode {
         return getChild(ASTAssignStmtNode.class, 0);
     }
 
-    public ASTAssignStmtNode getCondition() {
-        return getChild(ASTAssignStmtNode.class, 1);
+    public ASTLogicalExprNode getCondition() {
+        return getChild(ASTLogicalExprNode.class, 1);
     }
 
-    public ASTAssignStmtNode getIncrement() {
-        return getChild(ASTAssignStmtNode.class, 2);
+    // TODO: maybe change this to ASTExprNode after next lecture
+    public ASTLogicalExprNode getIncrement() {
+        return getChild(ASTLogicalExprNode.class, 2);
     }
 }

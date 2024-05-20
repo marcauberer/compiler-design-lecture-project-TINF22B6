@@ -2,6 +2,7 @@ package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTForNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
@@ -14,7 +15,7 @@ public class ForNodeIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Reader reader = new Reader("for (int i = 0; i == 10; i++) {  } cnuf");
+        Reader reader = new Reader("for (int i = 0; i == 10; i == 10) {  } cnuf");
         Lexer lexer = new Lexer(reader, false);
         parser = new Parser(lexer);
     }
@@ -27,8 +28,8 @@ public class ForNodeIntegrationTest {
         // Use the helper functions to get the body, initialization, condition, and increment
         ASTStmtLstNode body = forNode.getBody();
         ASTAssignStmtNode initialization = forNode.getInitialization();
-        ASTAssignStmtNode condition = forNode.getCondition();
-        ASTAssignStmtNode increment = forNode.getIncrement();
+        ASTLogicalExprNode condition = forNode.getCondition();
+        ASTLogicalExprNode increment = forNode.getIncrement();
 
         // Assert that the body, initialization, condition, and increment are not null
         assertNotNull(body);
