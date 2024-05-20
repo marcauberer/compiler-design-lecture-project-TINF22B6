@@ -23,9 +23,5 @@ public class ASTSwitchStmtNode extends ASTNode {
         return getChild(ASTDefaultNode.class, 0);
     }
 
-    public ASTLogicalExprNode getLogicalExpr(){
-        return getChild(ASTLogicalExprNode.class, 0);
-    }
-
 
 }
