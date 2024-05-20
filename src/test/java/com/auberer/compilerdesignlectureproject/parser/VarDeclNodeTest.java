@@ -90,15 +90,17 @@ public class VarDeclNodeTest {
     @Test
     @DisplayName("Integration test")
     void integrationTest(){
-        String code = "int x = 5";
+        String code = "int x = 5;";
         Reader reader = new Reader(code);
-        Lexer lexer = new Lexer(reader, true);
+        Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTVarDeclNode astVarDeclNode = parser.parseVarDecl();
 
         assertNotNull(astVarDeclNode);
-        assertInstanceOf(ASTAssignStmtNode.class, astVarDeclNode);
-        assertInstanceOf(ASTAssignStmtNode.class, astVarDeclNode.getType());
+        assertInstanceOf(ASTVarDeclNode.class, astVarDeclNode);
+        assertEquals("int", astVarDeclNode.getType());
+        assertEquals("x", astVarDeclNode.getVariableName());
+        assertNotNull(astVarDeclNode.getAssign());
         assertInstanceOf(ASTAssignStmtNode.class, astVarDeclNode.getAssign());
     }
 }

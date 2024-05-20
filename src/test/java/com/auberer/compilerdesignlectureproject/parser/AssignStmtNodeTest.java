@@ -1,7 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVarDeclNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTStmtNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -81,15 +81,16 @@ public class AssignStmtNodeTest {
 
     @Test
     @DisplayName("Integration test")
-    void integrationTest() {
-        String code = "5";
+    void integrationTestForStatementNode() {
+        String code = "x = 5;";
         Reader reader = new Reader(code);
-        Lexer lexer = new Lexer(reader, true);
+        Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
-        ASTAssignStmtNode astAssignStmtNode = parser.parseAssignStmt();
+        ASTAssignStmtNode astStmtNode = parser.parseAssignStmt();
 
-        assertNotNull(astAssignStmtNode);
-        assertInstanceOf(ASTAssignStmtNode.class, astAssignStmtNode);
-        assertInstanceOf(ASTAssignStmtNode.class, astAssignStmtNode.getLogical());
+        assertNotNull(astStmtNode);
+        assertInstanceOf(ASTAssignStmtNode.class, astStmtNode);
+        assertNotNull(astStmtNode.getLogical());
+        assertInstanceOf(ASTAssignStmtNode.class, astStmtNode.getLogical());
     }
 }
