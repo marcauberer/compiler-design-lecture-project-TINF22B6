@@ -171,17 +171,39 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
 
   @Override
   public ASTNode visitSwitchStmt(TInfParser.SwitchStmtContext ctx) {
-    return super.visitSwitchStmt(ctx);
+    ASTSwitchStmtNode node = new ASTSwitchStmtNode();
+    enterNode(node, ctx);
+
+    visitChildren(ctx);
+
+    exitNode(node);
+
+    return node;
   }
 
   @Override
   public ASTNode visitCases(TInfParser.CasesContext ctx) {
-    return super.visitCases(ctx);
+    ASTCasesNode node = new ASTCasesNode();
+    enterNode(node, ctx);
+
+    int casesSize = ctx.CASE().size();
+    node.setCasesSize(casesSize);
+
+    visitChildren(ctx);
+
+    exitNode(node);
+    return node;
   }
 
   @Override
   public ASTNode visitDefault(TInfParser.DefaultContext ctx) {
-    return super.visitDefault(ctx);
+    ASTDefaultNode node = new ASTDefaultNode();
+    enterNode(node, ctx);
+
+    visitChildren(ctx);
+
+    exitNode(node);
+    return node;
   }
 
   @Override

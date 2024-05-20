@@ -207,12 +207,17 @@ public class Parser implements IParser {
     ASTCasesNode node = new ASTCasesNode();
     enterNode(node);
 
+    int casesSize = 0;
+
     while (ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      casesSize++;
       lexer.expect(TokenType.TOK_CASE);
       lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
       lexer.expect(TokenType.TOK_COLON);
       parseStmtLst();
     }
+
+    node.setCasesSize(casesSize);
 
     exitNode(node);
     return node;
