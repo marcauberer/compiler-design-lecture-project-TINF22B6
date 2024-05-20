@@ -24,7 +24,7 @@ doWhileLoop: DO LBRACE stmtLst RBRACE WHILE LPAREN logicalExpr RPAREN SEMICOLON;
 forLoop: FOR LPAREN varDecl SEMICOLON logicalExpr SEMICOLON assignStmt RPAREN LBRACE stmtLst RBRACE;
 
 // Switch statement (team 5)
-switchStmt: SWITCH LPAREN logicalExpr RPAREN LBRACE cases default? RBRACE;
+switchStmt: SWITCH LPAREN IDENTIFIER RPAREN LBRACE cases default? RBRACE;
 cases: (CASE (INT_LIT | DOUBLE_LIT | STRING_LIT) COLON stmtLst)*;
 default: DEFAULT COLON stmtLst;
 
