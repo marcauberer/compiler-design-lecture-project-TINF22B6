@@ -3,28 +3,28 @@ grammar TInf;
 // Given language constructs
 entry: fctDef*;
 stmtLst: (stmt | ifStmt | whileLoop | doWhileLoop | forLoop | switchStmt)*;
-stmt: (varDecl | assignExpr) SEMICOLON;
+stmt: (varDecl | assignStmt) SEMICOLON;
 type: TYPE_INT | TYPE_DOUBLE | TYPE_STRING | TYPE_EMPTY;
-printBuiltinCall: PRINT LPAREN assignExpr RPAREN;
+printBuiltinCall: PRINT LPAREN logicalExpr RPAREN;
 
 // If statement (team 1)
-ifStmt: IF LPAREN assignExpr RPAREN LBRACE stmtLst RBRACE afterIf?;
+ifStmt: IF LPAREN logicalExpr RPAREN LBRACE stmtLst RBRACE afterIf?;
 afterIf: elsePre elsePost;
 elsePre: ELSE;
 elsePost: ifStmt | else;
 else: LBRACE stmtLst RBRACE;
 
 // While loop (team 2)
-whileLoop: WHILE LPAREN assignExpr RPAREN LBRACE stmtLst RBRACE;
+whileLoop: WHILE LPAREN logicalExpr RPAREN LBRACE stmtLst RBRACE;
 
 // Do-While loop (team 3)
-doWhileLoop: DO LBRACE stmtLst RBRACE WHILE LPAREN assignExpr RPAREN SEMICOLON;
+doWhileLoop: DO LBRACE stmtLst RBRACE WHILE LPAREN logicalExpr RPAREN SEMICOLON;
 
 // For loop (team 4)
-forLoop: FOR LPAREN assignExpr SEMICOLON assignExpr SEMICOLON assignExpr RPAREN LBRACE stmtLst RBRACE;
+forLoop: FOR LPAREN assignStmt SEMICOLON logicalExpr SEMICOLON logicalExpr RPAREN LBRACE stmtLst RBRACE;
 
 // Switch statement (team 5)
-switchStmt: SWITCH LPAREN assignExpr RPAREN LBRACE cases default? RBRACE;
+switchStmt: SWITCH LPAREN logicalExpr RPAREN LBRACE cases default? RBRACE;
 cases: (CASE (INT_LIT | DOUBLE_LIT | STRING_LIT) COLON stmtLst)*;
 default: DEFAULT COLON stmtLst;
 
@@ -33,11 +33,11 @@ fctDef: FUNC type IDENTIFIER LPAREN paramLst? RPAREN logic CNUF;
 paramLst: type IDENTIFIER (COMMA type IDENTIFIER)*;
 logic: stmtLst RETURN logicalExpr? SEMICOLON;
 fctCall: CALL IDENTIFIER LPAREN callParams? RPAREN;
-callParams: assignExpr | assignExpr COMMA callParams;
+callParams: logicalExpr | logicalExpr COMMA callParams;
 
 // Variable declaration / assignment (team 7)
-varDecl: type IDENTIFIER (ASSIGN assignExpr)?;
-assignExpr: (IDENTIFIER ASSIGN)? logicalExpr;
+varDecl: type IDENTIFIER (ASSIGN logicalExpr)?;
+assignStmt: (IDENTIFIER ASSIGN)? logicalExpr;
 
 // Expression loop (team 8)
 logicalExpr: compareExpr ((LOGICAL_AND | LOGICAL_OR) compareExpr)*;
@@ -45,7 +45,7 @@ compareExpr: additiveExpr ((EQUAL | NOT_EQUAL) additiveExpr)?;
 additiveExpr: multiplicativeExpr ((PLUS | MINUS) multiplicativeExpr)*;
 multiplicativeExpr: prefixExpr ((MUL | DIV) prefixExpr)*;
 prefixExpr: (PLUS | MINUS)? atomicExpr;
-atomicExpr: INT_LIT | DOUBLE_LIT | STRING_LIT | TRUE | FALSE | IDENTIFIER | fctCall | printBuiltinCall | LPAREN assignExpr RPAREN;
+atomicExpr: INT_LIT | DOUBLE_LIT | STRING_LIT | TRUE | FALSE | IDENTIFIER | fctCall | printBuiltinCall | LPAREN logicalExpr RPAREN;
 
 // Terminals
 TYPE_INT: 'int';

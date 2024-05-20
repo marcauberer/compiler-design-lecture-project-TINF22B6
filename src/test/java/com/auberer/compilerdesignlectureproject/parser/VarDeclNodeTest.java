@@ -34,8 +34,8 @@ public class VarDeclNodeTest {
     }
 
     @Test
-    @DisplayName("Test assign expression without optional")
-    void testAssignExprWithoutOptional() {
+    @DisplayName("Test assign statement without optional")
+    void testAssignStmtWithoutOptional() {
         List<Token> tokenList = new LinkedList<>();
         tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "variable", new CodeLoc(1, 1)));
         tokenList.add(new Token(TokenType.TOK_INVALID, "", new CodeLoc(1, 2)));
@@ -58,8 +58,8 @@ public class VarDeclNodeTest {
     }
 
     @Test
-    @DisplayName("Test assign expression with optional")
-    void testAssignExprWithOptional() {
+    @DisplayName("Test assign statement with optional")
+    void testAssignStmtWithOptional() {
         List<Token> tokenList = new LinkedList<>();
         tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "xyz", new CodeLoc(1, 1)));
         tokenList.add(new Token(TokenType.TOK_ASSIGN, "", new CodeLoc(1, 1)));
@@ -68,7 +68,7 @@ public class VarDeclNodeTest {
         doReturn(tokenList.get(0), tokenList.get(0), tokenList.get(1)).when(lexer).getToken();
         doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
         doNothing().when(lexer).expect(TokenType.TOK_ASSIGN);
-        doReturn(null).when(parser).parseAssignExpr();
+        doReturn(null).when(parser).parseLogicalExpression();
 
         // Execute parse method
         ASTVarDeclNode printVarDeclNode = parser.parseVarDecl();
@@ -78,7 +78,7 @@ public class VarDeclNodeTest {
         verify(lexer, times(3)).getToken();
         verify(lexer, times(1)).expect(TokenType.TOK_IDENTIFIER);
         verify(lexer, times(1)).expect(TokenType.TOK_ASSIGN);
-        verify(parser, times(1)).parseAssignExpr();
+        verify(parser, times(1)).parseLogicalExpression();
         assertNotNull(printVarDeclNode);
         assertInstanceOf(ASTVarDeclNode.class, printVarDeclNode);
         // Check if the variable name is correct

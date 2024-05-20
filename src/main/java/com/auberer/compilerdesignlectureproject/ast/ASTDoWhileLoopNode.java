@@ -13,4 +13,12 @@ public class ASTDoWhileLoopNode extends ASTNode {
   public static Set<TokenType> getSelectionSet() {
     return Set.of(TokenType.TOK_DO);
   }
+
+  public ASTStmtLstNode getBody() {
+    return getChild(ASTStmtLstNode.class, 0);
+  }
+
+  public ASTLogicalExprNode getCondition() {
+    return getChild(ASTLogicalExprNode.class, 0);
+  }
 }

@@ -14,4 +14,14 @@ public class ASTSwitchStmtNode extends ASTNode {
     public static Set<TokenType> getSelectionSet(){
         return Set.of(TokenType.TOK_SWITCH);
     }
+
+    public ASTCasesNode getCases(){
+        return getChild(ASTCasesNode.class, 0);
+    }
+
+    public ASTDefaultNode getDefault(){
+        return getChild(ASTDefaultNode.class, 0);
+    }
+
+
 }

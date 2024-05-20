@@ -30,7 +30,7 @@ public class TInfParser extends Parser {
 		RULE_else = 9, RULE_whileLoop = 10, RULE_doWhileLoop = 11, RULE_forLoop = 12, 
 		RULE_switchStmt = 13, RULE_cases = 14, RULE_default = 15, RULE_fctDef = 16, 
 		RULE_paramLst = 17, RULE_logic = 18, RULE_fctCall = 19, RULE_callParams = 20, 
-		RULE_varDecl = 21, RULE_assignExpr = 22, RULE_logicalExpr = 23, RULE_compareExpr = 24, 
+		RULE_varDecl = 21, RULE_assignStmt = 22, RULE_logicalExpr = 23, RULE_compareExpr = 24, 
 		RULE_additiveExpr = 25, RULE_multiplicativeExpr = 26, RULE_prefixExpr = 27, 
 		RULE_atomicExpr = 28;
 	private static String[] makeRuleNames() {
@@ -38,7 +38,7 @@ public class TInfParser extends Parser {
 			"entry", "stmtLst", "stmt", "type", "printBuiltinCall", "ifStmt", "afterIf", 
 			"elsePre", "elsePost", "else", "whileLoop", "doWhileLoop", "forLoop", 
 			"switchStmt", "cases", "default", "fctDef", "paramLst", "logic", "fctCall", 
-			"callParams", "varDecl", "assignExpr", "logicalExpr", "compareExpr", 
+			"callParams", "varDecl", "assignStmt", "logicalExpr", "compareExpr", 
 			"additiveExpr", "multiplicativeExpr", "prefixExpr", "atomicExpr"
 		};
 	}
@@ -309,8 +309,8 @@ public class TInfParser extends Parser {
 		public VarDeclContext varDecl() {
 			return getRuleContext(VarDeclContext.class,0);
 		}
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public AssignStmtContext assignStmt() {
+			return getRuleContext(AssignStmtContext.class,0);
 		}
 		public StmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -354,7 +354,7 @@ public class TInfParser extends Parser {
 			case STRING_LIT:
 				{
 				setState(76);
-				assignExpr();
+				assignStmt();
 				}
 				break;
 			default:
@@ -426,8 +426,8 @@ public class TInfParser extends Parser {
 	public static class PrintBuiltinCallContext extends ParserRuleContext {
 		public TerminalNode PRINT() { return getToken(TInfParser.PRINT, 0); }
 		public TerminalNode LPAREN() { return getToken(TInfParser.LPAREN, 0); }
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(TInfParser.RPAREN, 0); }
 		public PrintBuiltinCallContext(ParserRuleContext parent, int invokingState) {
@@ -452,7 +452,7 @@ public class TInfParser extends Parser {
 			setState(84);
 			match(LPAREN);
 			setState(85);
-			assignExpr();
+			logicalExpr();
 			setState(86);
 			match(RPAREN);
 			}
@@ -472,8 +472,8 @@ public class TInfParser extends Parser {
 	public static class IfStmtContext extends ParserRuleContext {
 		public TerminalNode IF() { return getToken(TInfParser.IF, 0); }
 		public TerminalNode LPAREN() { return getToken(TInfParser.LPAREN, 0); }
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(TInfParser.RPAREN, 0); }
 		public TerminalNode LBRACE() { return getToken(TInfParser.LBRACE, 0); }
@@ -507,7 +507,7 @@ public class TInfParser extends Parser {
 			setState(89);
 			match(LPAREN);
 			setState(90);
-			assignExpr();
+			logicalExpr();
 			setState(91);
 			match(RPAREN);
 			setState(92);
@@ -718,8 +718,8 @@ public class TInfParser extends Parser {
 	public static class WhileLoopContext extends ParserRuleContext {
 		public TerminalNode WHILE() { return getToken(TInfParser.WHILE, 0); }
 		public TerminalNode LPAREN() { return getToken(TInfParser.LPAREN, 0); }
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(TInfParser.RPAREN, 0); }
 		public TerminalNode LBRACE() { return getToken(TInfParser.LBRACE, 0); }
@@ -749,7 +749,7 @@ public class TInfParser extends Parser {
 			setState(112);
 			match(LPAREN);
 			setState(113);
-			assignExpr();
+			logicalExpr();
 			setState(114);
 			match(RPAREN);
 			setState(115);
@@ -781,8 +781,8 @@ public class TInfParser extends Parser {
 		public TerminalNode RBRACE() { return getToken(TInfParser.RBRACE, 0); }
 		public TerminalNode WHILE() { return getToken(TInfParser.WHILE, 0); }
 		public TerminalNode LPAREN() { return getToken(TInfParser.LPAREN, 0); }
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(TInfParser.RPAREN, 0); }
 		public TerminalNode SEMICOLON() { return getToken(TInfParser.SEMICOLON, 0); }
@@ -816,7 +816,7 @@ public class TInfParser extends Parser {
 			setState(124);
 			match(LPAREN);
 			setState(125);
-			assignExpr();
+			logicalExpr();
 			setState(126);
 			match(RPAREN);
 			setState(127);
@@ -838,15 +838,18 @@ public class TInfParser extends Parser {
 	public static class ForLoopContext extends ParserRuleContext {
 		public TerminalNode FOR() { return getToken(TInfParser.FOR, 0); }
 		public TerminalNode LPAREN() { return getToken(TInfParser.LPAREN, 0); }
-		public List<AssignExprContext> assignExpr() {
-			return getRuleContexts(AssignExprContext.class);
-		}
-		public AssignExprContext assignExpr(int i) {
-			return getRuleContext(AssignExprContext.class,i);
+		public AssignStmtContext assignStmt() {
+			return getRuleContext(AssignStmtContext.class,0);
 		}
 		public List<TerminalNode> SEMICOLON() { return getTokens(TInfParser.SEMICOLON); }
 		public TerminalNode SEMICOLON(int i) {
 			return getToken(TInfParser.SEMICOLON, i);
+		}
+		public List<LogicalExprContext> logicalExpr() {
+			return getRuleContexts(LogicalExprContext.class);
+		}
+		public LogicalExprContext logicalExpr(int i) {
+			return getRuleContext(LogicalExprContext.class,i);
 		}
 		public TerminalNode RPAREN() { return getToken(TInfParser.RPAREN, 0); }
 		public TerminalNode LBRACE() { return getToken(TInfParser.LBRACE, 0); }
@@ -876,15 +879,15 @@ public class TInfParser extends Parser {
 			setState(130);
 			match(LPAREN);
 			setState(131);
-			assignExpr();
+			assignStmt();
 			setState(132);
 			match(SEMICOLON);
 			setState(133);
-			assignExpr();
+			logicalExpr();
 			setState(134);
 			match(SEMICOLON);
 			setState(135);
-			assignExpr();
+			logicalExpr();
 			setState(136);
 			match(RPAREN);
 			setState(137);
@@ -910,8 +913,8 @@ public class TInfParser extends Parser {
 	public static class SwitchStmtContext extends ParserRuleContext {
 		public TerminalNode SWITCH() { return getToken(TInfParser.SWITCH, 0); }
 		public TerminalNode LPAREN() { return getToken(TInfParser.LPAREN, 0); }
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(TInfParser.RPAREN, 0); }
 		public TerminalNode LBRACE() { return getToken(TInfParser.LBRACE, 0); }
@@ -945,7 +948,7 @@ public class TInfParser extends Parser {
 			setState(142);
 			match(LPAREN);
 			setState(143);
-			assignExpr();
+			logicalExpr();
 			setState(144);
 			match(RPAREN);
 			setState(145);
@@ -1254,8 +1257,8 @@ public class TInfParser extends Parser {
 		}
 		public TerminalNode RETURN() { return getToken(TInfParser.RETURN, 0); }
 		public TerminalNode SEMICOLON() { return getToken(TInfParser.SEMICOLON, 0); }
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public LogicContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1285,7 +1288,7 @@ public class TInfParser extends Parser {
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 2061997309952L) != 0)) {
 				{
 				setState(189);
-				assignExpr();
+				logicalExpr();
 				}
 			}
 
@@ -1364,8 +1367,8 @@ public class TInfParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CallParamsContext extends ParserRuleContext {
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public TerminalNode COMMA() { return getToken(TInfParser.COMMA, 0); }
 		public CallParamsContext callParams() {
@@ -1393,14 +1396,14 @@ public class TInfParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(202);
-				assignExpr();
+				logicalExpr();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(203);
-				assignExpr();
+				logicalExpr();
 				setState(204);
 				match(COMMA);
 				setState(205);
@@ -1427,8 +1430,8 @@ public class TInfParser extends Parser {
 		}
 		public TerminalNode IDENTIFIER() { return getToken(TInfParser.IDENTIFIER, 0); }
 		public TerminalNode ASSIGN() { return getToken(TInfParser.ASSIGN, 0); }
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public VarDeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1460,7 +1463,7 @@ public class TInfParser extends Parser {
 				setState(211);
 				match(ASSIGN);
 				setState(212);
-				assignExpr();
+				logicalExpr();
 				}
 			}
 
@@ -1478,26 +1481,26 @@ public class TInfParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class AssignExprContext extends ParserRuleContext {
+	public static class AssignStmtContext extends ParserRuleContext {
 		public LogicalExprContext logicalExpr() {
 			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public TerminalNode IDENTIFIER() { return getToken(TInfParser.IDENTIFIER, 0); }
 		public TerminalNode ASSIGN() { return getToken(TInfParser.ASSIGN, 0); }
-		public AssignExprContext(ParserRuleContext parent, int invokingState) {
+		public AssignStmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_assignExpr; }
+		@Override public int getRuleIndex() { return RULE_assignStmt; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TInfVisitor ) return ((TInfVisitor<? extends T>)visitor).visitAssignExpr(this);
+			if ( visitor instanceof TInfVisitor ) return ((TInfVisitor<? extends T>)visitor).visitAssignStmt(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final AssignExprContext assignExpr() throws RecognitionException {
-		AssignExprContext _localctx = new AssignExprContext(_ctx, getState());
-		enterRule(_localctx, 44, RULE_assignExpr);
+	public final AssignStmtContext assignStmt() throws RecognitionException {
+		AssignStmtContext _localctx = new AssignStmtContext(_ctx, getState());
+		enterRule(_localctx, 44, RULE_assignStmt);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1883,8 +1886,8 @@ public class TInfParser extends Parser {
 			return getRuleContext(PrintBuiltinCallContext.class,0);
 		}
 		public TerminalNode LPAREN() { return getToken(TInfParser.LPAREN, 0); }
-		public AssignExprContext assignExpr() {
-			return getRuleContext(AssignExprContext.class,0);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(TInfParser.RPAREN, 0); }
 		public AtomicExprContext(ParserRuleContext parent, int invokingState) {
@@ -1967,7 +1970,7 @@ public class TInfParser extends Parser {
 				setState(263);
 				match(LPAREN);
 				setState(264);
-				assignExpr();
+				logicalExpr();
 				setState(265);
 				match(RPAREN);
 				}
@@ -2059,8 +2062,8 @@ public class TInfParser extends Parser {
 		"L\u0001\u0000\u0000\u0000NO\u0001\u0000\u0000\u0000OP\u0005#\u0000\u0000"+
 		"P\u0005\u0001\u0000\u0000\u0000QR\u0007\u0000\u0000\u0000R\u0007\u0001"+
 		"\u0000\u0000\u0000ST\u0005\u0012\u0000\u0000TU\u0005\u0017\u0000\u0000"+
-		"UV\u0003,\u0016\u0000VW\u0005\u0018\u0000\u0000W\t\u0001\u0000\u0000\u0000"+
-		"XY\u0005\u0006\u0000\u0000YZ\u0005\u0017\u0000\u0000Z[\u0003,\u0016\u0000"+
+		"UV\u0003.\u0017\u0000VW\u0005\u0018\u0000\u0000W\t\u0001\u0000\u0000\u0000"+
+		"XY\u0005\u0006\u0000\u0000YZ\u0005\u0017\u0000\u0000Z[\u0003.\u0017\u0000"+
 		"[\\\u0005\u0018\u0000\u0000\\]\u0005\u0015\u0000\u0000]^\u0003\u0002\u0001"+
 		"\u0000^`\u0005\u0016\u0000\u0000_a\u0003\f\u0006\u0000`_\u0001\u0000\u0000"+
 		"\u0000`a\u0001\u0000\u0000\u0000a\u000b\u0001\u0000\u0000\u0000bc\u0003"+
@@ -2069,20 +2072,20 @@ public class TInfParser extends Parser {
 		"\u0000hj\u0003\u0012\t\u0000ig\u0001\u0000\u0000\u0000ih\u0001\u0000\u0000"+
 		"\u0000j\u0011\u0001\u0000\u0000\u0000kl\u0005\u0015\u0000\u0000lm\u0003"+
 		"\u0002\u0001\u0000mn\u0005\u0016\u0000\u0000n\u0013\u0001\u0000\u0000"+
-		"\u0000op\u0005\b\u0000\u0000pq\u0005\u0017\u0000\u0000qr\u0003,\u0016"+
+		"\u0000op\u0005\b\u0000\u0000pq\u0005\u0017\u0000\u0000qr\u0003.\u0017"+
 		"\u0000rs\u0005\u0018\u0000\u0000st\u0005\u0015\u0000\u0000tu\u0003\u0002"+
 		"\u0001\u0000uv\u0005\u0016\u0000\u0000v\u0015\u0001\u0000\u0000\u0000"+
 		"wx\u0005\t\u0000\u0000xy\u0005\u0015\u0000\u0000yz\u0003\u0002\u0001\u0000"+
 		"z{\u0005\u0016\u0000\u0000{|\u0005\b\u0000\u0000|}\u0005\u0017\u0000\u0000"+
-		"}~\u0003,\u0016\u0000~\u007f\u0005\u0018\u0000\u0000\u007f\u0080\u0005"+
+		"}~\u0003.\u0017\u0000~\u007f\u0005\u0018\u0000\u0000\u007f\u0080\u0005"+
 		"#\u0000\u0000\u0080\u0017\u0001\u0000\u0000\u0000\u0081\u0082\u0005\n"+
 		"\u0000\u0000\u0082\u0083\u0005\u0017\u0000\u0000\u0083\u0084\u0003,\u0016"+
-		"\u0000\u0084\u0085\u0005#\u0000\u0000\u0085\u0086\u0003,\u0016\u0000\u0086"+
-		"\u0087\u0005#\u0000\u0000\u0087\u0088\u0003,\u0016\u0000\u0088\u0089\u0005"+
+		"\u0000\u0084\u0085\u0005#\u0000\u0000\u0085\u0086\u0003.\u0017\u0000\u0086"+
+		"\u0087\u0005#\u0000\u0000\u0087\u0088\u0003.\u0017\u0000\u0088\u0089\u0005"+
 		"\u0018\u0000\u0000\u0089\u008a\u0005\u0015\u0000\u0000\u008a\u008b\u0003"+
 		"\u0002\u0001\u0000\u008b\u008c\u0005\u0016\u0000\u0000\u008c\u0019\u0001"+
 		"\u0000\u0000\u0000\u008d\u008e\u0005\u000e\u0000\u0000\u008e\u008f\u0005"+
-		"\u0017\u0000\u0000\u008f\u0090\u0003,\u0016\u0000\u0090\u0091\u0005\u0018"+
+		"\u0017\u0000\u0000\u008f\u0090\u0003.\u0017\u0000\u0090\u0091\u0005\u0018"+
 		"\u0000\u0000\u0091\u0092\u0005\u0015\u0000\u0000\u0092\u0094\u0003\u001c"+
 		"\u000e\u0000\u0093\u0095\u0003\u001e\u000f\u0000\u0094\u0093\u0001\u0000"+
 		"\u0000\u0000\u0094\u0095\u0001\u0000\u0000\u0000\u0095\u0096\u0001\u0000"+
@@ -2106,20 +2109,20 @@ public class TInfParser extends Parser {
 		"\u0000\u0000\u00b7\u00ba\u0001\u0000\u0000\u0000\u00b8\u00b6\u0001\u0000"+
 		"\u0000\u0000\u00b8\u00b9\u0001\u0000\u0000\u0000\u00b9#\u0001\u0000\u0000"+
 		"\u0000\u00ba\u00b8\u0001\u0000\u0000\u0000\u00bb\u00bc\u0003\u0002\u0001"+
-		"\u0000\u00bc\u00be\u0005\r\u0000\u0000\u00bd\u00bf\u0003,\u0016\u0000"+
+		"\u0000\u00bc\u00be\u0005\r\u0000\u0000\u00bd\u00bf\u0003.\u0017\u0000"+
 		"\u00be\u00bd\u0001\u0000\u0000\u0000\u00be\u00bf\u0001\u0000\u0000\u0000"+
 		"\u00bf\u00c0\u0001\u0000\u0000\u0000\u00c0\u00c1\u0005#\u0000\u0000\u00c1"+
 		"%\u0001\u0000\u0000\u0000\u00c2\u00c3\u0005\u0011\u0000\u0000\u00c3\u00c4"+
 		"\u0005%\u0000\u0000\u00c4\u00c6\u0005\u0017\u0000\u0000\u00c5\u00c7\u0003"+
 		"(\u0014\u0000\u00c6\u00c5\u0001\u0000\u0000\u0000\u00c6\u00c7\u0001\u0000"+
 		"\u0000\u0000\u00c7\u00c8\u0001\u0000\u0000\u0000\u00c8\u00c9\u0005\u0018"+
-		"\u0000\u0000\u00c9\'\u0001\u0000\u0000\u0000\u00ca\u00d0\u0003,\u0016"+
-		"\u0000\u00cb\u00cc\u0003,\u0016\u0000\u00cc\u00cd\u0005\u0019\u0000\u0000"+
+		"\u0000\u0000\u00c9\'\u0001\u0000\u0000\u0000\u00ca\u00d0\u0003.\u0017"+
+		"\u0000\u00cb\u00cc\u0003.\u0017\u0000\u00cc\u00cd\u0005\u0019\u0000\u0000"+
 		"\u00cd\u00ce\u0003(\u0014\u0000\u00ce\u00d0\u0001\u0000\u0000\u0000\u00cf"+
 		"\u00ca\u0001\u0000\u0000\u0000\u00cf\u00cb\u0001\u0000\u0000\u0000\u00d0"+
 		")\u0001\u0000\u0000\u0000\u00d1\u00d2\u0003\u0006\u0003\u0000\u00d2\u00d5"+
-		"\u0005%\u0000\u0000\u00d3\u00d4\u0005$\u0000\u0000\u00d4\u00d6\u0003,"+
-		"\u0016\u0000\u00d5\u00d3\u0001\u0000\u0000\u0000\u00d5\u00d6\u0001\u0000"+
+		"\u0005%\u0000\u0000\u00d3\u00d4\u0005$\u0000\u0000\u00d4\u00d6\u0003."+
+		"\u0017\u0000\u00d5\u00d3\u0001\u0000\u0000\u0000\u00d5\u00d6\u0001\u0000"+
 		"\u0000\u0000\u00d6+\u0001\u0000\u0000\u0000\u00d7\u00d8\u0005%\u0000\u0000"+
 		"\u00d8\u00da\u0005$\u0000\u0000\u00d9\u00d7\u0001\u0000\u0000\u0000\u00d9"+
 		"\u00da\u0001\u0000\u0000\u0000\u00da\u00db\u0001\u0000\u0000\u0000\u00db"+
@@ -2146,7 +2149,7 @@ public class TInfParser extends Parser {
 		"\u0101\u010c\u0005(\u0000\u0000\u0102\u010c\u0005\u0013\u0000\u0000\u0103"+
 		"\u010c\u0005\u0014\u0000\u0000\u0104\u010c\u0005%\u0000\u0000\u0105\u010c"+
 		"\u0003&\u0013\u0000\u0106\u010c\u0003\b\u0004\u0000\u0107\u0108\u0005"+
-		"\u0017\u0000\u0000\u0108\u0109\u0003,\u0016\u0000\u0109\u010a\u0005\u0018"+
+		"\u0017\u0000\u0000\u0108\u0109\u0003.\u0017\u0000\u0109\u010a\u0005\u0018"+
 		"\u0000\u0000\u010a\u010c\u0001\u0000\u0000\u0000\u010b\u00ff\u0001\u0000"+
 		"\u0000\u0000\u010b\u0100\u0001\u0000\u0000\u0000\u010b\u0101\u0001\u0000"+
 		"\u0000\u0000\u010b\u0102\u0001\u0000\u0000\u0000\u010b\u0103\u0001\u0000"+

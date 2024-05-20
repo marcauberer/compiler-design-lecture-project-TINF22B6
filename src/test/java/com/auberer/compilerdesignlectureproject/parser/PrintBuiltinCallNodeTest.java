@@ -39,7 +39,7 @@ public class PrintBuiltinCallNodeTest {
     doNothing().when(lexer).advance();
     doNothing().when(lexer).expect(TokenType.TOK_PRINT);
     doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-    doReturn(null).when(parser).parseAssignExpr();
+    doReturn(null).when(parser).parseLogicalExpression();
     doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
 
     // Execute parse method
@@ -48,7 +48,7 @@ public class PrintBuiltinCallNodeTest {
     // Assert
     verify(lexer, times(1)).expect(TokenType.TOK_PRINT);
     verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
-    verify(parser, times(1)).parseAssignExpr();
+    verify(parser, times(1)).parseLogicalExpression();
     verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
     assertNotNull(printBuiltinCallNode);
     assertInstanceOf(ASTPrintBuiltinCallNode.class, printBuiltinCallNode);

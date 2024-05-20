@@ -47,11 +47,11 @@ public class Parser implements IParser {
 
     lexer.expect(TokenType.TOK_FOR);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseAssignStmt();
     lexer.expect(TokenType.TOK_SEMICOLON);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_SEMICOLON);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
     parseStmtLst();
@@ -106,8 +106,8 @@ public class Parser implements IParser {
     TokenType tokenType = lexer.getToken().getType();
     if (ASTVarDeclNode.getSelectionSet().contains(tokenType)) {
       parseVarDecl();
-    } else if (ASTAssignExprNode.getSelectionSet().contains(tokenType)) {
-      parseAssignExpr();
+    } else if (ASTAssignStmtNode.getSelectionSet().contains(tokenType)) {
+      parseAssignStmt();
     } else {
       assert false : "Unexpected token in statement";
     }
@@ -124,7 +124,7 @@ public class Parser implements IParser {
     // Parse the print builtin
     lexer.expect(TokenType.TOK_PRINT);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
 
     exitNode(node);
@@ -176,7 +176,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_RBRACE);
     lexer.expect(TokenType.TOK_WHILE);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_SEMICOLON);
 
@@ -190,7 +190,7 @@ public class Parser implements IParser {
 
     lexer.expect(TokenType.TOK_SWITCH);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
     parseCases();
@@ -207,12 +207,17 @@ public class Parser implements IParser {
     ASTCasesNode node = new ASTCasesNode();
     enterNode(node);
 
+    int casesSize = 0;
+
     while (ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())) {
+      casesSize++;
       lexer.expect(TokenType.TOK_CASE);
       lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
       lexer.expect(TokenType.TOK_COLON);
       parseStmtLst();
     }
+
+    node.setCasesSize(casesSize);
 
     exitNode(node);
     return node;
@@ -237,7 +242,7 @@ public class Parser implements IParser {
 
     lexer.expect(TokenType.TOK_IF);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
     parseStmtLst();
@@ -308,15 +313,15 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_IDENTIFIER);
     if (lexer.getToken().getType() == TokenType.TOK_ASSIGN) {
       lexer.expect(TokenType.TOK_ASSIGN);
-      parseAssignExpr();
+      parseLogicalExpression();
     }
 
     exitNode(node);
     return node;
   }
 
-  public ASTAssignExprNode parseAssignExpr() {
-    ASTAssignExprNode node = new ASTAssignExprNode();
+  public ASTAssignStmtNode parseAssignStmt() {
+    ASTAssignStmtNode node = new ASTAssignStmtNode();
     enterNode(node);
 
     if (lexer.getToken().getType() == TokenType.TOK_IDENTIFIER) {
@@ -336,7 +341,7 @@ public class Parser implements IParser {
 
     lexer.expect(TokenType.TOK_WHILE);
     lexer.expect(TokenType.TOK_LPAREN);
-    parseAssignExpr();
+    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
     parseStmtLst();
@@ -353,6 +358,7 @@ public class Parser implements IParser {
     // Parse the print builtin
     lexer.expect(TokenType.TOK_FUNC);
     parseType();
+    node.setName(lexer.getToken().getText());
     lexer.expect(TokenType.TOK_IDENTIFIER);
     lexer.expect(TokenType.TOK_LPAREN);
     if (ASTParamLstNode.getSelectionSet().contains(lexer.getToken().getType())) {
@@ -400,6 +406,7 @@ public class Parser implements IParser {
     enterNode(node);
 
     lexer.expect(TokenType.TOK_CALL);
+    node.setName(lexer.getToken().getText());
     lexer.expect(TokenType.TOK_IDENTIFIER);
     lexer.expect(TokenType.TOK_LPAREN);
     if (ASTCallParamsNode.getSelectionSet().contains(lexer.getToken().getType())) {
@@ -415,10 +422,10 @@ public class Parser implements IParser {
     ASTCallParamsNode node = new ASTCallParamsNode();
     enterNode(node);
 
-    parseAssignExpr();
+    parseLogicalExpression();
     while (lexer.getToken().getType() == TokenType.TOK_COMMA) {
       lexer.expect(TokenType.TOK_COMMA);
-      parseAssignExpr();
+      parseLogicalExpression();
     }
     exitNode(node);
     return node;
@@ -430,7 +437,13 @@ public class Parser implements IParser {
 
     parseCompareExpression();
     while (lexer.getToken().getType() == TokenType.TOK_LOGICAL_AND || lexer.getToken().getType() == TokenType.TOK_LOGICAL_OR) {
-      lexer.expectOneOf(Set.of(TokenType.TOK_LOGICAL_AND, TokenType.TOK_LOGICAL_OR));
+      if (lexer.getToken().getType() == TokenType.TOK_LOGICAL_AND) {
+        lexer.expect(TokenType.TOK_LOGICAL_AND);
+        node.operatorsListAdd(ASTLogicalExprNode.LogicalOperator.AND);
+      } else if (lexer.getToken().getType() == TokenType.TOK_LOGICAL_OR) {
+        lexer.expect(TokenType.TOK_LOGICAL_OR);
+        node.operatorsListAdd(ASTLogicalExprNode.LogicalOperator.OR);
+      }
       parseCompareExpression();
     }
 
@@ -444,7 +457,13 @@ public class Parser implements IParser {
 
     parseAdditiveExpression();
     if (lexer.getToken().getType() == TokenType.TOK_EQUAL || lexer.getToken().getType() == TokenType.TOK_NOT_EQUAL) {
-      lexer.expectOneOf(Set.of(TokenType.TOK_EQUAL, TokenType.TOK_NOT_EQUAL));
+      if (lexer.getToken().getType() == TokenType.TOK_EQUAL) {
+        lexer.expect(TokenType.TOK_EQUAL);
+        node.setOperator(ASTCompareExprNode.CompareOperator.EQUAL);
+      } else if (lexer.getToken().getType() == TokenType.TOK_NOT_EQUAL) {
+        lexer.expect(TokenType.TOK_NOT_EQUAL);
+        node.setOperator(ASTCompareExprNode.CompareOperator.NOT_EQUAL);
+      }
       parseAdditiveExpression();
     }
 
@@ -458,7 +477,13 @@ public class Parser implements IParser {
 
     parseMultiplicativeExpression();
     while (lexer.getToken().getType() == TokenType.TOK_PLUS || lexer.getToken().getType() == TokenType.TOK_MINUS) {
-      lexer.expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
+      if (lexer.getToken().getType() == TokenType.TOK_PLUS) {
+        lexer.expect(TokenType.TOK_PLUS);
+        node.operatorsListAdd(ASTAdditiveExprNode.AdditiveOperator.PLUS);
+      } else if (lexer.getToken().getType() == TokenType.TOK_MINUS) {
+        lexer.expect(TokenType.TOK_MINUS);
+        node.operatorsListAdd(ASTAdditiveExprNode.AdditiveOperator.MINUS);
+      }
       parseMultiplicativeExpression();
     }
 
@@ -472,7 +497,13 @@ public class Parser implements IParser {
 
     parsePrefixExpression();
     while (lexer.getToken().getType() == TokenType.TOK_MUL || lexer.getToken().getType() == TokenType.TOK_DIV) {
-      lexer.expectOneOf(Set.of(TokenType.TOK_MUL, TokenType.TOK_DIV));
+      if (lexer.getToken().getType() == TokenType.TOK_MUL) {
+        lexer.expect(TokenType.TOK_MUL);
+        node.operatorsListAdd(ASTMultiplicativeExprNode.MultiplicativeOperator.MUL);
+      } else if (lexer.getToken().getType() == TokenType.TOK_DIV) {
+        lexer.expect(TokenType.TOK_DIV);
+        node.operatorsListAdd(ASTMultiplicativeExprNode.MultiplicativeOperator.DIV);
+      }
       parsePrefixExpression();
     }
 
@@ -484,8 +515,12 @@ public class Parser implements IParser {
     ASTPrefixExprNode node = new ASTPrefixExprNode();
     enterNode(node);
 
-    if (lexer.getToken().getType() == TokenType.TOK_PLUS || lexer.getToken().getType() == TokenType.TOK_MINUS) {
-      lexer.expectOneOf(Set.of(TokenType.TOK_PLUS, TokenType.TOK_MINUS));
+    if (lexer.getToken().getType() == TokenType.TOK_PLUS) {
+      lexer.expect(TokenType.TOK_PLUS);
+      node.setOperator(ASTPrefixExprNode.PrefixOperator.PLUS);
+    } else if (lexer.getToken().getType() == TokenType.TOK_MINUS) {
+      lexer.expect(TokenType.TOK_MINUS);
+      node.setOperator(ASTPrefixExprNode.PrefixOperator.MINUS);
     }
     parseAtomicExpression();
 
@@ -500,40 +535,49 @@ public class Parser implements IParser {
     switch (lexer.getToken().getType()) {
       case TokenType.TOK_INT_LIT: {
         lexer.expect(TokenType.TOK_INT_LIT);
+        node.setOperator(ASTAtomicExprNode.AtomicOperator.INT_LIT);
         break;
       }
       case TokenType.TOK_DOUBLE_LIT: {
         lexer.expect(TokenType.TOK_DOUBLE_LIT);
+        node.setOperator(ASTAtomicExprNode.AtomicOperator.DOUBLE_LIT);
         break;
       }
       case TokenType.TOK_STRING_LIT: {
         lexer.expect(TokenType.TOK_STRING_LIT);
+        node.setOperator(ASTAtomicExprNode.AtomicOperator.STRING_LIT);
         break;
       }
       case TokenType.TOK_TRUE: {
         lexer.expect(TokenType.TOK_TRUE);
+        node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
         break;
       }
       case TokenType.TOK_FALSE: {
         lexer.expect(TokenType.TOK_FALSE);
+        node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
         break;
       }
       case TokenType.TOK_IDENTIFIER: {
         lexer.expect(TokenType.TOK_IDENTIFIER);
+        node.setOperator(ASTAtomicExprNode.AtomicOperator.IDENTIFIER);
         break;
       }
       case TokenType.TOK_LPAREN: {
         lexer.expect(TokenType.TOK_LPAREN);
-        parseAssignExpr();
+        parseLogicalExpression();
         lexer.expect(TokenType.TOK_RPAREN);
+        node.setOperator(ASTAtomicExprNode.AtomicOperator.LOGICAL_EXPR);
         break;
       }
       case TokenType.TOK_CALL: {
         parseFctCall();
+        node.setOperator(ASTAtomicExprNode.AtomicOperator.FCT_CALL);
         break;
       }
       case TokenType.TOK_PRINT: {
         parsePrintBuiltinCall();
+        node.setOperator(ASTAtomicExprNode.AtomicOperator.PRINT_BUILTIN_CALL);
         break;
       }
       default: {
