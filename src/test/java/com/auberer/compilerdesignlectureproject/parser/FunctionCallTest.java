@@ -1,5 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
+import com.auberer.compilerdesignlectureproject.ast.ASTCallParamsNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTFctCallNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
@@ -62,6 +64,8 @@ public class FunctionCallTest {
         String fctDef = "call myFunc(7);";
         Lexer lexer1 = new Lexer(new Reader(fctDef), true);
         Parser parser1 = new Parser(lexer1);
-        parser1.parseFctCall();
+        ASTFctCallNode astFctCallNode = parser1.parseFctCall();
+        assertInstanceOf(ASTFctCallNode.class, astFctCallNode);
+        assertInstanceOf(ASTCallParamsNode.class, astFctCallNode.getCallParams());
     }
 }

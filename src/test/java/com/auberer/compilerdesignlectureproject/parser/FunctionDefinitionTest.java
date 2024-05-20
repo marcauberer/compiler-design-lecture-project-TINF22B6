@@ -1,6 +1,9 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTParamLstNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -16,6 +19,7 @@ import org.mockito.Spy;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
@@ -90,6 +94,9 @@ public class FunctionDefinitionTest {
         String fctDef = "func int myFunc(int x) int i = 17; return x; cnuf";
         Lexer lexer1 = new Lexer(new Reader(fctDef), true);
         Parser parser1 = new Parser(lexer1);
-        parser1.parseFctDef();
+        ASTFctDefNode astFctDefNode = parser1.parseFctDef();
+        assertInstanceOf(ASTFctDefNode.class, astFctDefNode);
+        assertInstanceOf(ASTTypeNode.class, astFctDefNode.getType());
+        assertInstanceOf(ASTParamLstNode.class, astFctDefNode.getParams());
     }
 }
