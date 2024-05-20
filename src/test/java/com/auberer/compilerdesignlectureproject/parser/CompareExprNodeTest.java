@@ -14,7 +14,6 @@ import org.mockito.Spy;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,15 +43,15 @@ public class CompareExprNodeTest {
 
         // Arrange
         doReturn(null).when(parser).parseAdditiveExpression();
-        doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_EQUAL, TokenType.TOK_NOT_EQUAL));
-        doReturn(tokenList.get(1), tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
+        doNothing().when(lexer).expect(TokenType.TOK_EQUAL);
+        doReturn(tokenList.get(1), tokenList.get(1), tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
 
         // Execute parse method
         ASTCompareExprNode compareExprNode = parser.parseCompareExpression();
 
         // Assert
         verify(parser, times(2)).parseAdditiveExpression();
-        verify(lexer, times(1)).expectOneOf(Set.of(TokenType.TOK_EQUAL, TokenType.TOK_NOT_EQUAL));
+        verify(lexer, times(1)).expect(TokenType.TOK_EQUAL);
         assertNotNull(compareExprNode);
         assertInstanceOf(ASTCompareExprNode.class, compareExprNode);
     }

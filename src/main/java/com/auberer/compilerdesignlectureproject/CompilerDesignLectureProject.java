@@ -93,9 +93,7 @@ public class CompilerDesignLectureProject {
 
       // Transform parse tree to AST
       ASTBuilder astBuilder = new ASTBuilder();
-      astBuilder.visitEntry(entryContext);
-
-      return null;
+      return (ASTEntryNode) astBuilder.visitEntry(entryContext);
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -11,6 +11,6 @@ public class ASTCallParamsNode extends ASTNode {
   }
 
   public static Set<TokenType> getSelectionSet() {
-    return ASTAssignExprNode.getSelectionSet();
+    return ASTAssignStmtNode.getSelectionSet();
   }
 }

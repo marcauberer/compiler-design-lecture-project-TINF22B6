@@ -16,7 +16,7 @@ public class ASTAtomicExprNode extends ASTNode {
     IDENTIFIER,
     FCT_CALL,
     PRINT_BUILTIN_CALL,
-    ASSIGN_EXPR
+    LOGICAL_EXPR
   }
 
   public AtomicOperator operator;

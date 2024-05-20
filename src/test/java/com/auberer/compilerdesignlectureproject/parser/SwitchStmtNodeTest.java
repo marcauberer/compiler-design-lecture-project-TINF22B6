@@ -1,12 +1,11 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTDefaultNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTSwitchStmtNode;
+import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ public class SwitchStmtNodeTest {
         doNothing().when(lexer).advance();
         doNothing().when(lexer).expect(TokenType.TOK_SWITCH);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-        doReturn(null).when(parser).parseAssignExpr();
+        doReturn(null).when(parser).parseLogicalExpression();
         doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
         doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
         doReturn(new ASTDefaultNode()).when(parser).parseDefault();
@@ -55,7 +54,7 @@ public class SwitchStmtNodeTest {
         // Assert
         verify(lexer, times(1)).expect(TokenType.TOK_SWITCH);
         verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
-        verify(parser, times(1)).parseAssignExpr();
+        verify(parser, times(1)).parseLogicalExpression();
         verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
         verify(lexer, times(1)).expect(TokenType.TOK_LBRACE);
         verify(parser, times(1)).parseCases();
@@ -64,5 +63,22 @@ public class SwitchStmtNodeTest {
 
         assertNotNull(switchStmtNode);
         assertInstanceOf(ASTSwitchStmtNode.class, switchStmtNode);
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void switchIntegrationTest() {
+        String code = "switch (a) { case 1: int i = 0; case 2: int i = 1; default: int i = 5; } ";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTSwitchStmtNode astSwitchStmt = parser.parseSwitchStmt();
+
+        assertNotNull(astSwitchStmt);
+        assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
+        assertInstanceOf(ASTCasesNode.class, astSwitchStmt.getCases());
+        assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
+        assert(astSwitchStmt.getCases().getCasesSize() == 2);
+        assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
     }
 }
