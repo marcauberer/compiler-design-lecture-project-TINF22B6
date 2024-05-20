@@ -3,6 +3,7 @@ package com.auberer.compilerdesignlectureproject.ast;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -41,5 +42,17 @@ public class ASTAtomicExprNode extends ASTNode {
         TokenType.TOK_PRINT,
         TokenType.TOK_LPAREN
     );
+  }
+
+  public ASTFctCallNode getFctCall() {
+    return getChild(ASTFctCallNode.class, 0);
+  }
+
+  public ASTPrintBuiltinCallNode getPrintCall() {
+    return getChild(ASTPrintBuiltinCallNode.class, 0);
+  }
+
+  public ASTAssignExprNode getAssignExpr() {
+    return getChild(ASTAssignExprNode.class, 0);
   }
 }
