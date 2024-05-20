@@ -1,12 +1,11 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTDefaultNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTSwitchStmtNode;
+import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,5 +63,21 @@ public class SwitchStmtNodeTest {
 
         assertNotNull(switchStmtNode);
         assertInstanceOf(ASTSwitchStmtNode.class, switchStmtNode);
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void switchIntegrationTest() {
+        String code = "switch (a) { case 1: int i = 0; case 2: int i = 1; default: int i = 5; } ";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTSwitchStmtNode astSwitchStmt = parser.parseSwitchStmt();
+
+        assertNotNull(astSwitchStmt);
+        assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
+        assertInstanceOf(ASTCasesNode.class, astSwitchStmt.getCases());
+        assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
+        assert(astSwitchStmt.getCases().getCasesSize() == 2);
     }
 }
