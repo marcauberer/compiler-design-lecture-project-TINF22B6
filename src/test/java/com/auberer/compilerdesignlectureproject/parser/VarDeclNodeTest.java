@@ -1,6 +1,8 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTVarDeclNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
@@ -98,9 +100,9 @@ public class VarDeclNodeTest {
 
         assertNotNull(astVarDeclNode);
         assertInstanceOf(ASTVarDeclNode.class, astVarDeclNode);
-        assertEquals("int", astVarDeclNode.getType());
+        assertEquals(ASTTypeNode.DataType.INT, astVarDeclNode.getType().getType());
         assertEquals("x", astVarDeclNode.getVariableName());
-        assertNotNull(astVarDeclNode.getAssign());
-        assertInstanceOf(ASTAssignStmtNode.class, astVarDeclNode.getAssign());
+        assertNotNull(astVarDeclNode.getLogicalExpr());
+        assertInstanceOf(ASTLogicalExprNode.class, astVarDeclNode.getLogicalExpr());
     }
 }

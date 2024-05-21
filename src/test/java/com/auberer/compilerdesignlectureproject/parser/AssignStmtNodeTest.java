@@ -1,6 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTStmtNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
@@ -91,6 +92,6 @@ public class AssignStmtNodeTest {
         assertNotNull(astStmtNode);
         assertInstanceOf(ASTAssignStmtNode.class, astStmtNode);
         assertNotNull(astStmtNode.getLogical());
-        assertInstanceOf(ASTAssignStmtNode.class, astStmtNode.getLogical());
+        assertInstanceOf(ASTLogicalExprNode.class, astStmtNode.getLogical());
     }
 }
