@@ -16,22 +16,17 @@ public class SymbolTable implements Serializable {
   }
 
   public void insert(String name, ASTNode declNode) {
-    symbols.put(name, new SymbolTableEntry(name, declNode));
+    // ToDo: Implement
   }
 
   public SymbolTableEntry lookup(String name) {
-    // Check if the symbol exists in the current scope
-    if (symbols.containsKey(name))
-      return symbols.get(name);
-    // Return null if the current scope is the root scope
-    if (scope.parent == null)
-      return null;
-    // Continue searching in the symbol table of the parent scope
-    return scope.parent.symbolTable.lookup(name);
+    // ToDo: Implement
+    return null;
   }
 
   public SymbolTableEntry lookupStrict(String name) {
-    return symbols.get(name);
+    // ToDo: Implement
+    return null;
   }
 
 }
