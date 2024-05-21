@@ -8,15 +8,21 @@ import com.auberer.compilerdesignlectureproject.ast.ASTVisualizer;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.apache.commons.cli.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class CompilerDesignLectureProject {
+  private static final Logger log = LoggerFactory.getLogger(CompilerDesignLectureProject.class);
+
   public static void main(String[] args) {
     Options cliOptions = new Options()
         .addOption("h", "help", false, "Print this help text")
@@ -36,6 +42,7 @@ public class CompilerDesignLectureProject {
       String[] positionalArgs = cli.getArgs();
       Path path = Paths.get(positionalArgs[0]).toAbsolutePath();
 
+      // Read, lex and parse the input file
       ASTEntryNode ast;
       if (cli.hasOption("antlr")) {
         System.out.println("Compiling with ANTLR parser...");
@@ -46,18 +53,25 @@ public class CompilerDesignLectureProject {
         boolean dumpTokens = cli.hasOption("tokens");
         ast = parseWithOwnParser(path, dumpTokens);
       }
+      assert ast != null;
 
+      // Dump AST
       if (cli.hasOption("ast")) {
         System.out.println("Dumping AST...");
-        assert ast != null;
         ASTVisualizer visualizer = new ASTVisualizer();
         String dot = visualizer.visitEntry(ast);
         System.out.println(dot);
       }
+
+      // Generate Scopes and their SymbolTables
+      SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+      symbolTableBuilder.visit(ast);
+
+      // ToDo: Extend ...
     } catch (ParseException e) {
       new HelpFormatter().printHelp("apache args...", cliOptions);
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("An error occurred", e);
     }
 
     if (args.length == 0) {
@@ -78,25 +92,20 @@ public class CompilerDesignLectureProject {
     return parser.parse();
   }
 
-  static ASTEntryNode parseWithANTLRParser(Path path) {
-    try {
-      // Setup ANTLR
-      ANTLRInputStream input = new ANTLRFileStream(path.toString());
+  static ASTEntryNode parseWithANTLRParser(Path path) throws IOException {
+    // Setup ANTLR
+    ANTLRInputStream input = new ANTLRFileStream(path.toString());
 
-      // Lex
-      TInfLexer lexer = new TInfLexer(input);
-      CommonTokenStream tokens = new CommonTokenStream(lexer);
+    // Lex
+    TInfLexer lexer = new TInfLexer(input);
+    CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-      // Parse
-      TInfParser parser = new TInfParser(tokens);
-      TInfParser.EntryContext entryContext = parser.entry();
+    // Parse
+    TInfParser parser = new TInfParser(tokens);
+    TInfParser.EntryContext entryContext = parser.entry();
 
-      // Transform parse tree to AST
-      ASTBuilder astBuilder = new ASTBuilder();
-      return (ASTEntryNode) astBuilder.visitEntry(entryContext);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return null;
+    // Transform parse tree to AST
+    ASTBuilder astBuilder = new ASTBuilder();
+    return (ASTEntryNode) astBuilder.visitEntry(entryContext);
   }
 }
