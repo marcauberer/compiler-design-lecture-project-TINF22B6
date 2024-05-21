@@ -47,11 +47,11 @@ public class Parser implements IParser {
 
     lexer.expect(TokenType.TOK_FOR);
     lexer.expect(TokenType.TOK_LPAREN);
+    parseVarDecl();
+    lexer.expect(TokenType.TOK_SEMICOLON);
+    parseLogicalExpression();
+    lexer.expect(TokenType.TOK_SEMICOLON);
     parseAssignStmt();
-    lexer.expect(TokenType.TOK_SEMICOLON);
-    parseLogicalExpression();
-    lexer.expect(TokenType.TOK_SEMICOLON);
-    parseLogicalExpression();
     lexer.expect(TokenType.TOK_RPAREN);
     lexer.expect(TokenType.TOK_LBRACE);
     parseStmtLst();

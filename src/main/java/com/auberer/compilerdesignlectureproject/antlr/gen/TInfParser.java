@@ -838,18 +838,18 @@ public class TInfParser extends Parser {
 	public static class ForLoopContext extends ParserRuleContext {
 		public TerminalNode FOR() { return getToken(TInfParser.FOR, 0); }
 		public TerminalNode LPAREN() { return getToken(TInfParser.LPAREN, 0); }
-		public AssignStmtContext assignStmt() {
-			return getRuleContext(AssignStmtContext.class,0);
+		public VarDeclContext varDecl() {
+			return getRuleContext(VarDeclContext.class,0);
 		}
 		public List<TerminalNode> SEMICOLON() { return getTokens(TInfParser.SEMICOLON); }
 		public TerminalNode SEMICOLON(int i) {
 			return getToken(TInfParser.SEMICOLON, i);
 		}
-		public List<LogicalExprContext> logicalExpr() {
-			return getRuleContexts(LogicalExprContext.class);
+		public LogicalExprContext logicalExpr() {
+			return getRuleContext(LogicalExprContext.class,0);
 		}
-		public LogicalExprContext logicalExpr(int i) {
-			return getRuleContext(LogicalExprContext.class,i);
+		public AssignStmtContext assignStmt() {
+			return getRuleContext(AssignStmtContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(TInfParser.RPAREN, 0); }
 		public TerminalNode LBRACE() { return getToken(TInfParser.LBRACE, 0); }
@@ -879,7 +879,7 @@ public class TInfParser extends Parser {
 			setState(130);
 			match(LPAREN);
 			setState(131);
-			assignStmt();
+			varDecl();
 			setState(132);
 			match(SEMICOLON);
 			setState(133);
@@ -887,7 +887,7 @@ public class TInfParser extends Parser {
 			setState(134);
 			match(SEMICOLON);
 			setState(135);
-			logicalExpr();
+			assignStmt();
 			setState(136);
 			match(RPAREN);
 			setState(137);
@@ -2079,9 +2079,9 @@ public class TInfParser extends Parser {
 		"z{\u0005\u0016\u0000\u0000{|\u0005\b\u0000\u0000|}\u0005\u0017\u0000\u0000"+
 		"}~\u0003.\u0017\u0000~\u007f\u0005\u0018\u0000\u0000\u007f\u0080\u0005"+
 		"#\u0000\u0000\u0080\u0017\u0001\u0000\u0000\u0000\u0081\u0082\u0005\n"+
-		"\u0000\u0000\u0082\u0083\u0005\u0017\u0000\u0000\u0083\u0084\u0003,\u0016"+
+		"\u0000\u0000\u0082\u0083\u0005\u0017\u0000\u0000\u0083\u0084\u0003*\u0015"+
 		"\u0000\u0084\u0085\u0005#\u0000\u0000\u0085\u0086\u0003.\u0017\u0000\u0086"+
-		"\u0087\u0005#\u0000\u0000\u0087\u0088\u0003.\u0017\u0000\u0088\u0089\u0005"+
+		"\u0087\u0005#\u0000\u0000\u0087\u0088\u0003,\u0016\u0000\u0088\u0089\u0005"+
 		"\u0018\u0000\u0000\u0089\u008a\u0005\u0015\u0000\u0000\u008a\u008b\u0003"+
 		"\u0002\u0001\u0000\u008b\u008c\u0005\u0016\u0000\u0000\u008c\u0019\u0001"+
 		"\u0000\u0000\u0000\u008d\u008e\u0005\u000e\u0000\u0000\u008e\u008f\u0005"+

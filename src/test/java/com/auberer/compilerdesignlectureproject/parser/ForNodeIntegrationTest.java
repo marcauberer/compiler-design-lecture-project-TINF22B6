@@ -12,7 +12,7 @@ public class ForNodeIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Reader reader = new Reader("for (int i = 0; i == 10; i == 10) {  } cnuf");
+        Reader reader = new Reader("for (int i = 0; i == 10; i = i + 1) {  } cnuf");
         Lexer lexer = new Lexer(reader, false);
         parser = new Parser(lexer);
     }
@@ -24,9 +24,9 @@ public class ForNodeIntegrationTest {
 
         // Use the helper functions to get the body, initialization, condition, and increment
         ASTStmtLstNode body = forNode.getBody();
-        ASTAssignStmtNode initialization = forNode.getInitialization();
+        ASTVarDeclNode initialization = forNode.getInitialization();
         ASTLogicalExprNode condition = forNode.getCondition();
-        ASTLogicalExprNode increment = forNode.getIncrement();
+        ASTAssignStmtNode increment = forNode.getIncrement();
 
         // Assert that the body, initialization, condition, and increment are not null
         assertNotNull(body);
@@ -47,7 +47,7 @@ public class ForNodeIntegrationTest {
     @Test
     void testGetInitialization() {
         ASTForNode forNode = new ASTForNode();
-        ASTAssignStmtNode initialization = new ASTAssignStmtNode();
+        ASTVarDeclNode initialization = new ASTVarDeclNode();
         forNode.addChild(initialization);
         assertEquals(initialization, forNode.getInitialization());
     }
@@ -64,7 +64,7 @@ public class ForNodeIntegrationTest {
     @Test
     void testGetIncrement() {
         ASTForNode forNode = new ASTForNode();
-        ASTLogicalExprNode increment = new ASTLogicalExprNode();
+        ASTAssignStmtNode increment = new ASTAssignStmtNode();
         forNode.addChild(new ASTAssignStmtNode()); // initialization
         forNode.addChild(new ASTLogicalExprNode()); // condition
         forNode.addChild(increment);
