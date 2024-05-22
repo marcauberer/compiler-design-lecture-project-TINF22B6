@@ -1,10 +1,14 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
+import com.auberer.compilerdesignlectureproject.ast.ASTAdditiveExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTAtomicExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTCompareExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class CompareExprNodeTest {
@@ -55,5 +58,24 @@ public class CompareExprNodeTest {
         verify(lexer, times(1)).expectOneOf(Set.of(TokenType.TOK_EQUAL, TokenType.TOK_NOT_EQUAL));
         assertNotNull(compareExprNode);
         assertInstanceOf(ASTCompareExprNode.class, compareExprNode);
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void compareExprIntegrationTest() {
+        String code = "2 != 3";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTCompareExprNode compareExpr = parser.parseCompareExpression();
+
+        assertNotNull(compareExpr);
+        assertInstanceOf(ASTCompareExprNode.class, compareExpr);
+        assertInstanceOf(ASTAtomicExprNode.class, compareExpr);
+        assertEquals(ASTTypeNode.DataType.INT, compareExpr.operands().get(0));
+        assertEquals("2", compareExpr.operands().get(0).toString());
+        assertEquals("!=", compareExpr.operator.toString());
+        assertEquals(ASTTypeNode.DataType.INT, compareExpr.operands().get(1));
+        assertEquals("3", compareExpr.operands().get(0).toString());
     }
 }
