@@ -8,6 +8,8 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTable;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,10 +90,14 @@ public class AssignStmtNodeTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTAssignStmtNode astStmtNode = parser.parseAssignStmt();
+        SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
+
 
         assertNotNull(astStmtNode);
         assertInstanceOf(ASTAssignStmtNode.class, astStmtNode);
         assertNotNull(astStmtNode.getLogical());
         assertInstanceOf(ASTLogicalExprNode.class, astStmtNode.getLogical());
+        symboltablebuilder.visit(astStmtNode);
     }
+
 }
