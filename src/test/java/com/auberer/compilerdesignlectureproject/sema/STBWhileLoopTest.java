@@ -9,9 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
-public class SymbolTableBuilderTest {
+public class STBWhileLoopTest {
 
     @Test
     @DisplayName("Integration test")
