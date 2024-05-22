@@ -6,6 +6,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,11 +71,13 @@ public class DoWhileLoopNodeTest {
         Reader reader = new Reader(input);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
-
+        SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
         ASTDoWhileLoopNode doWhileLoopNode = parser.parseDoWhile();
-
         ASTStmtLstNode body = doWhileLoopNode.getBody();
         ASTLogicalExprNode condition = doWhileLoopNode.getCondition();
+
+        symbolTableBuilder.visitDoWhileLoop(doWhileLoopNode);
+
         assert body.getChildren().size() == 2;
         assert body.getChildren().get(0).getChildren().getFirst() instanceof ASTVarDeclNode;
         assert body.getChildren().get(1).getChildren().getFirst() instanceof ASTAssignStmtNode;
