@@ -38,9 +38,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   public Void visitAssignStmt(ASTAssignStmtNode node) {
     visitChildren(node);
 
-    if (currentScopes.peek().lookupSymbolStrict(node.getVariableName()) ==null) {
-      currentScopes.peek().insertSymbol(node.getVariableName(), node);
-    } else {
+    if (currentScopes.peek().lookupSymbolStrict(node.getVariableName()) != null) {
       throw new SemaError("Scope already exists");
     }
     return null;

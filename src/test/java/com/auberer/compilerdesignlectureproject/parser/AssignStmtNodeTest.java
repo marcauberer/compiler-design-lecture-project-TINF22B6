@@ -2,7 +2,6 @@ package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTStmtNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -84,7 +83,23 @@ public class AssignStmtNodeTest {
 
     @Test
     @DisplayName("Integration test")
-    void integrationTestForStatementNode() {
+    void integrationTestAssignStmtNode() {
+        String code = "x = 5;";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTAssignStmtNode astStmtNode = parser.parseAssignStmt();
+
+
+        assertNotNull(astStmtNode);
+        assertInstanceOf(ASTAssignStmtNode.class, astStmtNode);
+        assertNotNull(astStmtNode.getLogical());
+        assertInstanceOf(ASTLogicalExprNode.class, astStmtNode.getLogical());
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void integrationTestSymboltableBuilder() {
         String code = "x = 5;";
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
@@ -92,12 +107,7 @@ public class AssignStmtNodeTest {
         ASTAssignStmtNode astStmtNode = parser.parseAssignStmt();
         SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
 
-
-        assertNotNull(astStmtNode);
-        assertInstanceOf(ASTAssignStmtNode.class, astStmtNode);
-        assertNotNull(astStmtNode.getLogical());
-        assertInstanceOf(ASTLogicalExprNode.class, astStmtNode.getLogical());
-        symboltablebuilder.visit(astStmtNode);
+        symboltablebuilder.visitAssignStmt(astStmtNode);
     }
 
 }
