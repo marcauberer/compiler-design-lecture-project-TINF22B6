@@ -25,6 +25,7 @@ public class ForNodeIntegrationTest {
     // Integration test for the ForNode
     @Test
     void testForNodeParsing() {
+        SymbolTableBuilder stb = new SymbolTableBuilder();
         ASTForNode forNode = assertDoesNotThrow(() -> parser.parseForLoop());
 
         // Use the helper functions to get the body, initialization, condition, and increment
@@ -32,6 +33,8 @@ public class ForNodeIntegrationTest {
         ASTVarDeclNode initialization = forNode.getInitialization();
         ASTLogicalExprNode condition = forNode.getCondition();
         ASTAssignStmtNode increment = forNode.getIncrement();
+
+        stb.visitForLoop(forNode);
 
         // Assert that the body, initialization, condition, and increment are not null
         assertNotNull(body);
