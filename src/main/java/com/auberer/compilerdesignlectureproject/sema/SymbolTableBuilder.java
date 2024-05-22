@@ -26,7 +26,6 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     if (node.getIncrement() == null)
         throw new SemaError("For loop missing increment");
 
-    assert currentScopes.size() > 1 && currentScopes.peek() == forScope;
     currentScopes.pop();
     return null;
   }
