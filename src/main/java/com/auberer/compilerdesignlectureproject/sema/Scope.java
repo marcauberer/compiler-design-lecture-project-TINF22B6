@@ -10,4 +10,12 @@ public class Scope {
   public void insertSymbol(String name, ASTNode declNode) {
     symbolTable.insert(name, declNode);
   }
+
+  public SymbolTableEntry lookupSymbol(String name) {
+    return symbolTable.lookup(name);
+  }
+
+  public SymbolTableEntry lookupSymbolStrict(String name) {
+    return symbolTable.lookupStrict(name);
+  }
 }
