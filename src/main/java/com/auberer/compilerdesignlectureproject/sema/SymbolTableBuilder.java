@@ -1,9 +1,6 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVarDeclNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
+import com.auberer.compilerdesignlectureproject.ast.*;
 
 import java.util.Stack;
 
@@ -24,6 +21,42 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     if (currentScopes.peek().lookupSymbol("main") == null)
       throw new SemaError("No main function found");
 
+    return null;
+  }
+
+  @Override
+  public Void visitSwitchStmt(ASTSwitchStmtNode node) {
+    Scope scope = new Scope();
+    currentScopes.push(scope);
+
+    visitChildren(node);
+
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
+    return null;
+  }
+
+  @Override
+  public Void visitCases(ASTCasesNode node) {
+    Scope scope = new Scope();
+    currentScopes.push(scope);
+
+    visitChildren(node);
+
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
+    return null;
+  }
+
+  @Override
+  public Void visitDefault(ASTDefaultNode node) {
+    Scope scope = new Scope();
+    currentScopes.push(scope);
+
+    visitChildren(node);
+
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
     return null;
   }
 }
