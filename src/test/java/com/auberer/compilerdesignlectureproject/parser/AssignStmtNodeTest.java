@@ -1,10 +1,13 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTAssignExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTStmtNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class AssignExprNodeTest {
+public class AssignStmtNodeTest {
     @Spy
     private Parser parser; // Use spy to allow partial mocking
 
@@ -33,8 +36,8 @@ public class AssignExprNodeTest {
     }
 
     @Test
-    @DisplayName("Test assign expression without optional")
-    void testAssignExprWithoutOptional() {
+    @DisplayName("Test assign statement without optional")
+    void testAssignStmtWithoutOptional() {
         List<Token> tokenList = new LinkedList<>();
         tokenList.add(new Token(TokenType.TOK_INVALID, "", new CodeLoc(1, 1)));
 
@@ -42,20 +45,20 @@ public class AssignExprNodeTest {
         doReturn(null).when(parser).parseLogicalExpression();
 
         // Execute parse method
-        ASTAssignExprNode printAssignExpression = parser.parseAssignExpr();
+        ASTAssignStmtNode assignStmt = parser.parseAssignStmt();
 
         // Assert
         verify(lexer, times(2)).getToken();
         verify(parser, times(1)).parseLogicalExpression();
-        assertNotNull(printAssignExpression);
-        assertInstanceOf(ASTAssignExprNode.class, printAssignExpression);
+        assertNotNull(assignStmt);
+        assertInstanceOf(ASTAssignStmtNode.class, assignStmt);
         // Ensure the variable name is empty
-        assertNull(printAssignExpression.getVariableName());
+        assertNull(assignStmt.getVariableName());
     }
 
     @Test
-    @DisplayName("Test assign expression with optional")
-    void testAssignExprWithOptional() {
+    @DisplayName("Test assign statement with optional")
+    void testAssignStmtWithOptional() {
         List<Token> tokenList = new LinkedList<>();
         tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "xyz", new CodeLoc(1, 1)));
 
@@ -65,15 +68,30 @@ public class AssignExprNodeTest {
         doReturn(null).when(parser).parseLogicalExpression();
 
         // Execute parse method
-        ASTAssignExprNode printAssignExpression = parser.parseAssignExpr();
+        ASTAssignStmtNode assignStmt = parser.parseAssignStmt();
 
         // Assert
         verify(lexer, times(1)).expect(TokenType.TOK_IDENTIFIER);
         verify(lexer, times(1)).expect(TokenType.TOK_ASSIGN);
         verify(parser, times(1)).parseLogicalExpression();
-        assertNotNull(printAssignExpression);
-        assertInstanceOf(ASTAssignExprNode.class, printAssignExpression);
+        assertNotNull(assignStmt);
+        assertInstanceOf(ASTAssignStmtNode.class, assignStmt);
         // Ensure the variable name is correct
-        assertEquals("xyz", printAssignExpression.getVariableName());
+        assertEquals("xyz", assignStmt.getVariableName());
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void integrationTestForStatementNode() {
+        String code = "x = 5;";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTAssignStmtNode astStmtNode = parser.parseAssignStmt();
+
+        assertNotNull(astStmtNode);
+        assertInstanceOf(ASTAssignStmtNode.class, astStmtNode);
+        assertNotNull(astStmtNode.getLogical());
+        assertInstanceOf(ASTLogicalExprNode.class, astStmtNode.getLogical());
     }
 }

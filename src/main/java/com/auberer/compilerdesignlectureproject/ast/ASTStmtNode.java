@@ -14,7 +14,7 @@ public class ASTStmtNode extends ASTNode {
   public static Set<TokenType> getSelectionSet() {
     Set<TokenType> selectionSet = new HashSet<>();
     selectionSet.addAll(ASTVarDeclNode.getSelectionSet());
-    selectionSet.addAll(ASTAssignExprNode.getSelectionSet());
+    selectionSet.addAll(ASTAssignStmtNode.getSelectionSet());
     return selectionSet;
   }
 }

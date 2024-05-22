@@ -14,7 +14,6 @@ import org.mockito.Spy;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,15 +43,15 @@ public class MultiplicativeExprNodeTest {
 
         // Arrange
         doReturn(null).when(parser).parsePrefixExpression();
-        doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_MUL, TokenType.TOK_DIV));
-        doReturn(tokenList.get(1), tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
+        doNothing().when(lexer).expect(TokenType.TOK_MUL);
+        doReturn(tokenList.get(1), tokenList.get(1), tokenList.get(1), tokenList.get(2)).when(lexer).getToken();
 
         // Execute parse method
         ASTMultiplicativeExprNode multiplicativeExprNode = parser.parseMultiplicativeExpression();
 
         // Assert
         verify(parser, times(2)).parsePrefixExpression();
-        verify(lexer, times(1)).expectOneOf(Set.of(TokenType.TOK_MUL, TokenType.TOK_DIV));
+        verify(lexer, times(1)).expect(TokenType.TOK_MUL);
         assertNotNull(multiplicativeExprNode);
         assertInstanceOf(ASTMultiplicativeExprNode.class, multiplicativeExprNode);
     }

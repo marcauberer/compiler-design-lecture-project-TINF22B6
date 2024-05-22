@@ -43,7 +43,7 @@ public class DoWhileLoopNodeTest {
         doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
         doNothing().when(lexer).expect(TokenType.TOK_WHILE);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
-        doReturn(null).when(parser).parseAssignExpr();
+        doReturn(null).when(parser).parseLogicalExpression();
         doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
         doNothing().when(lexer).expect(TokenType.TOK_SEMICOLON);
 
@@ -57,7 +57,7 @@ public class DoWhileLoopNodeTest {
         verify(lexer, times(1)).expect(TokenType.TOK_RBRACE);
         verify(lexer, times(1)).expect(TokenType.TOK_WHILE);
         verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
-        verify(parser, times(1)).parseAssignExpr();
+        verify(parser, times(1)).parseLogicalExpression();
         verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
         verify(lexer, times(1)).expect(TokenType.TOK_SEMICOLON);
         assertNotNull(doWhileLoopNode);
@@ -74,13 +74,12 @@ public class DoWhileLoopNodeTest {
         ASTDoWhileLoopNode doWhileLoopNode = parser.parseDoWhile();
 
         ASTStmtLstNode body = doWhileLoopNode.getBody();
-        ASTAssignExprNode condition = doWhileLoopNode.getCondition();
+        ASTLogicalExprNode condition = doWhileLoopNode.getCondition();
         assert body.getChildren().size() == 2;
         assert body.getChildren().get(0).getChildren().getFirst() instanceof ASTVarDeclNode;
-        assert body.getChildren().get(1).getChildren().getFirst() instanceof ASTAssignExprNode;
+        assert body.getChildren().get(1).getChildren().getFirst() instanceof ASTAssignStmtNode;
         assert condition.getChildren().size() == 1;
-        assert condition.getChild(ASTLogicalExprNode.class, 0)
-                .getChild(ASTCompareExprNode.class, 0)
+        assert condition.getChild(ASTCompareExprNode.class, 0)
                 .getChild(ASTAdditiveExprNode.class, 0)
                 .getChild(ASTMultiplicativeExprNode.class, 0)
                 .getChild(ASTPrefixExprNode.class, 0)

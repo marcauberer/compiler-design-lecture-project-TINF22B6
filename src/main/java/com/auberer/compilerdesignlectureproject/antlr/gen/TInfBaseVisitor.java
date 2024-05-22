@@ -172,7 +172,7 @@ public class TInfBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAssignExpr(TInfParser.AssignExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAssignStmt(TInfParser.AssignStmtContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

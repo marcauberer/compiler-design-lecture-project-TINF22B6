@@ -22,4 +22,16 @@ public class ASTFctDefNode extends ASTNode {
     public static Set<TokenType> getSelectionSet() {
         return Set.of(TOK_FUNC);
     }
+
+    public ASTTypeNode getType(){
+        return getChild(ASTTypeNode.class,0);
+    }
+
+    public ASTParamLstNode getParams(){
+        return getChild(ASTParamLstNode.class,0);
+    }
+    public ASTStmtLstNode getBody(){
+        return getChild(ASTStmtLstNode.class,0);
+    }
+
 }

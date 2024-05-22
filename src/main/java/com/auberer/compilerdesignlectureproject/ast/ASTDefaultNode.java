@@ -13,4 +13,8 @@ public class ASTDefaultNode extends ASTNode {
   public static Set<TokenType> getSelectionSet() {
     return Set.of(TokenType.TOK_DEFAULT);
   }
+
+  public ASTStmtLstNode getStmtList(){
+    return getChild(ASTStmtLstNode.class, 0);
+  }
 }

@@ -143,11 +143,11 @@ public interface TInfVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVarDecl(TInfParser.VarDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link TInfParser#assignExpr}.
+	 * Visit a parse tree produced by {@link TInfParser#assignStmt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAssignExpr(TInfParser.AssignExprContext ctx);
+	T visitAssignStmt(TInfParser.AssignStmtContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TInfParser#logicalExpr}.
 	 * @param ctx the parse tree
