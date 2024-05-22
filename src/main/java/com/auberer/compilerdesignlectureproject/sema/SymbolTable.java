@@ -16,17 +16,20 @@ public class SymbolTable implements Serializable {
   }
 
   public void insert(String name, ASTNode declNode) {
-    // ToDo: Implement
+    symbols.put(name, new SymbolTableEntry(scope, name, declNode));
   }
 
   public SymbolTableEntry lookup(String name) {
-    // ToDo: Implement
-    return null;
+    SymbolTableEntry entry = lookupStrict(name);
+    if (entry != null)
+      return entry;
+    if (scope.parent == null)
+      return null;
+    return scope.parent.lookupSymbol(name);
   }
 
   public SymbolTableEntry lookupStrict(String name) {
-    // ToDo: Implement
-    return null;
+    return symbols.get(name);
   }
 
 }
