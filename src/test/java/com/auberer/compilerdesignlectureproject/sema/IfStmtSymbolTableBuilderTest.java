@@ -1,6 +1,5 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTIfStmtNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
