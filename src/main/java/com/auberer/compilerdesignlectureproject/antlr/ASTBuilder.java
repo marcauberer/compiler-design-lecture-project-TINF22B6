@@ -396,31 +396,31 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     enterNode(node, ctx);
 
     if (ctx.INT_LIT() != null){
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.INT_LIT);
+      node.setType(ASTAtomicExprNode.AtomicType.INT_LIT);
       node.setIntLit(Integer.parseInt(ctx.STRING_LIT().toString()));
     } else if (ctx.DOUBLE_LIT() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.DOUBLE_LIT);
+      node.setType(ASTAtomicExprNode.AtomicType.DOUBLE_LIT);
       node.setDoubleLit(Double.parseDouble(ctx.STRING_LIT().toString()));
     } else if (ctx.STRING_LIT() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.STRING_LIT);
+      node.setType(ASTAtomicExprNode.AtomicType.STRING_LIT);
       node.setStringLit(ctx.STRING_LIT().toString());
     } else if (ctx.IDENTIFIER() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.IDENTIFIER);
+      node.setType(ASTAtomicExprNode.AtomicType.IDENTIFIER);
       node.setIdentifier(ctx.STRING_LIT().toString());
     } else if (ctx.fctCall() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.FCT_CALL);
+      node.setType(ASTAtomicExprNode.AtomicType.FCT_CALL);
       visit(ctx.fctCall());
     } else if (ctx.printBuiltinCall() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.PRINT_BUILTIN_CALL);
+      node.setType(ASTAtomicExprNode.AtomicType.PRINT_BUILTIN_CALL);
       visit(ctx.printBuiltinCall());
     } else if (ctx.logicalExpr() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.LOGICAL_EXPR);
+      node.setType(ASTAtomicExprNode.AtomicType.LOGICAL_EXPR);
       visit(ctx.logicalExpr());
     } else if (ctx.FALSE() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+      node.setType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
       node.setBoolLit(false);
     } else if (ctx.TRUE() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+      node.setType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
       node.setBoolLit(true);
     }
 

@@ -108,7 +108,7 @@ public class Lexer implements ILexer {
       stateMachine.reset();
 
     // Skip any whitespaces
-    while (!reader.isEOF() && Character.isWhitespace(peekChar()))
+    while (!(reader.isEOF() && inputBuffer.isEmpty()) && Character.isWhitespace(peekChar()))
       getCurrentCharAndCodeLoc();
 
     CodeLoc tokenCodeLoc = null;
@@ -117,7 +117,7 @@ public class Lexer implements ILexer {
     List<StateMachine> runningMachines = new ArrayList<>(stateMachines);
     Map<StateMachine, Integer> acceptingMachines = new LinkedHashMap<>();
     Queue<Pair<Character, CodeLoc>> newInputBuffer = new LinkedList<>();
-    while (!reader.isEOF() && !runningMachines.isEmpty()) {
+    while (!(reader.isEOF() && inputBuffer.isEmpty()) && !runningMachines.isEmpty()) {
       Pair<Character, CodeLoc> curCharAndCodeLoc = getCurrentCharAndCodeLoc();
       newInputBuffer.add(curCharAndCodeLoc);
       if (tokenCodeLoc == null)

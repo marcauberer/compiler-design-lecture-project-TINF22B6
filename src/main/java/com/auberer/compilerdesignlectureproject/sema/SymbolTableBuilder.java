@@ -1,10 +1,6 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
-import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVarDeclNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
 
 import java.util.Stack;
 
@@ -45,6 +41,18 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
     visitChildren(node);
 
+    currentScopes.pop();
+    return null;
+  }
+
+  @Override
+  public Void visitDoWhileLoop(ASTDoWhileLoopNode node) {
+    Scope doWhileScope = new Scope();
+    currentScopes.push(doWhileScope);
+
+    visitChildren(node);
+
+    assert currentScopes.size() >= 2 && currentScopes.peek() == doWhileScope;
     currentScopes.pop();
     return null;
   }
