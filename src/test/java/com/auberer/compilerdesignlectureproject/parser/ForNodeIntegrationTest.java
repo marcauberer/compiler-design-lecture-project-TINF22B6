@@ -3,8 +3,13 @@ package com.auberer.compilerdesignlectureproject.parser;
 import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.Scope;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Stack;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ForNodeIntegrationTest {
@@ -20,6 +25,7 @@ public class ForNodeIntegrationTest {
     // Integration test for the ForNode
     @Test
     void testForNodeParsing() {
+        SymbolTableBuilder stb = new SymbolTableBuilder();
         ASTForNode forNode = assertDoesNotThrow(() -> parser.parseForLoop());
 
         // Use the helper functions to get the body, initialization, condition, and increment
@@ -27,6 +33,8 @@ public class ForNodeIntegrationTest {
         ASTVarDeclNode initialization = forNode.getInitialization();
         ASTLogicalExprNode condition = forNode.getCondition();
         ASTAssignStmtNode increment = forNode.getIncrement();
+
+        stb.visitForLoop(forNode);
 
         // Assert that the body, initialization, condition, and increment are not null
         assertNotNull(body);
