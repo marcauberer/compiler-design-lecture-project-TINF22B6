@@ -2,8 +2,6 @@ package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTAdditiveExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTAtomicExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -69,12 +67,11 @@ public class AdditiveExprNodeTest {
     ASTAdditiveExprNode additiveExpr = parser.parseAdditiveExpression();
 
     assertNotNull(additiveExpr);
-    assertInstanceOf(ASTAtomicExprNode.class, additiveExpr);
     assertInstanceOf(ASTAdditiveExprNode.class, additiveExpr);
-    assertEquals(ASTTypeNode.DataType.INT, additiveExpr.operands().get(0));
-    assertEquals("1", additiveExpr.operands().get(0).toString());
-    assertEquals("+", additiveExpr.operatorList.get(0).toString());
-    assertEquals(ASTTypeNode.DataType.INT, additiveExpr.operands().get(1));
-    assertEquals("2", additiveExpr.operands().get(1).toString());
+    assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, additiveExpr.operands().getFirst().operands().getFirst().operand().getType());
+    assertEquals(1, additiveExpr.operands().getFirst().operands().getFirst().operand().getIntLit());
+    assertEquals(ASTAdditiveExprNode.AdditiveOperator.PLUS, additiveExpr.operatorList.getFirst());
+    assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, additiveExpr.operands().getLast().operands().getFirst().operand().getType());
+    assertEquals(2, additiveExpr.operands().getLast().operands().getFirst().operand().getIntLit());
   }
 }

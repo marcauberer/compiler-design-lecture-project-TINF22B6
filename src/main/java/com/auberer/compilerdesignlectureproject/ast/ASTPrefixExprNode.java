@@ -4,7 +4,6 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.Setter;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -30,7 +29,7 @@ public class ASTPrefixExprNode extends ASTNode {
     return selectionSet;
   }
 
-    public ASTNode operands() {
+    public ASTAtomicExprNode operand() {
         return getChild(ASTAtomicExprNode.class, 0);
     }
 }

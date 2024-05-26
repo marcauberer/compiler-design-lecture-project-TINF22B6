@@ -1,6 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.ast.ASTAtomicExprNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -13,13 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 public class AtomicExprNodeTest {
     @Spy
@@ -54,7 +49,7 @@ public class AtomicExprNodeTest {
     @Test
     @DisplayName("Integration test")
     void atomicExprIntegrationTest() {
-        String code = "Röthig";
+        String code = "\"Roethig\"";
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
@@ -62,6 +57,7 @@ public class AtomicExprNodeTest {
 
         assertNotNull(atomicExpr);
         assertInstanceOf(ASTAtomicExprNode.class, atomicExpr);
-        assertEquals(ASTTypeNode.DataType.STRING, atomicExpr);
+        assertEquals(ASTAtomicExprNode.AtomicType.STRING_LIT, atomicExpr.getType());
+        assertEquals("Roethig", atomicExpr.getStringLit());
     }
 }

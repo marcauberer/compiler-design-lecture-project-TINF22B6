@@ -1,9 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTAdditiveExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTAtomicExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -20,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class LogicalExprNodeTest {
@@ -71,9 +68,10 @@ public class LogicalExprNodeTest {
 
         assertNotNull(logicalExpr);
         assertInstanceOf(ASTLogicalExprNode.class, logicalExpr);
-        assertInstanceOf(ASTAtomicExprNode.class, logicalExpr);
-        assertEquals("a", logicalExpr.operands().get(0).toString());
-        assertEquals("&&", logicalExpr.operatorList.get(0).toString());
-        assertEquals("b", logicalExpr.operands().get(0).toString());
+        assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, logicalExpr.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getType());
+        assertEquals("a", logicalExpr.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
+        assertEquals(ASTLogicalExprNode.LogicalOperator.AND, logicalExpr.operatorList.getFirst());
+        assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, logicalExpr.operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getType());
+        assertEquals("b", logicalExpr.operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
     }
 }

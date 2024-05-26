@@ -1,9 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTAtomicExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTMultiplicativeExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTPrefixExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -20,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class PrefixExprNodeTest {
@@ -70,9 +67,8 @@ public class PrefixExprNodeTest {
 
         assertNotNull(prefixExpr);
         assertInstanceOf(ASTPrefixExprNode.class, prefixExpr);
-        assertInstanceOf(ASTAtomicExprNode.class, prefixExpr);
         assertEquals(ASTPrefixExprNode.PrefixOperator.MINUS , prefixExpr.operator);
-        assertEquals("-", prefixExpr.operator.toString());
-        assertEquals("4", prefixExpr.operands().toString());
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, prefixExpr.operand().getType());
+        assertEquals(4, prefixExpr.operand().getIntLit());
     }
 }

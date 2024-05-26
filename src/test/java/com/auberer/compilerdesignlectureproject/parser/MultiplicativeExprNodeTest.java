@@ -1,9 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTAdditiveExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTAtomicExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTMultiplicativeExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -20,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class MultiplicativeExprNodeTest {
@@ -71,11 +68,10 @@ public class MultiplicativeExprNodeTest {
 
         assertNotNull(multiplicativeExpr);
         assertInstanceOf(ASTMultiplicativeExprNode.class, multiplicativeExpr);
-        assertInstanceOf(ASTAtomicExprNode.class, multiplicativeExpr);
-        assertEquals(ASTTypeNode.DataType.INT, multiplicativeExpr.operands().get(0));
-        assertEquals("2", multiplicativeExpr.operands().get(0).toString());
-        assertEquals("*", multiplicativeExpr.operatorList.get(0).toString());
-        assertEquals(ASTTypeNode.DataType.INT, multiplicativeExpr.operands().get(1));
-        assertEquals("3", multiplicativeExpr.operands().get(1).toString());
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, multiplicativeExpr.operands().getFirst().operand().getType());
+        assertEquals(2, multiplicativeExpr.operands().getFirst().operand().getIntLit());
+        assertEquals(ASTMultiplicativeExprNode.MultiplicativeOperator.MUL, multiplicativeExpr.operatorList.getFirst());
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, multiplicativeExpr.operands().getLast().operand().getType());
+        assertEquals(3, multiplicativeExpr.operands().getLast().operand().getIntLit());
     }
 }

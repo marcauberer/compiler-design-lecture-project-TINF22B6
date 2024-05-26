@@ -1,9 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTAdditiveExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTAtomicExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTCompareExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -70,11 +68,10 @@ public class CompareExprNodeTest {
 
         assertNotNull(compareExpr);
         assertInstanceOf(ASTCompareExprNode.class, compareExpr);
-        assertInstanceOf(ASTAtomicExprNode.class, compareExpr);
-        assertEquals(ASTTypeNode.DataType.INT, compareExpr.operands().get(0));
-        assertEquals("2", compareExpr.operands().get(0).toString());
-        assertEquals("!=", compareExpr.operator.toString());
-        assertEquals(ASTTypeNode.DataType.INT, compareExpr.operands().get(1));
-        assertEquals("3", compareExpr.operands().get(0).toString());
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, compareExpr.operands().getFirst().operands().getFirst().operands().getFirst().operand().getType());
+        assertEquals(2, compareExpr.operands().getFirst().operands().getFirst().operands().getFirst().operand().getIntLit());
+        assertEquals(ASTCompareExprNode.CompareOperator.NOT_EQUAL, compareExpr.operator);
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, compareExpr.operands().getLast().operands().getFirst().operands().getFirst().operand().getType());
+        assertEquals(3, compareExpr.operands().getLast().operands().getFirst().operands().getFirst().operand().getIntLit());
     }
 }
