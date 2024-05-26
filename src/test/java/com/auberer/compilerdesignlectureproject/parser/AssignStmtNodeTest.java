@@ -7,7 +7,6 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
-import com.auberer.compilerdesignlectureproject.sema.SymbolTable;
 import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -93,19 +92,23 @@ public class AssignStmtNodeTest {
 
         assertNotNull(astStmtNode);
         assertInstanceOf(ASTAssignStmtNode.class, astStmtNode);
-        assertNotNull(astStmtNode.getLogical());
-        assertInstanceOf(ASTLogicalExprNode.class, astStmtNode.getLogical());
+        assertNotNull(astStmtNode.getLogicalExpr());
+        assertInstanceOf(ASTLogicalExprNode.class, astStmtNode.getLogicalExpr());
     }
 
     @Test
     @DisplayName("Integration test")
-    void integrationTestSymboltableBuilder() {
+    void integrationTestSymbolTableBuilder() {
         String code = "x = 5;";
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTAssignStmtNode astStmtNode = parser.parseAssignStmt();
+
         SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
+
+        // Modify the symbol table, so that it contains the variable x
+        symboltablebuilder.getCurrentScopes().peek().insertSymbol("x", null);
 
         symboltablebuilder.visitAssignStmt(astStmtNode);
     }

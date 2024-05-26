@@ -326,6 +326,7 @@ public class Parser implements IParser {
     enterNode(node);
 
     if (lexer.getToken().getType() == TokenType.TOK_IDENTIFIER) {
+      node.setAssignment(true);
       node.setVariableName(lexer.getToken().getText());
       lexer.expect(TokenType.TOK_IDENTIFIER);
       lexer.expect(TokenType.TOK_ASSIGN);

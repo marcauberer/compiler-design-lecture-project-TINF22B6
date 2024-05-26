@@ -1,12 +1,15 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
+import lombok.Getter;
 
 import java.util.Stack;
 
+@Getter
 public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   Stack<Scope> currentScopes = new Stack<>();
+
   public SymbolTableBuilder() {
     assert currentScopes.empty();
     currentScopes.push(new Scope());
@@ -18,7 +21,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
     // Check if main function is present
     if (currentScopes.peek().lookupSymbol("main") == null)
-      throw new SemaError("No main function found");
+      throw new SemaError(node, "No main function found");
 
     return null;
   }
@@ -27,10 +30,12 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   public Void visitVarDecl(ASTVarDeclNode node) {
     visitChildren(node);
 
-    if (currentScopes.peek().lookupSymbolStrict(node.getVariableName()) ==null) {
-      currentScopes.peek().insertSymbol(node.getVariableName(), node);
+    String variableName = node.getVariableName();
+    SymbolTableEntry entry = currentScopes.peek().lookupSymbolStrict(variableName);
+    if (entry == null) {
+      currentScopes.peek().insertSymbol(variableName, node);
     } else {
-      throw new SemaError("Scope already exists");
+      throw new SemaError(node, "The variable '" + variableName + "' has already been declared in this scope");
     }
 
     return null;
@@ -39,8 +44,11 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   public Void visitAssignStmt(ASTAssignStmtNode node) {
     visitChildren(node);
 
-    if (currentScopes.peek().lookupSymbolStrict(node.getVariableName()) != null) {
-      throw new SemaError("Scope already exists");
+    if (node.isAssignment()) {
+      String variableName = node.getVariableName();
+      SymbolTableEntry entry = currentScopes.peek().lookupSymbol(variableName);
+      if (entry == null)
+        throw new SemaError(node, "Variable '" + variableName + "' was not found");
     }
     
     return null;
@@ -121,13 +129,16 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   @Override
   public Void visitCases(ASTCasesNode node) {
-    Scope scope = new Scope();
-    currentScopes.push(scope);
+    for (ASTStmtLstNode stmtLst : node.getStmtLists()) {
+      Scope scope = new Scope();
+      currentScopes.push(scope);
 
-    visitChildren(node);
+      visit(stmtLst);
 
-    assert currentScopes.peek() == scope;
-    currentScopes.pop();
+      assert currentScopes.peek() == scope;
+      currentScopes.pop();
+    }
+
     return null;
   }
 
