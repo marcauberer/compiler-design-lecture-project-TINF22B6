@@ -25,4 +25,8 @@ public class ASTCompareExprNode extends ASTNode {
   public static Set<TokenType> getSelectionSet() {
     return ASTPrefixExprNode.getSelectionSet();
   }
+
+  public List<ASTAdditiveExprNode> operands() {
+    return getChildren(ASTAdditiveExprNode.class);
+  }
 }

@@ -1,10 +1,14 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
+import com.auberer.compilerdesignlectureproject.ast.ASTAtomicExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTMultiplicativeExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTPrefixExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +19,8 @@ import org.mockito.Spy;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class PrefixExprNodeTest {
@@ -37,8 +41,8 @@ public class PrefixExprNodeTest {
     @DisplayName("Test prefix expression")
     void testPrefixExpr() {
         List<Token> tokenList = new LinkedList<>();
-        tokenList.add(new Token(TokenType.TOK_MINUS, "", new CodeLoc(1, 1)));
-        tokenList.add(new Token(TokenType.TOK_INT_LIT, "4", new CodeLoc(1, 2)));
+        tokenList.add(new Token(TokenType.TOK_MINUS, "", new CodeLoc(1,1)));
+        tokenList.add(new Token(TokenType.TOK_INT_LIT, "4", new CodeLoc(1,2)));
 
         // Arrange
         doReturn(null).when(parser).parseAtomicExpression();
@@ -53,5 +57,22 @@ public class PrefixExprNodeTest {
         verify(lexer, times(1)).expect(TokenType.TOK_MINUS);
         assertNotNull(prefixExprNode);
         assertInstanceOf(ASTPrefixExprNode.class, prefixExprNode);
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void prefixExprIntegrationTest() {
+        String code = "-4";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTPrefixExprNode prefixExpr = parser.parsePrefixExpression();
+
+        assertNotNull(prefixExpr);
+        assertInstanceOf(ASTPrefixExprNode.class, prefixExpr);
+        assertInstanceOf(ASTAtomicExprNode.class, prefixExpr);
+        assertEquals(ASTPrefixExprNode.PrefixOperator.MINUS , prefixExpr.operator);
+        assertEquals("-", prefixExpr.operator.toString());
+        assertEquals("4", prefixExpr.operands().toString());
     }
 }
