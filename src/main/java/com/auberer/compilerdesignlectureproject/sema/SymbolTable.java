@@ -19,17 +19,18 @@ public class SymbolTable implements Serializable {
     symbols.put(name, new SymbolTableEntry(scope, name, declNode));
   }
 
-  public SymbolTableEntry lookup(String name) {
-    SymbolTableEntry entry = lookupStrict(name);
+  public SymbolTableEntry lookup(String name, ASTNode lookupNode) {
+    SymbolTableEntry entry = lookupStrict(name, lookupNode);
     if (entry != null)
       return entry;
     if (scope.parent == null)
       return null;
-    return scope.parent.lookupSymbol(name);
+    return scope.parent.lookupSymbol(name, lookupNode);
   }
 
-  public SymbolTableEntry lookupStrict(String name) {
-    return symbols.get(name);
+  public SymbolTableEntry lookupStrict(String name, ASTNode lookupNode) {
+    SymbolTableEntry entry = symbols.get(name);
+    return entry != null && entry.declNode.getCodeLoc().compareTo(lookupNode.getCodeLoc()) <= 0 ? entry : null;
   }
 
 }

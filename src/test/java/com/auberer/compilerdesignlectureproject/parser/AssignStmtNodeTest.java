@@ -2,6 +2,7 @@ package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTVarDeclNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -108,7 +109,9 @@ public class AssignStmtNodeTest {
         SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
 
         // Modify the symbol table, so that it contains the variable x
-        symboltablebuilder.getCurrentScopes().peek().insertSymbol("x", null);
+        ASTVarDeclNode declNode = new ASTVarDeclNode();
+        declNode.setCodeLoc(new CodeLoc(0, 0));
+        symboltablebuilder.getCurrentScopes().peek().insertSymbol("x", declNode);
 
         symboltablebuilder.visitAssignStmt(astStmtNode);
     }

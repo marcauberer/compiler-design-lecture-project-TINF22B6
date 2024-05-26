@@ -21,11 +21,11 @@ public class Scope {
     symbolTable.insert(name, declNode);
   }
 
-  public SymbolTableEntry lookupSymbol(String name) {
-    return symbolTable.lookup(name);
+  public SymbolTableEntry lookupSymbol(String name, ASTNode lookupNode) {
+    return symbolTable.lookup(name, lookupNode);
   }
 
-  public SymbolTableEntry lookupSymbolStrict(String name) {
-    return symbolTable.lookupStrict(name);
+  public SymbolTableEntry lookupSymbolStrict(String name, ASTNode lookupNode) {
+    return symbolTable.lookupStrict(name, lookupNode);
   }
 }

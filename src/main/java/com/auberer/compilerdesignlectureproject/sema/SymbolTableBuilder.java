@@ -20,7 +20,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     visitChildren(node);
 
     // Check if main function is present
-    if (currentScopes.peek().lookupSymbol("main") == null)
+    if (currentScopes.peek().lookupSymbol("main", node) == null)
       throw new SemaError(node, "No main function found");
 
     return null;
@@ -31,7 +31,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     visitChildren(node);
 
     String variableName = node.getVariableName();
-    SymbolTableEntry entry = currentScopes.peek().lookupSymbolStrict(variableName);
+    SymbolTableEntry entry = currentScopes.peek().lookupSymbolStrict(variableName, node);
     if (entry == null) {
       currentScopes.peek().insertSymbol(variableName, node);
     } else {
@@ -46,7 +46,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
     if (node.isAssignment()) {
       String variableName = node.getVariableName();
-      SymbolTableEntry entry = currentScopes.peek().lookupSymbol(variableName);
+      SymbolTableEntry entry = currentScopes.peek().lookupSymbol(variableName, node);
       if (entry == null)
         throw new SemaError(node, "Variable '" + variableName + "' was not found");
     }
