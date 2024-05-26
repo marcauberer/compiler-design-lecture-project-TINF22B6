@@ -27,4 +27,8 @@ public class ASTAdditiveExprNode extends ASTNode{
     public void operatorsListAdd(AdditiveOperator a) {
         operatorList.add(a);
     }
+
+    public List<ASTMultiplicativeExprNode> operands() {
+        return getChildren(ASTMultiplicativeExprNode.class);
+    }
 }

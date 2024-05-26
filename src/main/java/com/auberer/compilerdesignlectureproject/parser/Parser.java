@@ -2,6 +2,7 @@ package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.lexer.ILexer;
+import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -532,52 +533,59 @@ public class Parser implements IParser {
     ASTAtomicExprNode node = new ASTAtomicExprNode();
     enterNode(node);
 
-    switch (lexer.getToken().getType()) {
+    Token token = lexer.getToken();
+    switch (token.getType()) {
       case TokenType.TOK_INT_LIT: {
         lexer.expect(TokenType.TOK_INT_LIT);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.INT_LIT);
+        node.setType(ASTAtomicExprNode.AtomicType.INT_LIT);
+        node.setIntLit(Integer.parseInt(token.getText()));
         break;
       }
       case TokenType.TOK_DOUBLE_LIT: {
         lexer.expect(TokenType.TOK_DOUBLE_LIT);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.DOUBLE_LIT);
+        node.setType(ASTAtomicExprNode.AtomicType.DOUBLE_LIT);
+        node.setDoubleLit(Double.parseDouble(token.getText()));
         break;
       }
       case TokenType.TOK_STRING_LIT: {
         lexer.expect(TokenType.TOK_STRING_LIT);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.STRING_LIT);
+        node.setType(ASTAtomicExprNode.AtomicType.STRING_LIT);
+        node.setStringLit(token.getText().substring(1, token.getText().length() - 1));
         break;
       }
       case TokenType.TOK_TRUE: {
         lexer.expect(TokenType.TOK_TRUE);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+        node.setType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
+        node.setBoolLit(true);
         break;
       }
       case TokenType.TOK_FALSE: {
         lexer.expect(TokenType.TOK_FALSE);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+        node.setType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
+        node.setBoolLit(false);
         break;
       }
       case TokenType.TOK_IDENTIFIER: {
         lexer.expect(TokenType.TOK_IDENTIFIER);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.IDENTIFIER);
+        node.setType(ASTAtomicExprNode.AtomicType.IDENTIFIER);
+        node.setIdentifier(token.getText());
         break;
       }
       case TokenType.TOK_LPAREN: {
         lexer.expect(TokenType.TOK_LPAREN);
         parseLogicalExpression();
         lexer.expect(TokenType.TOK_RPAREN);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.LOGICAL_EXPR);
+        node.setType(ASTAtomicExprNode.AtomicType.LOGICAL_EXPR);
         break;
       }
       case TokenType.TOK_CALL: {
         parseFctCall();
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.FCT_CALL);
+        node.setType(ASTAtomicExprNode.AtomicType.FCT_CALL);
         break;
       }
       case TokenType.TOK_PRINT: {
         parsePrintBuiltinCall();
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.PRINT_BUILTIN_CALL);
+        node.setType(ASTAtomicExprNode.AtomicType.PRINT_BUILTIN_CALL);
         break;
       }
       default: {
