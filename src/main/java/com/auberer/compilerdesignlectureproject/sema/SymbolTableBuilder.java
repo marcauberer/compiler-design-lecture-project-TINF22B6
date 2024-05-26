@@ -23,12 +23,9 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     visitChildren(node);
 
     // Check if the initialization, condition, and increment are not null
-    if (node.getInitialization() == null)
-      throw new SemaError("For loop missing initialization");
-    if (node.getCondition() == null)
-        throw new SemaError("For loop missing condition");
-    if (node.getIncrement() == null)
-        throw new SemaError("For loop missing increment");
+    assert node.getInitialization() != null;
+    assert node.getCondition() != null;
+    assert node.getIncrement() != null;
 
     currentScopes.pop();
     return null;
