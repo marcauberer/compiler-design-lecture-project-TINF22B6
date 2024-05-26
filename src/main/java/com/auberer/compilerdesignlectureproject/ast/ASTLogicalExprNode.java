@@ -27,4 +27,9 @@ public class ASTLogicalExprNode extends ASTNode {
   public void operatorsListAdd(LogicalOperator a) {
     operatorList.add(a);
   }
+
+    public List<ASTCompareExprNode> operands() {
+        return getChildren(ASTCompareExprNode.class);
+    }
+
 }
