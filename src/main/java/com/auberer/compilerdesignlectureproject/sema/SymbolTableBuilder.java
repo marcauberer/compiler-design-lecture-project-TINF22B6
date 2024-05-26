@@ -153,4 +153,40 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     currentScopes.pop();
     return null;
   }
+
+  @Override
+  public Void visitSwitchStmt(ASTSwitchStmtNode node) {
+    Scope scope = new Scope();
+    currentScopes.push(scope);
+
+    visitChildren(node);
+
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
+    return null;
+  }
+
+  @Override
+  public Void visitCases(ASTCasesNode node) {
+    Scope scope = new Scope();
+    currentScopes.push(scope);
+
+    visitChildren(node);
+
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
+    return null;
+  }
+
+  @Override
+  public Void visitDefault(ASTDefaultNode node) {
+    Scope scope = new Scope();
+    currentScopes.push(scope);
+
+    visitChildren(node);
+
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
+    return null;
+  }
 }
