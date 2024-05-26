@@ -14,28 +14,13 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   }
 
   @Override
-  public Void visitForLoop(ASTForNode node) {
-    Scope forScope = new Scope();
-    currentScopes.push(forScope);
-
-    visitChildren(node);
-
-    // Check if the initialization, condition, and increment are not null
-    assert node.getInitialization() != null;
-    assert node.getCondition() != null;
-    assert node.getIncrement() != null;
-
-    currentScopes.pop();
-    return null;
-  }
-
-  @Override
   public Void visitEntry(ASTEntryNode node) {
     visitChildren(node);
 
     // Check if main function is present
     if (currentScopes.peek().lookupSymbol("main") == null)
       throw new SemaError("No main function found");
+
     return null;
   }
 
@@ -68,7 +53,23 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
     visitChildren(node);
 
-    assert currentScopes.size() >= 2 && currentScopes.peek() == doWhileScope;
+    assert currentScopes.peek() == doWhileScope;
+    currentScopes.pop();
+    return null;
+  }
+
+  @Override
+  public Void visitForLoop(ASTForNode node) {
+    Scope forScope = new Scope();
+    currentScopes.push(forScope);
+
+    visitChildren(node);
+
+    // Check if the initialization, condition, and increment are not null
+    assert node.getInitialization() != null;
+    assert node.getCondition() != null;
+    assert node.getIncrement() != null;
+
     currentScopes.pop();
     return null;
   }
