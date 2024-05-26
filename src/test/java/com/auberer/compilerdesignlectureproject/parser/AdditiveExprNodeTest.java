@@ -68,10 +68,10 @@ public class AdditiveExprNodeTest {
 
     assertNotNull(additiveExpr);
     assertInstanceOf(ASTAdditiveExprNode.class, additiveExpr);
-    assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, additiveExpr.operands().getFirst().operands().getFirst().operand().getType());
+    assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, additiveExpr.operands().getFirst().operands().getFirst().operand().getExprType());
     assertEquals(1, additiveExpr.operands().getFirst().operands().getFirst().operand().getIntLit());
     assertEquals(ASTAdditiveExprNode.AdditiveOperator.PLUS, additiveExpr.operatorList.getFirst());
-    assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, additiveExpr.operands().getLast().operands().getFirst().operand().getType());
+    assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, additiveExpr.operands().getLast().operands().getFirst().operand().getExprType());
     assertEquals(2, additiveExpr.operands().getLast().operands().getFirst().operand().getIntLit());
   }
 }

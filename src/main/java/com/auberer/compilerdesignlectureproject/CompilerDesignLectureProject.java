@@ -9,6 +9,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
 import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
+import com.auberer.compilerdesignlectureproject.sema.TypeChecker;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -66,6 +67,10 @@ public class CompilerDesignLectureProject {
       // Generate Scopes and their SymbolTables
       SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
       symbolTableBuilder.visit(ast);
+
+      // Perform type checking
+      TypeChecker typeChecker = new TypeChecker();
+      typeChecker.visit(ast);
 
       // ToDo: Extend ...
     } catch (ParseException e) {

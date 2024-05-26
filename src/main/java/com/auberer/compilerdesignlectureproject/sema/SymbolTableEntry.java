@@ -1,19 +1,27 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTNode;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
-@Data
 public class SymbolTableEntry implements Serializable {
 
-  String name;
-  ASTNode declNode;
-  Scope scope;
-  boolean isUsed = false;
-  boolean isParameter = false;
-  // Type type = new Type(TY_INVALID);
+  @Getter
+  private String name;
+  @Getter
+  private ASTNode declNode;
+  @Getter
+  private Scope scope;
+  @Setter
+  @Getter
+  private boolean isUsed = false;
+  @Setter
+  @Getter
+  private boolean isParameter = false;
+  @Getter
+  private Type type = new Type(SuperType.TY_INVALID);
 
   public SymbolTableEntry(Scope scope, String name, ASTNode declNode) {
     this.scope = scope;
@@ -21,4 +29,8 @@ public class SymbolTableEntry implements Serializable {
     this.declNode = declNode;
   }
 
+  public void updateType(Type type) {
+    assert this.type.getSuperType() == SuperType.TY_INVALID;
+    this.type = type;
+  }
 }

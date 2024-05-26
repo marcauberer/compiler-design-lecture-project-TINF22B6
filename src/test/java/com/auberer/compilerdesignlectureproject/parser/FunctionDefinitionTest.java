@@ -97,7 +97,7 @@ public class FunctionDefinitionTest {
         ASTFctDefNode astFctDefNode = parser.parseFctDef();
 
         assertInstanceOf(ASTFctDefNode.class, astFctDefNode);
-        assertInstanceOf(ASTTypeNode.class, astFctDefNode.getType());
+        assertInstanceOf(ASTTypeNode.class, astFctDefNode.getDataType());
         assertInstanceOf(ASTParamLstNode.class, astFctDefNode.getParams());
     }
 }

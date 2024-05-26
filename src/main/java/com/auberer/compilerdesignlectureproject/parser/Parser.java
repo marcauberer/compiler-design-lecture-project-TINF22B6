@@ -140,22 +140,22 @@ public class Parser implements IParser {
     switch (lexer.getToken().getType()) {
       case TokenType.TOK_TYPE_INT: {
         lexer.expect(TokenType.TOK_TYPE_INT);
-        node.setType(ASTTypeNode.DataType.INT);
+        node.setDataType(ASTTypeNode.DataType.INT);
         break;
       }
       case TokenType.TOK_TYPE_DOUBLE: {
         lexer.expect(TokenType.TOK_TYPE_DOUBLE);
-        node.setType(ASTTypeNode.DataType.DOUBLE);
+        node.setDataType(ASTTypeNode.DataType.DOUBLE);
         break;
       }
       case TokenType.TOK_TYPE_STRING: {
         lexer.expect(TokenType.TOK_TYPE_STRING);
-        node.setType(ASTTypeNode.DataType.STRING);
+        node.setDataType(ASTTypeNode.DataType.STRING);
         break;
       }
       case TokenType.TOK_TYPE_EMPTY: {
         lexer.expect(TokenType.TOK_TYPE_EMPTY);
-        node.setType(ASTTypeNode.DataType.EMPTY);
+        node.setDataType(ASTTypeNode.DataType.EMPTY);
         break;
       }
       default: {
@@ -282,10 +282,10 @@ public class Parser implements IParser {
     enterNode(node);
 
     if (ASTIfStmtNode.getSelectionSet().contains(lexer.getToken().getType())) {
-      node.setType(ASTElsePostNode.ElseType.ELSE_IF);
+      node.setExprType(ASTElsePostNode.ElseType.ELSE_IF);
       parseIfStmt();
     } else {
-      node.setType(ASTElsePostNode.ElseType.ELSE);
+      node.setExprType(ASTElsePostNode.ElseType.ELSE);
       parseElseStmt();
     }
 
@@ -538,37 +538,37 @@ public class Parser implements IParser {
     switch (token.getType()) {
       case TokenType.TOK_INT_LIT: {
         lexer.expect(TokenType.TOK_INT_LIT);
-        node.setType(ASTAtomicExprNode.AtomicType.INT_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.INT_LIT);
         node.setIntLit(Integer.parseInt(token.getText()));
         break;
       }
       case TokenType.TOK_DOUBLE_LIT: {
         lexer.expect(TokenType.TOK_DOUBLE_LIT);
-        node.setType(ASTAtomicExprNode.AtomicType.DOUBLE_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.DOUBLE_LIT);
         node.setDoubleLit(Double.parseDouble(token.getText()));
         break;
       }
       case TokenType.TOK_STRING_LIT: {
         lexer.expect(TokenType.TOK_STRING_LIT);
-        node.setType(ASTAtomicExprNode.AtomicType.STRING_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.STRING_LIT);
         node.setStringLit(token.getText().substring(1, token.getText().length() - 1));
         break;
       }
       case TokenType.TOK_TRUE: {
         lexer.expect(TokenType.TOK_TRUE);
-        node.setType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
         node.setBoolLit(true);
         break;
       }
       case TokenType.TOK_FALSE: {
         lexer.expect(TokenType.TOK_FALSE);
-        node.setType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
         node.setBoolLit(false);
         break;
       }
       case TokenType.TOK_IDENTIFIER: {
         lexer.expect(TokenType.TOK_IDENTIFIER);
-        node.setType(ASTAtomicExprNode.AtomicType.IDENTIFIER);
+        node.setExprType(ASTAtomicExprNode.AtomicType.IDENTIFIER);
         node.setIdentifier(token.getText());
         break;
       }
@@ -576,17 +576,17 @@ public class Parser implements IParser {
         lexer.expect(TokenType.TOK_LPAREN);
         parseLogicalExpression();
         lexer.expect(TokenType.TOK_RPAREN);
-        node.setType(ASTAtomicExprNode.AtomicType.LOGICAL_EXPR);
+        node.setExprType(ASTAtomicExprNode.AtomicType.LOGICAL_EXPR);
         break;
       }
       case TokenType.TOK_CALL: {
         parseFctCall();
-        node.setType(ASTAtomicExprNode.AtomicType.FCT_CALL);
+        node.setExprType(ASTAtomicExprNode.AtomicType.FCT_CALL);
         break;
       }
       case TokenType.TOK_PRINT: {
         parsePrintBuiltinCall();
-        node.setType(ASTAtomicExprNode.AtomicType.PRINT_BUILTIN_CALL);
+        node.setExprType(ASTAtomicExprNode.AtomicType.PRINT_BUILTIN_CALL);
         break;
       }
       default: {

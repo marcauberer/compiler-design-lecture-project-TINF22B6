@@ -30,7 +30,7 @@ public class SymbolTable implements Serializable {
 
   public SymbolTableEntry lookupStrict(String name, ASTNode lookupNode) {
     SymbolTableEntry entry = symbols.get(name);
-    return entry != null && entry.declNode.getCodeLoc().compareTo(lookupNode.getCodeLoc()) <= 0 ? entry : null;
+    return entry != null && entry.getDeclNode().getCodeLoc().compareTo(lookupNode.getCodeLoc()) <= 0 ? entry : null;
   }
 
 }

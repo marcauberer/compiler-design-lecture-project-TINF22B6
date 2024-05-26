@@ -68,7 +68,7 @@ public class PrefixExprNodeTest {
         assertNotNull(prefixExpr);
         assertInstanceOf(ASTPrefixExprNode.class, prefixExpr);
         assertEquals(ASTPrefixExprNode.PrefixOperator.MINUS , prefixExpr.operator);
-        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, prefixExpr.operand().getType());
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, prefixExpr.operand().getExprType());
         assertEquals(4, prefixExpr.operand().getIntLit());
     }
 }

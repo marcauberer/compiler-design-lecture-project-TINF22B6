@@ -1,6 +1,8 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
+import com.auberer.compilerdesignlectureproject.sema.SuperType;
+import com.auberer.compilerdesignlectureproject.sema.Type;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -26,8 +28,13 @@ public abstract class ASTNode implements IVisitable {
     return getChildren(targetClass).get(idx);
   }
 
+  public Type setEvaluatedSymbolType(Type type) {
+    this.type = type;
+    return type;
+  }
+
   ASTNode parent;
   List<ASTNode> children = new ArrayList<>();
   CodeLoc codeLoc;
-  // Type type = Type(TY_INVALID);
+  Type type = new Type(SuperType.TY_INVALID);
 }

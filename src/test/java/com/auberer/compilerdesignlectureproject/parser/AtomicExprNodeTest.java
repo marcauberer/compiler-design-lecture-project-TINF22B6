@@ -57,7 +57,7 @@ public class AtomicExprNodeTest {
 
         assertNotNull(atomicExpr);
         assertInstanceOf(ASTAtomicExprNode.class, atomicExpr);
-        assertEquals(ASTAtomicExprNode.AtomicType.STRING_LIT, atomicExpr.getType());
+        assertEquals(ASTAtomicExprNode.AtomicType.STRING_LIT, atomicExpr.getExprType());
         assertEquals("Roethig", atomicExpr.getStringLit());
     }
 }
