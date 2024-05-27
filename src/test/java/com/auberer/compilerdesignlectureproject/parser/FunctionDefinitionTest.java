@@ -89,7 +89,7 @@ public class FunctionDefinitionTest {
 
     @Test
     @DisplayName("Integration test for function definition")
-    void testIntegrationTestForFunctionCall() {
+    void testIntegrationTestForFunctionDefinition() {
 
         String fctDef = "func int myFunc(int x) int i = 17; return x; cnuf";
         Lexer lexer1 = new Lexer(new Reader(fctDef), true);

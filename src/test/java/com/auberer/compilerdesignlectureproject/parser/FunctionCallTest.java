@@ -62,9 +62,10 @@ public class FunctionCallTest {
     void testIntegrationTestForFunctionCall() {
 
         String fctDef = "call myFunc(7);";
-        Lexer lexer1 = new Lexer(new Reader(fctDef), true);
-        Parser parser1 = new Parser(lexer1);
-        ASTFctCallNode astFctCallNode = parser1.parseFctCall();
+        Reader reader = new Reader(fctDef);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTFctCallNode astFctCallNode = parser.parseFctCall();
         assertInstanceOf(ASTFctCallNode.class, astFctCallNode);
         assertInstanceOf(ASTCallParamsNode.class, astFctCallNode.getCallParams());
     }
