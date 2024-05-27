@@ -167,8 +167,8 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
     currentScopes.pop();
 
-    if (currentScopes.peek().lookupSymbol(node.getName()) != null) {
-      throw new SemaError("Function name already in use");
+    if (currentScopes.peek().lookupSymbol(node.getName(), node) != null) {
+      throw new SemaError(node, "Function name already in use");
     } else {
       currentScopes.peek().insertSymbol(node.getName(), node);
     }
