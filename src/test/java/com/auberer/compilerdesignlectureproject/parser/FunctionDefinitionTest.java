@@ -1,5 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
+import com.auberer.compilerdesignlectureproject.ast.ASTFctCallNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTParamLstNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
@@ -8,6 +9,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,10 +96,9 @@ public class FunctionDefinitionTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
 
-        ASTFctDefNode astFctDefNode = parser.parseFctDef();
 
-        assertInstanceOf(ASTFctDefNode.class, astFctDefNode);
-        assertInstanceOf(ASTTypeNode.class, astFctDefNode.getType());
-        assertInstanceOf(ASTParamLstNode.class, astFctDefNode.getParams());
+        ASTFctDefNode astFctDefNode = parser.parseFctDef();
+        SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
+        symboltablebuilder.visitFctDef(astFctDefNode);
     }
 }

@@ -7,6 +7,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,8 +67,8 @@ public class FunctionCallTest {
         Parser parser = new Parser(lexer);
 
         ASTFctCallNode astFctCallNode = parser.parseFctCall();
+        SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
 
-        assertInstanceOf(ASTFctCallNode.class, astFctCallNode);
-        assertInstanceOf(ASTCallParamsNode.class, astFctCallNode.getCallParams());
+        symboltablebuilder.visitFctCall(astFctCallNode);
     }
 }

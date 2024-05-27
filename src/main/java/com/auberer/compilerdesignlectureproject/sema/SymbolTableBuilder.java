@@ -162,7 +162,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
     currentScopes.push(functionScope);
 
-    visit(node.getBody());
+    //visit(node.getBody());
     visit(node.getParams());
 
     currentScopes.pop();
@@ -194,7 +194,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
     visitChildren(node);
 
-    if (currentScopes.peek().lookupSymbol(node.getName(), node) == null) {
+    if (currentScopes.peek().lookupSymbolStrict(node.getName(), node) == null) {
       throw new SemaError(node, "Function not defined");
     }
 
