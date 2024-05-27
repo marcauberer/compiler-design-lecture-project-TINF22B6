@@ -21,7 +21,7 @@ whileLoop: WHILE LPAREN logicalExpr RPAREN LBRACE stmtLst RBRACE;
 doWhileLoop: DO LBRACE stmtLst RBRACE WHILE LPAREN logicalExpr RPAREN SEMICOLON;
 
 // For loop (team 4)
-forLoop: FOR LPAREN assignStmt SEMICOLON logicalExpr SEMICOLON logicalExpr RPAREN LBRACE stmtLst RBRACE;
+forLoop: FOR LPAREN varDecl SEMICOLON logicalExpr SEMICOLON assignStmt RPAREN LBRACE stmtLst RBRACE;
 
 // Switch statement (team 5)
 switchStmt: SWITCH LPAREN logicalExpr RPAREN LBRACE cases default? RBRACE;

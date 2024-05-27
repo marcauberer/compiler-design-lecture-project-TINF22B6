@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class CodeLoc implements Cloneable {
+public class CodeLoc implements Cloneable, Comparable {
   long line;
   long column;
 
@@ -23,5 +23,15 @@ public class CodeLoc implements Cloneable {
     } catch (CloneNotSupportedException e) {
       throw new AssertionError();
     }
+  }
+
+  @Override
+  public int compareTo(Object o) {
+    if (line == ((CodeLoc) o).line && column == ((CodeLoc) o).column)
+      return 0;
+    else if (line == ((CodeLoc) o).line)
+      return column < ((CodeLoc) o).column ? -1 : 1;
+    else
+      return line < ((CodeLoc) o).line ? -1 : 1;
   }
 }

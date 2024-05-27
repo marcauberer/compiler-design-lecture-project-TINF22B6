@@ -38,7 +38,9 @@ public class ForNodeTest {
         doReturn(new Token(TokenType.TOK_FOR, "", new CodeLoc(1, 1))).when(lexer).getToken();
         doNothing().when(lexer).expect(TokenType.TOK_FOR);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
+        doReturn(null).when(parser).parseVarDecl();
         doReturn(null).when(parser).parseLogicalExpression();
+        doReturn(null).when(parser).parseAssignStmt();
         doNothing().when(lexer).expect(TokenType.TOK_SEMICOLON);
         doNothing().when(lexer).expect(TokenType.TOK_RPAREN);
         doNothing().when(lexer).expect(TokenType.TOK_LBRACE);
@@ -51,7 +53,9 @@ public class ForNodeTest {
         // Assert
         verify(lexer, times(1)).expect(TokenType.TOK_FOR);
         verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
-        verify(parser, times(3)).parseLogicalExpression();
+        verify(parser, times(1)).parseVarDecl();
+        verify(parser, times(1)).parseLogicalExpression();
+        verify(parser, times(1)).parseAssignStmt();
         verify(lexer, times(2)).expect(TokenType.TOK_SEMICOLON);
         verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
         verify(lexer, times(1)).expect(TokenType.TOK_LBRACE);
