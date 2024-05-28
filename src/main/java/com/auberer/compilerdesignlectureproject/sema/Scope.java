@@ -11,10 +11,11 @@ public class Scope {
   Scope parent = null; // Holds the parent scope of this one. The root scope has a null parent.
   List<Scope> children = new ArrayList<>();
 
-  public void createChildScope() {
+  public Scope createChildScope() {
     Scope childScope = new Scope();
     childScope.parent = this;
     children.add(childScope);
+    return childScope;
   }
 
   public void insertSymbol(String name, ASTNode declNode) {
