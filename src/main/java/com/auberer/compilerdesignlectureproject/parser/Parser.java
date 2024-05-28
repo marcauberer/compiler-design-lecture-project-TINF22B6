@@ -110,7 +110,7 @@ public class Parser implements IParser {
     } else if (ASTAssignStmtNode.getSelectionSet().contains(tokenType)) {
       parseAssignStmt();
     } else {
-      assert false : "Unexpected token in statement";
+      throw new RuntimeException("Unexpected token in statement");
     }
     lexer.expect(TokenType.TOK_SEMICOLON);
 
@@ -159,7 +159,7 @@ public class Parser implements IParser {
         break;
       }
       default: {
-        assert false : "Unexpected token in type";
+        throw new RuntimeException("Unexpected token in type");
       }
     }
 
@@ -590,7 +590,7 @@ public class Parser implements IParser {
         break;
       }
       default: {
-        assert false : "Unexpected token in atomic expression";
+        throw new RuntimeException("Unexpected token in atomic expression");
       }
     }
 

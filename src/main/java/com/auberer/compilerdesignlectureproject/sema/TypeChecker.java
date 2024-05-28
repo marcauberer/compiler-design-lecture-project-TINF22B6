@@ -15,6 +15,10 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   @Override
   public ExprResult visitPrintBuiltin(ASTPrintBuiltinCallNode node) {
+    // Visit the children of the node
+    visitChildren(node);
+
+    // ToDo: Insert check if logicalExpr is int, double or string
 
     Type resultType = new Type(SuperType.TY_EMPTY);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));

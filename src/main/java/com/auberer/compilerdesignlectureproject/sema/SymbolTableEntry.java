@@ -6,21 +6,21 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+@Getter
 public class SymbolTableEntry implements Serializable {
 
-  @Getter
-  private String name;
-  @Getter
-  private ASTNode declNode;
-  @Getter
-  private Scope scope;
+  private final String name;
+
+  private final ASTNode declNode;
+
+  private final Scope scope;
+
   @Setter
-  @Getter
   private boolean isUsed = false;
+
   @Setter
-  @Getter
   private boolean isParameter = false;
-  @Getter
+
   private Type type = new Type(SuperType.TY_INVALID);
 
   public SymbolTableEntry(Scope scope, String name, ASTNode declNode) {
