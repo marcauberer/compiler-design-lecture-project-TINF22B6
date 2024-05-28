@@ -100,7 +100,7 @@ public class VarDeclNodeTest {
 
         assertNotNull(astVarDeclNode);
         assertInstanceOf(ASTVarDeclNode.class, astVarDeclNode);
-        assertEquals(ASTTypeNode.DataType.INT, astVarDeclNode.getType().getType());
+        assertEquals(ASTTypeNode.DataType.INT, astVarDeclNode.getDataType().getDataType());
         assertEquals("x", astVarDeclNode.getVariableName());
         assertNotNull(astVarDeclNode.getLogicalExpr());
         assertInstanceOf(ASTLogicalExprNode.class, astVarDeclNode.getLogicalExpr());

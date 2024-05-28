@@ -68,10 +68,10 @@ public class MultiplicativeExprNodeTest {
 
         assertNotNull(multiplicativeExpr);
         assertInstanceOf(ASTMultiplicativeExprNode.class, multiplicativeExpr);
-        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, multiplicativeExpr.operands().getFirst().operand().getType());
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, multiplicativeExpr.operands().getFirst().operand().getExprType());
         assertEquals(2, multiplicativeExpr.operands().getFirst().operand().getIntLit());
         assertEquals(ASTMultiplicativeExprNode.MultiplicativeOperator.MUL, multiplicativeExpr.operatorList.getFirst());
-        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, multiplicativeExpr.operands().getLast().operand().getType());
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, multiplicativeExpr.operands().getLast().operand().getExprType());
         assertEquals(3, multiplicativeExpr.operands().getLast().operand().getIntLit());
     }
 }

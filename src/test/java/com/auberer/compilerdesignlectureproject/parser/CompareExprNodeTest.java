@@ -68,10 +68,10 @@ public class CompareExprNodeTest {
 
         assertNotNull(compareExpr);
         assertInstanceOf(ASTCompareExprNode.class, compareExpr);
-        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, compareExpr.operands().getFirst().operands().getFirst().operands().getFirst().operand().getType());
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, compareExpr.operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
         assertEquals(2, compareExpr.operands().getFirst().operands().getFirst().operands().getFirst().operand().getIntLit());
         assertEquals(ASTCompareExprNode.CompareOperator.NOT_EQUAL, compareExpr.operator);
-        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, compareExpr.operands().getLast().operands().getFirst().operands().getFirst().operand().getType());
+        assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, compareExpr.operands().getLast().operands().getFirst().operands().getFirst().operand().getExprType());
         assertEquals(3, compareExpr.operands().getLast().operands().getFirst().operands().getFirst().operand().getIntLit());
     }
 }

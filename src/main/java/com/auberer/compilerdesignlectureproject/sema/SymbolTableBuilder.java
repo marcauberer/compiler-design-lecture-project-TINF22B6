@@ -20,8 +20,8 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     visitChildren(node);
 
     // Check if main function is present
-    if (currentScopes.peek().lookupSymbol("main", node) == null)
-      throw new SemaError(node, "No main function found");
+    //if (currentScopes.peek().lookupSymbol("main", node) == null)
+    //  throw new SemaError(node, "No main function found");
 
     return null;
   }

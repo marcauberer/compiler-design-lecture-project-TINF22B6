@@ -23,10 +23,9 @@ public class ASTFctDefNode extends ASTNode {
         return Set.of(TOK_FUNC);
     }
 
-    public ASTTypeNode getType(){
+    public ASTTypeNode getDataType(){
         return getChild(ASTTypeNode.class,0);
     }
-
     public ASTParamLstNode getParams(){
         return getChild(ASTParamLstNode.class,0);
     }
