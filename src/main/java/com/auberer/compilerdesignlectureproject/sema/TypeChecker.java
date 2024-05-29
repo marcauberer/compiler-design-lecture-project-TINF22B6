@@ -40,4 +40,16 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     visitChildren(node);
     return new ExprResult(new Type(SuperType.TY_BOOL));
   }
+
+  @Override
+  public ExprResult visitDoWhileLoop(ASTDoWhileLoopNode node) {
+    ASTLogicalExprNode logicalExprNode = node.getCondition();
+    ExprResult logicalExprResult = visit(logicalExprNode);
+
+    if (!logicalExprResult.getType().is(SuperType.TY_BOOL))
+      throw new SemaError(node, "While statement expects bool, but got '" + logicalExprResult.getType().toString() + "'");
+
+    Type resultType = new Type(SuperType.TY_EMPTY);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
 }
