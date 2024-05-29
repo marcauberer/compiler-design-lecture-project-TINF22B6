@@ -55,13 +55,13 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     enterNode(node, ctx);
 
     if (ctx.TYPE_INT() != null) {
-      node.setType(ASTTypeNode.DataType.INT);
+      node.setDataType(ASTTypeNode.DataType.INT);
     } else if (ctx.TYPE_DOUBLE() != null) {
-      node.setType(ASTTypeNode.DataType.DOUBLE);
+      node.setDataType(ASTTypeNode.DataType.DOUBLE);
     } else if (ctx.TYPE_STRING() != null) {
-      node.setType(ASTTypeNode.DataType.STRING);
+      node.setDataType(ASTTypeNode.DataType.STRING);
     } else if (ctx.TYPE_EMPTY() != null) {
-      node.setType(ASTTypeNode.DataType.EMPTY);
+      node.setDataType(ASTTypeNode.DataType.EMPTY);
     }
 
     exitNode(node);
@@ -119,7 +119,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
 
     visitChildren(ctx);
 
-    node.setType(ctx.ifStmt() != null ? ASTElsePostNode.ElseType.ELSE_IF : ASTElsePostNode.ElseType.ELSE);
+    node.setExprType(ctx.ifStmt() != null ? ASTElsePostNode.ElseType.ELSE_IF : ASTElsePostNode.ElseType.ELSE);
 
     exitNode(node);
     return node;
@@ -396,31 +396,31 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     enterNode(node, ctx);
 
     if (ctx.INT_LIT() != null){
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.INT_LIT);
+      node.setExprType(ASTAtomicExprNode.AtomicType.INT_LIT);
       node.setIntLit(Integer.parseInt(ctx.STRING_LIT().toString()));
     } else if (ctx.DOUBLE_LIT() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.DOUBLE_LIT);
+      node.setExprType(ASTAtomicExprNode.AtomicType.DOUBLE_LIT);
       node.setDoubleLit(Double.parseDouble(ctx.STRING_LIT().toString()));
     } else if (ctx.STRING_LIT() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.STRING_LIT);
+      node.setExprType(ASTAtomicExprNode.AtomicType.STRING_LIT);
       node.setStringLit(ctx.STRING_LIT().toString());
     } else if (ctx.IDENTIFIER() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.IDENTIFIER);
+      node.setExprType(ASTAtomicExprNode.AtomicType.IDENTIFIER);
       node.setIdentifier(ctx.STRING_LIT().toString());
     } else if (ctx.fctCall() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.FCT_CALL);
+      node.setExprType(ASTAtomicExprNode.AtomicType.FCT_CALL);
       visit(ctx.fctCall());
     } else if (ctx.printBuiltinCall() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.PRINT_BUILTIN_CALL);
+      node.setExprType(ASTAtomicExprNode.AtomicType.PRINT_BUILTIN_CALL);
       visit(ctx.printBuiltinCall());
     } else if (ctx.logicalExpr() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.LOGICAL_EXPR);
+      node.setExprType(ASTAtomicExprNode.AtomicType.LOGICAL_EXPR);
       visit(ctx.logicalExpr());
     } else if (ctx.FALSE() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+      node.setExprType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
       node.setBoolLit(false);
     } else if (ctx.TRUE() != null) {
-      node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+      node.setExprType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
       node.setBoolLit(true);
     }
 

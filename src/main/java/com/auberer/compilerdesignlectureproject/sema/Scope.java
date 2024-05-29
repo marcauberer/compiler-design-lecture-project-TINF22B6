@@ -11,21 +11,22 @@ public class Scope {
   Scope parent = null; // Holds the parent scope of this one. The root scope has a null parent.
   List<Scope> children = new ArrayList<>();
 
-  public void createChildScope() {
+  public Scope createChildScope() {
     Scope childScope = new Scope();
     childScope.parent = this;
     children.add(childScope);
+    return childScope;
   }
 
   public void insertSymbol(String name, ASTNode declNode) {
     symbolTable.insert(name, declNode);
   }
 
-  public SymbolTableEntry lookupSymbol(String name) {
-    return symbolTable.lookup(name);
+  public SymbolTableEntry lookupSymbol(String name, ASTNode lookupNode) {
+    return symbolTable.lookup(name, lookupNode);
   }
 
-  public SymbolTableEntry lookupSymbolStrict(String name) {
-    return symbolTable.lookupStrict(name);
+  public SymbolTableEntry lookupSymbolStrict(String name, ASTNode lookupNode) {
+    return symbolTable.lookupStrict(name, lookupNode);
   }
 }

@@ -2,6 +2,7 @@ package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.lexer.ILexer;
+import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +110,7 @@ public class Parser implements IParser {
     } else if (ASTAssignStmtNode.getSelectionSet().contains(tokenType)) {
       parseAssignStmt();
     } else {
-      assert false : "Unexpected token in statement";
+      throw new RuntimeException("Unexpected token in statement");
     }
     lexer.expect(TokenType.TOK_SEMICOLON);
 
@@ -139,26 +140,26 @@ public class Parser implements IParser {
     switch (lexer.getToken().getType()) {
       case TokenType.TOK_TYPE_INT: {
         lexer.expect(TokenType.TOK_TYPE_INT);
-        node.setType(ASTTypeNode.DataType.INT);
+        node.setDataType(ASTTypeNode.DataType.INT);
         break;
       }
       case TokenType.TOK_TYPE_DOUBLE: {
         lexer.expect(TokenType.TOK_TYPE_DOUBLE);
-        node.setType(ASTTypeNode.DataType.DOUBLE);
+        node.setDataType(ASTTypeNode.DataType.DOUBLE);
         break;
       }
       case TokenType.TOK_TYPE_STRING: {
         lexer.expect(TokenType.TOK_TYPE_STRING);
-        node.setType(ASTTypeNode.DataType.STRING);
+        node.setDataType(ASTTypeNode.DataType.STRING);
         break;
       }
       case TokenType.TOK_TYPE_EMPTY: {
         lexer.expect(TokenType.TOK_TYPE_EMPTY);
-        node.setType(ASTTypeNode.DataType.EMPTY);
+        node.setDataType(ASTTypeNode.DataType.EMPTY);
         break;
       }
       default: {
-        assert false : "Unexpected token in type";
+        throw new RuntimeException("Unexpected token in type");
       }
     }
 
@@ -281,10 +282,10 @@ public class Parser implements IParser {
     enterNode(node);
 
     if (ASTIfStmtNode.getSelectionSet().contains(lexer.getToken().getType())) {
-      node.setType(ASTElsePostNode.ElseType.ELSE_IF);
+      node.setExprType(ASTElsePostNode.ElseType.ELSE_IF);
       parseIfStmt();
     } else {
-      node.setType(ASTElsePostNode.ElseType.ELSE);
+      node.setExprType(ASTElsePostNode.ElseType.ELSE);
       parseElseStmt();
     }
 
@@ -325,6 +326,7 @@ public class Parser implements IParser {
     enterNode(node);
 
     if (lexer.getToken().getType() == TokenType.TOK_IDENTIFIER) {
+      node.setAssignment(true);
       node.setVariableName(lexer.getToken().getText());
       lexer.expect(TokenType.TOK_IDENTIFIER);
       lexer.expect(TokenType.TOK_ASSIGN);
@@ -532,56 +534,63 @@ public class Parser implements IParser {
     ASTAtomicExprNode node = new ASTAtomicExprNode();
     enterNode(node);
 
-    switch (lexer.getToken().getType()) {
+    Token token = lexer.getToken();
+    switch (token.getType()) {
       case TokenType.TOK_INT_LIT: {
         lexer.expect(TokenType.TOK_INT_LIT);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.INT_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.INT_LIT);
+        node.setIntLit(Integer.parseInt(token.getText()));
         break;
       }
       case TokenType.TOK_DOUBLE_LIT: {
         lexer.expect(TokenType.TOK_DOUBLE_LIT);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.DOUBLE_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.DOUBLE_LIT);
+        node.setDoubleLit(Double.parseDouble(token.getText()));
         break;
       }
       case TokenType.TOK_STRING_LIT: {
         lexer.expect(TokenType.TOK_STRING_LIT);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.STRING_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.STRING_LIT);
+        node.setStringLit(token.getText().substring(1, token.getText().length() - 1));
         break;
       }
       case TokenType.TOK_TRUE: {
         lexer.expect(TokenType.TOK_TRUE);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
+        node.setBoolLit(true);
         break;
       }
       case TokenType.TOK_FALSE: {
         lexer.expect(TokenType.TOK_FALSE);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.BOOL_LIT);
+        node.setExprType(ASTAtomicExprNode.AtomicType.BOOL_LIT);
+        node.setBoolLit(false);
         break;
       }
       case TokenType.TOK_IDENTIFIER: {
         lexer.expect(TokenType.TOK_IDENTIFIER);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.IDENTIFIER);
+        node.setExprType(ASTAtomicExprNode.AtomicType.IDENTIFIER);
+        node.setIdentifier(token.getText());
         break;
       }
       case TokenType.TOK_LPAREN: {
         lexer.expect(TokenType.TOK_LPAREN);
         parseLogicalExpression();
         lexer.expect(TokenType.TOK_RPAREN);
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.LOGICAL_EXPR);
+        node.setExprType(ASTAtomicExprNode.AtomicType.LOGICAL_EXPR);
         break;
       }
       case TokenType.TOK_CALL: {
         parseFctCall();
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.FCT_CALL);
+        node.setExprType(ASTAtomicExprNode.AtomicType.FCT_CALL);
         break;
       }
       case TokenType.TOK_PRINT: {
         parsePrintBuiltinCall();
-        node.setOperator(ASTAtomicExprNode.AtomicOperator.PRINT_BUILTIN_CALL);
+        node.setExprType(ASTAtomicExprNode.AtomicType.PRINT_BUILTIN_CALL);
         break;
       }
       default: {
-        assert false : "Unexpected token in atomic expression";
+        throw new RuntimeException("Unexpected token in atomic expression");
       }
     }
 

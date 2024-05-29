@@ -2,7 +2,6 @@ package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTParamLstNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
@@ -90,13 +89,15 @@ public class FunctionDefinitionTest {
     @Test
     @DisplayName("Integration test for function definition")
     void testIntegrationTestForFunctionCall() {
-
         String fctDef = "func int myFunc(int x) int i = 17; return x; cnuf";
-        Lexer lexer1 = new Lexer(new Reader(fctDef), true);
-        Parser parser1 = new Parser(lexer1);
-        ASTFctDefNode astFctDefNode = parser1.parseFctDef();
+        Reader reader = new Reader(fctDef);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+
+        ASTFctDefNode astFctDefNode = parser.parseFctDef();
+
         assertInstanceOf(ASTFctDefNode.class, astFctDefNode);
-        assertInstanceOf(ASTTypeNode.class, astFctDefNode.getType());
+        assertInstanceOf(ASTTypeNode.class, astFctDefNode.getDataType());
         assertInstanceOf(ASTParamLstNode.class, astFctDefNode.getParams());
     }
 }

@@ -1,6 +1,5 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTAssignStmtNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTVarDeclNode;
@@ -9,6 +8,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -100,9 +100,21 @@ public class VarDeclNodeTest {
 
         assertNotNull(astVarDeclNode);
         assertInstanceOf(ASTVarDeclNode.class, astVarDeclNode);
-        assertEquals(ASTTypeNode.DataType.INT, astVarDeclNode.getType().getType());
+        assertEquals(ASTTypeNode.DataType.INT, astVarDeclNode.getDataType().getDataType());
         assertEquals("x", astVarDeclNode.getVariableName());
         assertNotNull(astVarDeclNode.getLogicalExpr());
         assertInstanceOf(ASTLogicalExprNode.class, astVarDeclNode.getLogicalExpr());
+    }
+    @Test
+    @DisplayName("Integration test")
+    void integrationTestSymbolBuilder(){
+        String code = "int x = 5;";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTVarDeclNode astVarDeclNode = parser.parseVarDecl();
+        SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
+
+        symboltablebuilder.visit(astVarDeclNode);
     }
 }

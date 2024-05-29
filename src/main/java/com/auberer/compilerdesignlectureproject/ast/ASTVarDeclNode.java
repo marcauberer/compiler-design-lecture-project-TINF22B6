@@ -4,13 +4,12 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Set;
 
+@Getter
+@Setter
 public class ASTVarDeclNode extends ASTNode {
 
-    @Getter
-    @Setter
     String variableName;
 
     @Override
@@ -19,17 +18,13 @@ public class ASTVarDeclNode extends ASTNode {
     }
 
     public static Set<TokenType> getSelectionSet() {
-
         return ASTTypeNode.getSelectionSet();
     }
 
-    public ASTTypeNode getType() {
-
+    public ASTTypeNode getDataType() {
         return getChild(ASTTypeNode.class, 0);
     }
-
     public ASTLogicalExprNode getLogicalExpr() {
-
         return getChild(ASTLogicalExprNode.class, 0);
     }
 }

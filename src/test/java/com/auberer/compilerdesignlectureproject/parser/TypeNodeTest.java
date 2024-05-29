@@ -45,7 +45,7 @@ public class TypeNodeTest {
     verify(lexer, times(1)).expect(TokenType.TOK_TYPE_EMPTY);
     assertNotNull(printBuiltinCallNode);
     assertInstanceOf(ASTTypeNode.class, printBuiltinCallNode);
-    assertEquals(ASTTypeNode.DataType.EMPTY, printBuiltinCallNode.getType());
+    assertEquals(ASTTypeNode.DataType.EMPTY, printBuiltinCallNode.getDataType());
   }
 
   @Test
@@ -64,6 +64,6 @@ public class TypeNodeTest {
     ASTTypeNode typeNode = parser.parseType();
 
     // Assert the result
-    assertEquals(ASTTypeNode.DataType.INT, typeNode.getType());
+    assertEquals(ASTTypeNode.DataType.INT, typeNode.getDataType());
   }
 }

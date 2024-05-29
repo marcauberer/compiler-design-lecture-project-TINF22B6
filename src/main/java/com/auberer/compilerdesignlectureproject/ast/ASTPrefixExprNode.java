@@ -28,4 +28,8 @@ public class ASTPrefixExprNode extends ASTNode {
     selectionSet.addAll(ASTAtomicExprNode.getSelectionSet());
     return selectionSet;
   }
+
+    public ASTAtomicExprNode operand() {
+        return getChild(ASTAtomicExprNode.class, 0);
+    }
 }
