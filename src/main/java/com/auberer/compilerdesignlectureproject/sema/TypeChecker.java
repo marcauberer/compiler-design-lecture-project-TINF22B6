@@ -1,10 +1,16 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
+import com.auberer.compilerdesignlectureproject.ast.*;
 
 import java.util.Stack;
 
+/**
+ * Typ-Kompatibilität prüfen
+ * Overload resolution (Gruppe 6)
+ * AST-Knoten mit den Typen befüllen (setEvaluatedSymbolType)
+ * SymbolTableEntry mit Typ ergänzen
+ * Sinnvolle Fehlermeldungen erzeugen
+ */
 public class TypeChecker extends ASTVisitor<ExprResult> {
 
   Stack<Scope> currentScopes = new Stack<>();
@@ -14,13 +20,24 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   }
 
   @Override
-  public ExprResult visitPrintBuiltin(ASTPrintBuiltinCallNode node) {
-    // Visit the children of the node
-    visitChildren(node);
+  public ExprResult visitEntry(ASTEntryNode node) {
+    return super.visitEntry(node);
+  }
 
-    // ToDo: Insert check if logicalExpr is int, double or string
+  @Override
+  public ExprResult visitPrintBuiltin(ASTPrintBuiltinCallNode node) {
+    ASTLogicalExprNode logicalExprNode = node.logicalExpr();
+    ExprResult logicalExprResult = visit(logicalExprNode);
+    if (!logicalExprNode.getType().isOneOf(SuperType.TY_INT, SuperType.TY_DOUBLE, SuperType.TY_STRING))
+      throw new SemaError(node, "Print statement expects int, double or string, but got '" + logicalExprResult.getType().toString() + "'");
 
     Type resultType = new Type(SuperType.TY_EMPTY);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
+  public ExprResult visitLogicalExpr(ASTLogicalExprNode node) {
+    visitChildren(node);
+    return new ExprResult(new Type(SuperType.TY_BOOL));
   }
 }
