@@ -61,8 +61,33 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   }
 
   @Override
+  public ExprResult visitWhileLoop(ASTWhileLoopNode node) {
+    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
+    ExprResult logicalExprResult = visit(logicalExprNode);
+
+    // if (!logicalExprNode.getType().isOneOf(SuperType.TY_BOOL))
+    if (!logicalExprResult.getType().isOneOf(SuperType.TY_BOOL))
+      throw new SemaError(node, "While Loop - Condition expects boolean but got '" + logicalExprResult.getType().toString() + "'");
+
+    Type resultType = new Type(SuperType.TY_EMPTY);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
   public ExprResult visitLogicalExpr(ASTLogicalExprNode node) {
     visitChildren(node);
     return new ExprResult(new Type(SuperType.TY_BOOL));
+  }
+
+  @Override
+  public ExprResult visitDoWhileLoop(ASTDoWhileLoopNode node) {
+    ASTLogicalExprNode logicalExprNode = node.getCondition();
+    ExprResult logicalExprResult = visit(logicalExprNode);
+
+    if (!logicalExprResult.getType().is(SuperType.TY_BOOL))
+      throw new SemaError(node, "While statement expects bool, but got '" + logicalExprResult.getType().toString() + "'");
+
+    Type resultType = new Type(SuperType.TY_EMPTY);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 }
