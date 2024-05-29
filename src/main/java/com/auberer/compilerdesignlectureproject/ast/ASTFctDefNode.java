@@ -30,8 +30,8 @@ public class ASTFctDefNode extends ASTNode {
     public ASTParamLstNode getParams(){
         return getChild(ASTParamLstNode.class,0);
     }
-    public ASTStmtLstNode getBody(){
-        return getChild(ASTStmtLstNode.class,0);
+    public ASTLogicNode getBody(){
+        return getChild(ASTLogicNode.class,0);
     }
 
 }

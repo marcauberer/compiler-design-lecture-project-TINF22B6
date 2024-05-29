@@ -4,6 +4,7 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 @Setter
 public class ASTParamLstNode extends ASTNode {
 
-    List<String> paramNames;
+    List<String> paramNames = new ArrayList<>();
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
