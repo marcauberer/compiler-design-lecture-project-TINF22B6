@@ -40,4 +40,19 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     visitChildren(node);
     return new ExprResult(new Type(SuperType.TY_BOOL));
   }
+
+  @Override
+  public ExprResult visitIf(ASTIfStmtNode node) {
+    return new ExprResult(new Type(SuperType.TY_EMPTY));
+  }
+
+  @Override
+  public ExprResult visitAfterIf(ASTAfterIfNode node) {
+    return new ExprResult(new Type(SuperType.TY_EMPTY));
+  }
+
+  @Override
+  public ExprResult visitElse(ASTElseNode node) {
+    return new ExprResult(new Type(SuperType.TY_EMPTY));
+  }
 }
