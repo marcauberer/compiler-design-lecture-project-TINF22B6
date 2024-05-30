@@ -13,4 +13,8 @@ public class ASTLogicNode extends ASTNode {
     public static Set<TokenType> getSelectionSet() {
         return ASTStmtLstNode.getSelectionSet();
     }
+
+    public ASTLogicalExprNode logicalExpr() {
+        return getChild(ASTLogicalExprNode.class, 0);
+    }
 }

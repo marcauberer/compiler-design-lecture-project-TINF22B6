@@ -1,11 +1,13 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Getter
 public class ASTLogicalExprNode extends ASTNode {
 
   public enum LogicalOperator {
@@ -13,7 +15,7 @@ public class ASTLogicalExprNode extends ASTNode {
     OR
   }
 
-  public List<LogicalOperator> operatorList = new ArrayList<>();
+  List<LogicalOperator> operatorList = new ArrayList<>();
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
@@ -28,8 +30,8 @@ public class ASTLogicalExprNode extends ASTNode {
     operatorList.add(a);
   }
 
-    public List<ASTCompareExprNode> operands() {
-        return getChildren(ASTCompareExprNode.class);
-    }
+  public List<ASTCompareExprNode> operands() {
+    return getChildren(ASTCompareExprNode.class);
+  }
 
 }

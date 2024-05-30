@@ -71,7 +71,7 @@ public class LogicalExprNodeTest {
         assertInstanceOf(ASTLogicalExprNode.class, logicalExpr);
         assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, logicalExpr.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
         assertEquals("a", logicalExpr.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
-        assertEquals(ASTLogicalExprNode.LogicalOperator.AND, logicalExpr.operatorList.getFirst());
+        assertEquals(ASTLogicalExprNode.LogicalOperator.AND, logicalExpr.getOperatorList().getFirst());
         assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, logicalExpr.operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
         assertEquals("b", logicalExpr.operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
     }
