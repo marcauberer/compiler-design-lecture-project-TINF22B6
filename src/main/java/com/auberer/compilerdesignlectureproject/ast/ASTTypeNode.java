@@ -18,7 +18,7 @@ public class ASTTypeNode extends ASTNode {
     EMPTY
   }
 
-  private DataType type = DataType.UNKNOWN;
+  private DataType dataType = DataType.UNKNOWN;
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {

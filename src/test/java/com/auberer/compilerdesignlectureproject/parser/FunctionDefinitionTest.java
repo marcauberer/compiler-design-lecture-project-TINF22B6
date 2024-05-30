@@ -96,8 +96,11 @@ public class FunctionDefinitionTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
 
-
         ASTFctDefNode astFctDefNode = parser.parseFctDef();
+        assertInstanceOf(ASTFctDefNode.class, astFctDefNode);
+        assertInstanceOf(ASTTypeNode.class, astFctDefNode.getDataType());
+        assertInstanceOf(ASTParamLstNode.class, astFctDefNode.getParams());
+      
         SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
         symboltablebuilder.visitFctDef(astFctDefNode);
     }

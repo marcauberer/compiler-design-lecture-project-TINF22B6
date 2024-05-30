@@ -21,7 +21,7 @@ public class ASTAtomicExprNode extends ASTNode {
     LOGICAL_EXPR
   }
 
-  public AtomicType type;
+  public AtomicType exprType;
   public int intLit;
   public double doubleLit;
   public String stringLit;

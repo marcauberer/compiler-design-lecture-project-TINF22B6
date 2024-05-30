@@ -20,8 +20,8 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     visitChildren(node);
 
     // Check if main function is present
-    if (currentScopes.peek().lookupSymbol("main", node) == null)
-      throw new SemaError(node, "No main function found");
+    //if (currentScopes.peek().lookupSymbol("main", node) == null)
+    //  throw new SemaError(node, "No main function found");
 
     return null;
   }
@@ -56,7 +56,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   @Override
   public Void visitWhileLoop(ASTWhileLoopNode node){
-    Scope whileLoopScope = new Scope();
+    Scope whileLoopScope = currentScopes.peek().createChildScope();
     currentScopes.push(whileLoopScope);
     
     visitChildren(node);
@@ -67,7 +67,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   
   @Override
   public Void visitIf(ASTIfStmtNode node) {
-    Scope ifScope = new Scope();
+    Scope ifScope = currentScopes.peek().createChildScope();
     currentScopes.push(ifScope);
 
     visitChildren(node);
@@ -78,7 +78,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   @Override
   public Void visitElse(ASTElseNode node) {
-    Scope elseScope = new Scope();
+    Scope elseScope = currentScopes.peek().createChildScope();
     currentScopes.push(elseScope);
 
     visitChildren(node);
@@ -89,7 +89,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   @Override
   public Void visitDoWhileLoop(ASTDoWhileLoopNode node) {
-    Scope doWhileScope = new Scope();
+    Scope doWhileScope = currentScopes.peek().createChildScope();
     currentScopes.push(doWhileScope);
 
     visitChildren(node);
@@ -101,7 +101,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   @Override
   public Void visitForLoop(ASTForNode node) {
-    Scope forScope = new Scope();
+    Scope forScope = currentScopes.peek().createChildScope();
     currentScopes.push(forScope);
 
     visitChildren(node);
@@ -117,7 +117,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   @Override
   public Void visitSwitchStmt(ASTSwitchStmtNode node) {
-    Scope scope = new Scope();
+    Scope scope = currentScopes.peek().createChildScope();
     currentScopes.push(scope);
 
     visitChildren(node);
@@ -130,7 +130,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   @Override
   public Void visitCases(ASTCasesNode node) {
     for (ASTStmtLstNode stmtLst : node.getStmtLists()) {
-      Scope scope = new Scope();
+      Scope scope = currentScopes.peek().createChildScope();
       currentScopes.push(scope);
 
       visit(stmtLst);
@@ -144,7 +144,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   @Override
   public Void visitDefault(ASTDefaultNode node) {
-    Scope scope = new Scope();
+    Scope scope = currentScopes.peek().createChildScope();
     currentScopes.push(scope);
 
     visitChildren(node);

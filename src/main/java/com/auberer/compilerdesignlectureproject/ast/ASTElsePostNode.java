@@ -16,7 +16,7 @@ public class ASTElsePostNode extends ASTNode {
     ELSE
   }
 
-  ElseType type;
+  ElseType exprType;
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
