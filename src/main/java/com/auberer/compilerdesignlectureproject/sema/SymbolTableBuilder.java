@@ -153,4 +153,52 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     currentScopes.pop();
     return null;
   }
+
+  @Override
+  public Void visitFctDef(ASTFctDefNode node) {
+    Scope functionScope = new Scope();
+
+    visit(node.getType());
+
+    currentScopes.push(functionScope);
+
+
+    visit(node.getParams());
+    visit(node.getBody());
+
+    currentScopes.pop();
+
+    if (currentScopes.peek().lookupSymbol(node.getName(), node) != null) {
+      throw new SemaError(node, "Function name already in use");
+    } else {
+      currentScopes.peek().insertSymbol(node.getName(), node);
+    }
+
+    return null;
+  }
+
+  @Override
+  public Void visitParamLst(ASTParamLstNode node) {
+    for (String name : node.getParamNames()) {
+      if (currentScopes.peek().lookupSymbol(name, node) != null) {
+        throw new SemaError(node, "Parameter name already in use");
+      } else {
+        currentScopes.peek().insertSymbol(name, node);
+      }
+    }
+
+    return null;
+  }
+
+  @Override
+  public Void visitFctCall(ASTFctCallNode node) {
+
+    visitChildren(node);
+
+    if (currentScopes.peek().lookupSymbol(node.getName(), node) == null) {
+      throw new SemaError(node, "Function with name " + node.getName() + " not defined");
+    }
+
+    return null;
+  }
 }
