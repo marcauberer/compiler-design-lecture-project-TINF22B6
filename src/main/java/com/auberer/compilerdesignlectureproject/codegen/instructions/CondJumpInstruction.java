@@ -3,6 +3,7 @@ package com.auberer.compilerdesignlectureproject.codegen.instructions;
 import com.auberer.compilerdesignlectureproject.ast.ASTNode;
 import com.auberer.compilerdesignlectureproject.codegen.BasicBlock;
 import com.auberer.compilerdesignlectureproject.interpreter.InterpreterEnvironment;
+import com.auberer.compilerdesignlectureproject.sema.SuperType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,7 @@ public class CondJumpInstruction extends Instruction {
 
   @Override
   public void run(InterpreterEnvironment env) {
+    assert condition.getType().is(SuperType.TY_BOOL);
     if (condition.getValue().isTrue()) {
       env.setInstructionIterator(trueTargetBlock.getInstructions().listIterator());
     } else {
