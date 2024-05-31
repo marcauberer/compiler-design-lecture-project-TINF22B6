@@ -158,7 +158,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   public Void visitFctDef(ASTFctDefNode node) {
     Scope functionScope = new Scope();
 
-    visit(node.getType());
+    visit(node.getDataType());
 
     currentScopes.push(functionScope);
 
