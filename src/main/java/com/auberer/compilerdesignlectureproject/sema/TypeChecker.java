@@ -40,4 +40,32 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     visitChildren(node);
     return new ExprResult(new Type(SuperType.TY_BOOL));
   }
+
+  @Override
+  public ExprResult visitVarDecl(ASTVarDeclNode node) {
+    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
+    ExprResult logicalExprResult = visit(logicalExprNode);
+    Type declaredType = node.getType();
+
+    if (!logicalExprResult.getType().is(declaredType.getSuperType())) {
+      throw new SemaError(node, "Variable Declaration - Type mismatch: cannot assign type '"
+              + logicalExprResult.getType().toString() + "' to variable of type '" + declaredType.toString() + "'");
+    }
+
+    Type resultType = new Type(SuperType.TY_EMPTY);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
+  public ExprResult visitAssignStmt(ASTAssignStmtNode node){
+    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
+    ExprResult logicalExprResult = visit(logicalExprNode);
+
+    if (logicalExprResult.getType().is(SuperType.TY_EMPTY))
+      throw new SemaError(node, "VarDecl expects bool, but got '" + logicalExprResult.getType().toString() + "'");
+
+    Type resultType = new Type(SuperType.TY_INVALID);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
 }
