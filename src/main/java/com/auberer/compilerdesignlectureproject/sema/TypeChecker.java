@@ -29,21 +29,17 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     ASTLogicalExprNode logicalNode = node.getCondition();
     ExprResult forNodeResult = visit(logicalNode);
 
-//    ExprResult initResult = visit(node.getInitialization());
-//    assert initResult.getType().equals(new Type(SuperType.TY_INVALID));
+    ExprResult initResult = visit(node.getInitialization());
+    //assert initResult.getType().equals(new Type(SuperType.TY_INVALID));
 
-    System.out.println("Result is: " + forNodeResult);
-    System.out.println("Type is: " + forNodeResult.getType());
     if (!forNodeResult.getType().is(SuperType.TY_BOOL))
       throw new SemaError(node, "Boolean Statement expected, but instead got '" + forNodeResult.getType().toString() + "'");
 
+    ExprResult incrementResult = visit(node.getIncrement());
+    //assert incrementResult.getType().equals(new Type(SuperType.TY_INVALID));
 
-//    ExprResult incrementResult = visit(node.getIncrement());
-//    assert incrementResult.getType().equals(new Type(SuperType.TY_INVALID));
-//
-//    ExprResult bodyResult = visit(node.getBody());
-//    assert bodyResult.getType().equals(new Type(SuperType.TY_INVALID));
-
+    ExprResult bodyResult = visit(node.getBody());
+    //assert bodyResult.getType().equals(new Type(SuperType.TY_INVALID));
 
     Type resultType = new Type(SuperType.TY_INVALID);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
