@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class ASTEntryNode extends ASTNode {
-  public List<FunctionDef> definedFunctions = new ArrayList<>();
+  private final List<FunctionDef> definedFunctions = new ArrayList<>();
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {

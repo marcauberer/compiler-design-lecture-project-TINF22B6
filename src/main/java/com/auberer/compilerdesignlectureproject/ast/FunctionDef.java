@@ -9,15 +9,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
 public class FunctionDef{
-    @Getter
-    private final List<Pair<String, SuperType>> params;
-    @Getter
+    private final List<SuperType> params;
     private final String name;
-    @Getter
     private final SuperType returnType;
 
-    public FunctionDef(List<Pair<String, SuperType>> params, String name, SuperType returnType){
+    public FunctionDef(List<SuperType> params, String name, SuperType returnType){
         this.params = params;
         this.name = name;
         this.returnType = returnType;
@@ -31,24 +29,42 @@ public class FunctionDef{
 
     public FunctionDef(ASTFctDefNode node){
         returnType = node.getDataType().type.getSuperType();
-        params = new ArrayList<>();
+        params = node.getParams().getParamNodes().stream().map(astParamNode ->
+                astParamNode.getType().getSuperType()).toList();
         node.getParams();
         name = node.getName();
     }
 
     public FunctionDef(ASTFctCallNode node){
         returnType = node.getType().getSuperType();
-        node.getCallParams();
-        params = new ArrayList<>();
+        params = node.getCallParams().getParamsAsLogicNodes().stream().map(astLogicalExprNode ->
+                astLogicalExprNode.getType().getSuperType()).toList();
         name = node.getName();
     }
 
 
     public boolean equals(FunctionDef def){
-        boolean sameName = def.getName().equals(getName());
-        boolean sameParams = params.equals(def.getParams());
+        return def.getName().equals(getName()) && isSameParams(def.getParams());
+    }
 
-        return sameName && sameParams;
+    public boolean isSameParams(List<SuperType> otherParams){
+        if(params.size() != otherParams.size()){
+            return false;
+        }
+        for(int i = 0; i < params.size(); i++){
+            if(!params.get(i).equals(otherParams.get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public String toString(){
+        String s =  "name: " + name + ", params: ";
+        for(SuperType param : params){
+            s += " [" + param.toString() + "] ";
+        }
+        return s;
     }
 
     @Data
@@ -59,6 +75,10 @@ public class FunctionDef{
         public Pair(A first, B second){
             this.first = first;
             this.second = second;
+        }
+
+        public boolean equals(Pair<A, B> pair){
+            return first.equals(pair.first) && second.equals(pair.second);
         }
     }
 
