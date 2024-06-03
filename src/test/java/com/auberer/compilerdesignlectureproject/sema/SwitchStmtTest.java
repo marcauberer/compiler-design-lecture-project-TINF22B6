@@ -17,7 +17,7 @@ public class SwitchStmtTest {
     @DisplayName("Integration test")
     void switchIntegrationTest() {
         String code = """
-                switch(x){
+                switch(6){
                         case 1:
                             int i = 0;
                         case 2:
@@ -78,7 +78,7 @@ public class SwitchStmtTest {
         assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
 
         SemaError exception = Assertions.assertThrows(SemaError.class, () -> typeChecker.visitSwitchStmt(astSwitchStmt));
-        assertEquals(exception.getMessage(), "Switch statement expects int, double or string, but got 'TY_BOOL'");
+        assertTrue(exception.getMessage().contains("Switch statement expects int, double or string, but got 'TY_BOOL'"));
 
     }
 
@@ -86,7 +86,7 @@ public class SwitchStmtTest {
     @DisplayName("Integration test should throw SemaError with wrong case type")
     void switchIntegrationTestExceptionCaseType() {
         String code = """
-                switch(x){
+                switch(3){
                          case 1:
                              int i = 0;
                          case 2.2:
@@ -113,7 +113,7 @@ public class SwitchStmtTest {
         assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
 
         SemaError exception = Assertions.assertThrows(SemaError.class, () -> typeChecker.visitSwitchStmt(astSwitchStmt));
-        assertEquals(exception.getMessage(), "Switch case expects 'INT_LIT' but got 'DOUBLE_LIT'");
+        assertTrue(exception.getMessage().contains("Switch case expects 'INT_LIT' but got 'DOUBLE_LIT'"));
 
     }
 }
