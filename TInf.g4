@@ -4,7 +4,7 @@ grammar TInf;
 entry: fctDef*;
 stmtLst: (stmt | ifStmt | whileLoop | doWhileLoop | forLoop | switchStmt)*;
 stmt: (varDecl | assignStmt) SEMICOLON;
-type: TYPE_INT | TYPE_DOUBLE | TYPE_STRING | TYPE_EMPTY;
+type: TYPE_INT | TYPE_DOUBLE | TYPE_STRING | TYPE_BOOL | TYPE_EMPTY;
 printBuiltinCall: PRINT LPAREN logicalExpr RPAREN;
 
 // If statement (team 1)

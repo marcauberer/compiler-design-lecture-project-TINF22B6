@@ -163,7 +163,8 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     currentScopes.push(functionScope);
 
 
-    visit(node.getParams());
+    if (node.hasParams())
+      visit(node.getParams());
     visit(node.getBody());
 
     currentScopes.pop();
