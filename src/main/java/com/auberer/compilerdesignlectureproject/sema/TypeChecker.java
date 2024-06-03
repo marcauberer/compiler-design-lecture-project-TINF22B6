@@ -2,13 +2,7 @@ package com.auberer.compilerdesignlectureproject.sema;
 
 import java.util.Stack;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTAfterIfNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTElseNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTIfStmtNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
+import com.auberer.compilerdesignlectureproject.ast.*;
 
 /**
  * Typ-Kompatibilität prüfen
