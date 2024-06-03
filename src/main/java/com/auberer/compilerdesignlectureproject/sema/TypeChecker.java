@@ -117,7 +117,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       throw new SemaError(node, "function definition for function " + entryNode.getFunctionDefOrNull(def)  + " is already defined");
     };
 
-    entryNode.defineFunction(def);
+
 
     ASTTypeNode typeNode = node.getDataType();
     ExprResult type = visitType(typeNode);
@@ -127,15 +127,13 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
               type.getType().toString() + "'");
 
 
-    if(node.hasParams()){
       ASTParamLstNode params = node.getParams();
       for(ASTParamNode paramNode: params.getParamNodes()){
         visitParam(paramNode);
       }
-    }
 
     node.setEvaluatedSymbolType(type.getType());
-
+    entryNode.defineFunction(new FunctionDef(node));
     Type resultType = new Type(SuperType.TY_FUNCTION);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
@@ -143,10 +141,8 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   @Override
   public ExprResult visitFctCall(ASTFctCallNode node) {
 
-    FunctionDef def = new FunctionDef(node);
-    if(entryNode.getFunctionDefOrNull(def) == null){
-      throw new SemaError(node, "function " + def + "is not yet defined");
-    }
+    visitChildren(node);
+
     ASTCallParamsNode params = node.getCallParams();
 
     for (ASTLogicalExprNode exprNode: params.getParamsAsLogicNodes()){
@@ -154,8 +150,14 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       if (!result.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
         throw new SemaError(node, "fct call statement expects type of boolean string, int or double, but got '" +
                 result.getType().toString() + "'");
-
+      exprNode.setEvaluatedSymbolType(result.getType());
     }
+
+    FunctionDef def = new FunctionDef(node);
+    if(entryNode.getFunctionDefOrNull(def) == null){
+      throw new SemaError(node, "function " + def + "is not yet defined");
+    }
+
 
     Type resultType = new Type(SuperType.TY_FUNCTION);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));

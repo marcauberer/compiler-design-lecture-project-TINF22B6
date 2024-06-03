@@ -383,8 +383,10 @@ public class Parser implements IParser {
     ASTParamLstNode node = new ASTParamLstNode();
     enterNode(node);
 
-    parseType();
-    lexer.expect(TokenType.TOK_IDENTIFIER);
+
+    //lexer.expect(TokenType.TOK_IDENTIFIER);
+    parseParamNode();
+
     while (lexer.getToken().getType() == TokenType.TOK_COMMA) {
       lexer.expect(TokenType.TOK_COMMA);
       parseParamNode();

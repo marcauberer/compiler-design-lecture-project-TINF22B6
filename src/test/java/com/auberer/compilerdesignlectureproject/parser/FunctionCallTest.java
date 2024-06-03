@@ -6,6 +6,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.ExprResult;
 import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import com.auberer.compilerdesignlectureproject.sema.SymbolTableEntry;
 import com.auberer.compilerdesignlectureproject.sema.TypeChecker;
@@ -79,7 +80,10 @@ public class FunctionCallTest {
         symboltablebuilder.visitFctDef(defNode);
         symboltablebuilder.visitFctCall(callNode);
 
-        new TypeChecker(parseNode).visitFctCall(callNode);
+
+        TypeChecker checker =  new TypeChecker(parseNode);
+        checker.visitFctDef(defNode);
+        checker.visitFctCall(callNode);
     }
 
     private static void searchNodeForFctCallNode(ASTNode node, String path) {

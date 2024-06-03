@@ -3,6 +3,7 @@ package com.auberer.compilerdesignlectureproject.ast;
 import com.auberer.compilerdesignlectureproject.sema.SuperType;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -27,11 +28,14 @@ public class FunctionDef{
         this.returnType = returnType;
     }
 
+    public FunctionDef createNewDefWithType(SuperType returnType){
+        return new FunctionDef(this.params, this.getName(), returnType);
+    }
+
     public FunctionDef(ASTFctDefNode node){
         returnType = node.getDataType().type.getSuperType();
         params = node.getParams().getParamNodes().stream().map(astParamNode ->
                 astParamNode.getType().getSuperType()).toList();
-        node.getParams();
         name = node.getName();
     }
 

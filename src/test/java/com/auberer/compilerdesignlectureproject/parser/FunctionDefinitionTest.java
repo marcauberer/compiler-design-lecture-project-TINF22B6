@@ -55,6 +55,7 @@ public class FunctionDefinitionTest {
          */
 
         doNothing().when(lexer).expect(TokenType.TOK_FUNC);
+        doReturn(null).when(parser).parseParamNode();
         doReturn(null).when(parser).parseType();
         doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
@@ -75,8 +76,9 @@ public class FunctionDefinitionTest {
         assertNotNull(astFctDefNode);
 
         verify(lexer, times(1)).expect(TokenType.TOK_FUNC);
-        verify(parser, times(2)).parseType();
-        verify(lexer, times(2)).expect(TokenType.TOK_IDENTIFIER);
+        verify(parser, times(1)).parseType();
+        verify(parser, times(1)).parseParamNode();
+        verify(lexer, times(1)).expect(TokenType.TOK_IDENTIFIER);
         verify(parser, times(1)).parseParamLst();
         verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
         verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
