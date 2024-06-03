@@ -1,6 +1,7 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableEntry;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +28,8 @@ public class ASTAtomicExprNode extends ASTNode {
   public String stringLit;
   public boolean boolLit;
   public String identifier;
+
+  public SymbolTableEntry currentSymbolTable;
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
@@ -56,4 +59,5 @@ public class ASTAtomicExprNode extends ASTNode {
   public ASTLogicalExprNode getLogicalExpr() {
     return getChild(ASTLogicalExprNode.class, 0);
   }
+
 }

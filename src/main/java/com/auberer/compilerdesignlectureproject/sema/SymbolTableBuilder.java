@@ -205,4 +205,19 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     currentScopes.pop();
     return null;
   }
+
+  @Override
+  public Void visitAtomicExpr(ASTAtomicExprNode node) {
+    visitChildren(node);
+
+    if (node.getIdentifier() != null){
+      String identifier = node.getIdentifier();
+      if (currentScopes.peek().lookupSymbol(identifier, node) == null)
+        throw new SemaError(node, "Identifier " + identifier + " not found");
+      else
+        node.setCurrentSymbolTable(currentScopes.peek().lookupSymbol(identifier, node));
+    }
+
+    return null;
+  }
 }
