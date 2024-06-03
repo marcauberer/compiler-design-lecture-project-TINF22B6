@@ -90,12 +90,21 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   @Override
   public ExprResult visitSwitchStmt(ASTSwitchStmtNode node) {
     ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
-    ExprResult result = visit(logicalExprNode);
+    ExprResult result = visitLogicalExpr(logicalExprNode);
     if(!result.getType().isOneOf(SuperType.TY_INT, SuperType.TY_DOUBLE, SuperType.TY_STRING)){
       throw new SemaError(node, "Switch statement expects int, double or string, but got '" + result.getType().toString() + "'");
     }
 
-    node.getCases().setExpectedType(result.getType());
+    if(result.getType().getSuperType().equals(SuperType.TY_DOUBLE)){
+      node.getCases().setExpectedType(ASTCasesNode.CaseType.DOUBLE_LIT);
+    }
+    else if(result.getType().getSuperType().equals(SuperType.TY_INT)){
+      node.getCases().setExpectedType(ASTCasesNode.CaseType.INT_LIT);
+    }
+    else if(result.getType().getSuperType().equals(SuperType.TY_STRING)){
+      node.getCases().setExpectedType(ASTCasesNode.CaseType.STRING_LIT);
+    }
+
 
     visit(node.getCases());
     visit(node.getDefault());
@@ -106,7 +115,12 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   @Override
   public ExprResult visitCases(ASTCasesNode node) {
-    node.getExpectedType();
+
+    for(ASTCasesNode.CaseType t: node.getCaseTypes()){
+      if(t != node.getExpectedType()){
+        throw new SemaError(node, "Switch case expects '" + node.getExpectedType() + "' but got '" + t + "'");
+      }
+    }
 
     return super.visitCases(node);
   }

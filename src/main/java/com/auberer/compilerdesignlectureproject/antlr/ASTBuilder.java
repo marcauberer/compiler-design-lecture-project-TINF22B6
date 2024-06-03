@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.List;
 import java.util.Stack;
 
 public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
@@ -189,6 +190,20 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     int casesSize = ctx.CASE().size();
     node.setCasesSize(casesSize);
 
+    List<TerminalNode> doubles = ctx.DOUBLE_LIT();
+    List<TerminalNode> ints = ctx.INT_LIT();
+    List<TerminalNode> strings = ctx.STRING_LIT();
+
+    for(TerminalNode ignored : doubles){
+      node.addCaseType(ASTCasesNode.CaseType.DOUBLE_LIT);
+    }
+    for(TerminalNode ignored : ints){
+      node.addCaseType(ASTCasesNode.CaseType.INT_LIT);
+    }
+    for(TerminalNode ignored : strings){
+      node.addCaseType(ASTCasesNode.CaseType.STRING_LIT);
+    }
+
     visitChildren(ctx);
 
     exitNode(node);
@@ -283,7 +298,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     enterNode(node, ctx);
 
     visitChildren(ctx);
-    node.setVariableName(ctx.IDENTIFIER().toString());
+    //node.setVariableName(ctx.IDENTIFIER().toString());
 
     exitNode(node);
     return node;
