@@ -49,7 +49,7 @@ public class STBAssignStmtTest {
     @Test
     @DisplayName("Integration test - SymbolTableBuilder (Wrong Input)")
     void testAssignStmtIntegratedTypeCheckerWrongInput() {
-        String code = "i =  ";
+        String code = "i = 'hallo';";
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);

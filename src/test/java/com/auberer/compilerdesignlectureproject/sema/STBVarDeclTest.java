@@ -48,7 +48,7 @@ public class STBVarDeclTest {
     @Test
     @DisplayName("Integration test - SymbolTableBuilder (Wrong Input)")
     void testVarDeclIntegratedTypeCheckerWrongInput() {
-        String code = "int i =  ";
+        String code = "int i = 'hallo';";
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
