@@ -2,6 +2,7 @@ package com.auberer.compilerdesignlectureproject.sema;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
 
+import java.lang.foreign.SymbolLookup;
 import java.util.Stack;
 
 /**
@@ -14,6 +15,8 @@ import java.util.Stack;
 public class TypeChecker extends ASTVisitor<ExprResult> {
 
   Stack<Scope> currentScopes = new Stack<>();
+
+
 
   public TypeChecker() {
     assert currentScopes.empty();
@@ -99,17 +102,18 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
               + logicalExprResult.getType().toString() + "' to variable of type '" + declaredType.toString() + "'");
     }
 
-    Type resultType = new Type(SuperType.TY_EMPTY);
+    Type resultType = new Type(SuperType.TY_INVALID);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 
   @Override
   public ExprResult visitAssignStmt(ASTAssignStmtNode node){
+    Type lefttype = node.getCurrentSymbol().getType();
     ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
     ExprResult logicalExprResult = visit(logicalExprNode);
 
-    if (logicalExprResult.getType().is(SuperType.TY_EMPTY))
-      throw new SemaError(node, "AssignStmt expects any Type, but got '" + logicalExprResult.getType().toString() + "'");
+    if (!logicalExprResult.getType().is(lefttype.getSuperType()))
+      throw new SemaError(node, "AssignStmt expects'"+lefttype.getSuperType()+",' but got '" + logicalExprResult.getType().toString() + "'");
 
     Type resultType = new Type(SuperType.TY_INVALID);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
