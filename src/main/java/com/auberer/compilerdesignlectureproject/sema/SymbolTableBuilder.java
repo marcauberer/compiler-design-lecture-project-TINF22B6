@@ -16,6 +16,22 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   }
 
   @Override
+  public Void visitForLoop(ASTForNode node) {
+    Scope forScope = new Scope();
+    currentScopes.push(forScope);
+
+    visitChildren(node);
+
+    // Check if the initialization, condition, and increment are not null
+    assert node.getInitialization() != null;
+    assert node.getCondition() != null;
+    assert node.getIncrement() != null;
+
+    currentScopes.pop();
+    return null;
+  }
+
+  @Override
   public Void visitEntry(ASTEntryNode node) {
     visitChildren(node);
 
@@ -155,6 +171,28 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   }
 
   @Override
+<<<<<<< main
+  public Void visitSwitchStmt(ASTSwitchStmtNode node) {
+    Scope scope = new Scope();
+    currentScopes.push(scope);
+
+    visitChildren(node);
+
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
+    return null;
+  }
+
+  @Override
+  public Void visitCases(ASTCasesNode node) {
+    Scope scope = new Scope();
+    currentScopes.push(scope);
+
+    visitChildren(node);
+
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
+=======
   public Void visitFctDef(ASTFctDefNode node) {
     Scope functionScope = new Scope();
 
@@ -175,10 +213,21 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
       currentScopes.peek().insertSymbol(node.getName(), node);
     }
 
+>>>>>>> main
     return null;
   }
 
   @Override
+<<<<<<< main
+  public Void visitDefault(ASTDefaultNode node) {
+    Scope scope = new Scope();
+    currentScopes.push(scope);
+
+    visitChildren(node);
+
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
+=======
   public Void visitParamLst(ASTParamLstNode node) {
     for (String name : node.getParamNames()) {
       if (currentScopes.peek().lookupSymbol(name, node) != null) {
@@ -188,18 +237,35 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
       }
     }
 
+>>>>>>> main
     return null;
   }
 
   @Override
+<<<<<<< main
+  public Void visitAtomicExpr(ASTAtomicExprNode node) {
+    visitChildren(node);
+
+    if (node.getIdentifier() != null){
+      String identifier = node.getIdentifier();
+      if (currentScopes.peek().lookupSymbol(identifier, node) == null)
+        throw new SemaError(node, "Identifier " + identifier + " not found");
+      else
+        node.setCurrentSymbolTable(currentScopes.peek().lookupSymbol(identifier, node));
+=======
   public Void visitFctCall(ASTFctCallNode node) {
 
     visitChildren(node);
 
     if (currentScopes.peek().lookupSymbol(node.getName(), node) == null) {
       throw new SemaError(node, "Function with name " + node.getName() + " not defined");
+>>>>>>> main
     }
 
     return null;
   }
+<<<<<<< main
 }
+=======
+}
+>>>>>>> main
