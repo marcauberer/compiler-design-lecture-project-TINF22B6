@@ -57,6 +57,19 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   }
 
   @Override
+  public ExprResult visitType(ASTTypeNode node) {
+    Type resultType = switch (node.getDataType()) {
+      case INT -> new Type(SuperType.TY_INT);
+      case DOUBLE -> new Type(SuperType.TY_DOUBLE);
+      case STRING -> new Type(SuperType.TY_STRING);
+      case BOOL -> new Type(SuperType.TY_BOOL);
+      case EMPTY -> new Type(SuperType.TY_EMPTY);
+      default -> new Type(SuperType.TY_INVALID);
+    };
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
   public ExprResult visitWhileLoop(ASTWhileLoopNode node) {
     ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
     ExprResult logicalExprResult = visit(logicalExprNode);
