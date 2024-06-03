@@ -91,6 +91,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   @Override
   public ExprResult visitDoWhileLoop(ASTDoWhileLoopNode node) {
     ASTLogicalExprNode logicalExprNode = node.getCondition();
+
     ExprResult logicalExprResult = visit(logicalExprNode);
 
     if (!logicalExprResult.getType().is(SuperType.TY_BOOL))
@@ -102,16 +103,37 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   @Override
   public ExprResult visitFctDef(ASTFctDefNode node) {
-    ASTParamLstNode params = node.getParams();
 
-    if(params != null){
-      ExprResult result = visit(params.getChildren().getFirst());
-      if (!result.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
-        throw new SemaError(node, "fct def statement expects type of boolean string, int or double, but got '" +
-                result.getType().toString() + "'");
+    ASTTypeNode typeNode = node.getDataType();
+    ExprResult type = visitType(typeNode);
+
+
+    /*
+    if(functionIstInOverload(node.getName()){
+    throw some error
+    }
+     */
+
+
+    if (!type.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
+      throw new SemaError(node, "function definition expects type of boolean string, int or double, but got '" +
+              type.getType().toString() + "'");
+
+
+    if(node.hasParams()){
+      ASTParamLstNode params = node.getParams();
+      for( ASTNode astNode: params.getChildren()){
+        ExprResult result = visit(astNode);
+        if (!result.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
+          throw new SemaError(node, "paramerters expect type of boolean string, int or double, but got '" +
+                  result.getType().toString() + "'");
+      }
     }
 
-    Type resultType = new Type(SuperType.TY_EMPTY);
+    node.setEvaluatedSymbolType(type.getType());
+    // addeDieFunctionZuOverloadResolution(node.getName());
+
+    Type resultType = new Type(SuperType.TY_FUNCTION);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 
@@ -126,7 +148,12 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
                 result.getType().toString() + "'");
     }
 
-    Type resultType = new Type(SuperType.TY_EMPTY);
+    /*
+    if(!functionIstInOverload(node.getName()){
+    throw some error
+    }
+     */
+    Type resultType = new Type(SuperType.TY_FUNCTION);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 }
