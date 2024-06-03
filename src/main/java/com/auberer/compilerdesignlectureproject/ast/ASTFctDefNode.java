@@ -3,6 +3,7 @@ package com.auberer.compilerdesignlectureproject.ast;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.Set;
 
@@ -13,6 +14,9 @@ import static com.auberer.compilerdesignlectureproject.lexer.TokenType.TOK_FUNC;
 public class ASTFctDefNode extends ASTNode {
 
     String name;
+
+    @Accessors(fluent = true)
+    boolean hasParams;
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {

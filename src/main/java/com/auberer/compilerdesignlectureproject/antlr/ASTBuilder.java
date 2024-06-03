@@ -61,6 +61,8 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
       node.setDataType(ASTTypeNode.DataType.DOUBLE);
     } else if (ctx.TYPE_STRING() != null) {
       node.setDataType(ASTTypeNode.DataType.STRING);
+    } else if (ctx.TYPE_BOOL() != null) {
+      node.setDataType(ASTTypeNode.DataType.BOOL);
     } else if (ctx.TYPE_EMPTY() != null) {
       node.setDataType(ASTTypeNode.DataType.EMPTY);
     }
@@ -298,7 +300,8 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     enterNode(node, ctx);
 
     visitChildren(ctx);
-    //node.setVariableName(ctx.IDENTIFIER().toString());
+    if (ctx.IDENTIFIER() != null)
+      node.setVariableName(ctx.IDENTIFIER().toString());
 
     exitNode(node);
     return node;
@@ -337,6 +340,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     } else if (ctx.NOT_EQUAL() != null) {
       node.setOperator(ASTCompareExprNode.CompareOperator.NOT_EQUAL);
     }
+    visitChildren(ctx);
 
     exitNode(node);
     return node;
@@ -400,6 +404,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     } else if (ctx.MINUS() != null) {
       node.setOperator(ASTPrefixExprNode.PrefixOperator.MINUS);
     }
+    visitChildren(ctx);
 
     exitNode(node);
     return node;

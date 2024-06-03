@@ -47,10 +47,12 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     if (node.isAssignment()) {
       String variableName = node.getVariableName();
       SymbolTableEntry entry = currentScopes.peek().lookupSymbol(variableName, node);
+      node.setCurrentSymbol(entry);
       if (entry == null)
         throw new SemaError(node, "Variable '" + variableName + "' was not found");
     }
-    
+
+
     return null;
   }
 
@@ -154,7 +156,6 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     return null;
   }
 
-  @Override
   public Void visitFctDef(ASTFctDefNode node) {
     Scope functionScope = new Scope();
 
@@ -163,7 +164,8 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     currentScopes.push(functionScope);
 
 
-    visit(node.getParams());
+    if (node.hasParams())
+      visit(node.getParams());
     visit(node.getBody());
 
     currentScopes.pop();
@@ -191,14 +193,28 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   }
 
   @Override
-  public Void visitFctCall(ASTFctCallNode node) {
-
+  public Void visitAtomicExpr(ASTAtomicExprNode node) {
     visitChildren(node);
 
-    if (currentScopes.peek().lookupSymbol(node.getName(), node) == null) {
-      throw new SemaError(node, "Function with name " + node.getName() + " not defined");
+    if (node.getIdentifier() != null) {
+      String identifier = node.getIdentifier();
+      if (currentScopes.peek().lookupSymbol(identifier, node) == null)
+        throw new SemaError(node, "Identifier " + identifier + " not found");
+      else
+        node.setCurrentSymbolTable(currentScopes.peek().lookupSymbol(identifier, node));
     }
 
     return null;
   }
+
+  @Override
+  public Void visitFctCall(ASTFctCallNode node) {
+    visitChildren(node);
+
+    if (currentScopes.peek().lookupSymbol(node.getName(), node) == null)
+      throw new SemaError(node, "Function with name " + node.getName() + " not defined");
+
+    return null;
+  }
+
 }
