@@ -171,6 +171,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   }
 
   @Override
+<<<<<<< main
   public Void visitSwitchStmt(ASTSwitchStmtNode node) {
     Scope scope = new Scope();
     currentScopes.push(scope);
@@ -191,10 +192,33 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
     assert currentScopes.peek() == scope;
     currentScopes.pop();
+=======
+  public Void visitFctDef(ASTFctDefNode node) {
+    Scope functionScope = new Scope();
+
+    visit(node.getDataType());
+
+    currentScopes.push(functionScope);
+
+
+    if (node.hasParams())
+      visit(node.getParams());
+    visit(node.getBody());
+
+    currentScopes.pop();
+
+    if (currentScopes.peek().lookupSymbol(node.getName(), node) != null) {
+      throw new SemaError(node, "Function name already in use");
+    } else {
+      currentScopes.peek().insertSymbol(node.getName(), node);
+    }
+
+>>>>>>> main
     return null;
   }
 
   @Override
+<<<<<<< main
   public Void visitDefault(ASTDefaultNode node) {
     Scope scope = new Scope();
     currentScopes.push(scope);
@@ -203,10 +227,22 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
     assert currentScopes.peek() == scope;
     currentScopes.pop();
+=======
+  public Void visitParamLst(ASTParamLstNode node) {
+    for (String name : node.getParamNames()) {
+      if (currentScopes.peek().lookupSymbol(name, node) != null) {
+        throw new SemaError(node, "Parameter name already in use");
+      } else {
+        currentScopes.peek().insertSymbol(name, node);
+      }
+    }
+
+>>>>>>> main
     return null;
   }
 
   @Override
+<<<<<<< main
   public Void visitAtomicExpr(ASTAtomicExprNode node) {
     visitChildren(node);
 
@@ -216,8 +252,20 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
         throw new SemaError(node, "Identifier " + identifier + " not found");
       else
         node.setCurrentSymbolTable(currentScopes.peek().lookupSymbol(identifier, node));
+=======
+  public Void visitFctCall(ASTFctCallNode node) {
+
+    visitChildren(node);
+
+    if (currentScopes.peek().lookupSymbol(node.getName(), node) == null) {
+      throw new SemaError(node, "Function with name " + node.getName() + " not defined");
+>>>>>>> main
     }
 
     return null;
   }
+<<<<<<< main
 }
+=======
+}
+>>>>>>> main

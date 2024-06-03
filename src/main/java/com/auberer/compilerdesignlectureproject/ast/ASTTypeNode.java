@@ -15,6 +15,7 @@ public class ASTTypeNode extends ASTNode {
     INT,
     DOUBLE,
     STRING,
+    BOOL,
     EMPTY
   }
 
