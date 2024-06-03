@@ -14,5 +14,3 @@ public class ASTAfterIfNode extends ASTNode {
     return ASTElsePreNode.getSelectionSet();
   }
 }
-
-

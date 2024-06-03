@@ -1,8 +1,8 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
-import com.auberer.compilerdesignlectureproject.ast.*;
-
 import java.util.Stack;
+
+import com.auberer.compilerdesignlectureproject.ast.*;
 
 /**
  * Typ-Kompatibilität prüfen
@@ -88,6 +88,27 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     return new ExprResult(new Type(SuperType.TY_BOOL));
   }
 
+  @Override
+  public ExprResult visitIf(ASTIfStmtNode node) {
+    ASTLogicalExprNode logicalExprNode = node.getCondition();
+    
+    ExprResult logicalExprResult = visit(logicalExprNode);
+    if (!logicalExprResult.getType().is(SuperType.TY_BOOL))
+      throw new SemaError(node, String.format("if statement expects bool but got'%s", logicalExprResult.getType().toString()));
+    
+    return new ExprResult(new Type(SuperType.TY_EMPTY));
+  }
+
+  @Override
+  public ExprResult visitAfterIf(ASTAfterIfNode node) {
+    return new ExprResult(new Type(SuperType.TY_EMPTY));
+  }
+
+  @Override
+  public ExprResult visitElse(ASTElseNode node) {
+    return new ExprResult(new Type(SuperType.TY_EMPTY));
+  }
+  
   @Override
   public ExprResult visitDoWhileLoop(ASTDoWhileLoopNode node) {
     ASTLogicalExprNode logicalExprNode = node.getCondition();
