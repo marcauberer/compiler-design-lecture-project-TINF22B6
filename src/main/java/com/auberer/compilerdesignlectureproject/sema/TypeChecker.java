@@ -278,13 +278,16 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   }
 
   @Override
-  public ExprResult visitAssignStmt(ASTAssignStmtNode node){
-    Type lefttype = node.getCurrentSymbol().getType();
-    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
-    ExprResult logicalExprResult = visit(logicalExprNode);
+  public ExprResult visitAssignStmt(ASTAssignStmtNode node) {
+    SymbolTableEntry currentSymbol = node.getCurrentSymbol();
+    if (currentSymbol != null) {
+      Type leftType = currentSymbol.getType();
+      ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
+      ExprResult logicalExprResult = visit(logicalExprNode);
 
-    if (!logicalExprResult.getType().is(lefttype.getSuperType()))
-      throw new SemaError(node, "AssignStmt expects'"+lefttype.getSuperType()+",' but got '" + logicalExprResult.getType().toString() + "'");
+      if (!logicalExprResult.getType().is(leftType.getSuperType()))
+        throw new SemaError(node, "AssignStmt expects'" + leftType.getSuperType() + ",' but got '" + logicalExprResult.getType().toString() + "'");
+    }
 
     Type resultType = new Type(SuperType.TY_INVALID);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
