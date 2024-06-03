@@ -325,6 +325,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     } else if (ctx.NOT_EQUAL() != null) {
       node.setOperator(ASTCompareExprNode.CompareOperator.NOT_EQUAL);
     }
+    visitChildren(ctx);
 
     exitNode(node);
     return node;
@@ -388,6 +389,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     } else if (ctx.MINUS() != null) {
       node.setOperator(ASTPrefixExprNode.PrefixOperator.MINUS);
     }
+    visitChildren(ctx);
 
     exitNode(node);
     return node;

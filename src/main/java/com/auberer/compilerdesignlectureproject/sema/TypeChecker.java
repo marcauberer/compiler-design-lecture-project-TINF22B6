@@ -1,8 +1,8 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
-import java.util.Stack;
-
 import com.auberer.compilerdesignlectureproject.ast.*;
+
+import java.util.Stack;
 
 /**
  * Typ-Kompatibilität prüfen
@@ -57,20 +57,19 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   }
 
   @Override
-<<<<<<< main
-  public ExprResult visitLogicalExpr(ASTLogicalExprNode node) { //Schleife
-    //visitChildren(node);
-    //return new ExprResult(new Type(SuperType.TY_BOOL));
-
+  public ExprResult visitLogicalExpr(ASTLogicalExprNode node) {
     ExprResult left = visit(node.operands().get(0));
-    for (int j = 1; j <= node.operands().size(); j++){
-      ExprResult right = visit(node.operands().get(j));
+    for (int i = 1; i < node.operands().size(); i++){
+      ExprResult right = visit(node.operands().get(i));
       if (!left.getType().equals(right.getType())){
         throw new RuntimeException("Type mismatch in logical expression");
       }
     }
     Type resultType = left.getType();
-=======
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
   public ExprResult visitType(ASTTypeNode node) {
     Type resultType = switch (node.getDataType()) {
       case INT -> new Type(SuperType.TY_INT);
@@ -80,39 +79,36 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       case EMPTY -> new Type(SuperType.TY_EMPTY);
       default -> new Type(SuperType.TY_INVALID);
     };
->>>>>>> main
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 
   @Override
-<<<<<<< main
-  public ExprResult visitAdditiveExpr(ASTAdditiveExprNode node) { //Schleife
+  public ExprResult visitAdditiveExpr(ASTAdditiveExprNode node) {
     ExprResult left = visit(node.operands().get(0));
-    for (int i = 0; i <= node.operands().size(); i++){
+    for (int i = 1; i < node.operands().size(); i++){
       ExprResult right = visit(node.operands().get(i));
       if(!left.getType().equals(right.getType())){
         throw new RuntimeException("Type mismatch in additive expression");
       }
     }
     Type resultType = left.getType();
-=======
-  public ExprResult visitWhileLoop(ASTWhileLoopNode node) {
-    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
-    ExprResult logicalExprResult = visit(logicalExprNode);
-
-    // if (!logicalExprNode.getType().isOneOf(SuperType.TY_BOOL))
-    if (!logicalExprResult.getType().isOneOf(SuperType.TY_BOOL))
-      throw new SemaError(node, "While Loop - Condition expects boolean but got '" + logicalExprResult.getType().toString() + "'");
-
-    Type resultType = new Type(SuperType.TY_EMPTY);
->>>>>>> main
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 
   @Override
-<<<<<<< main
+  public ExprResult visitWhileLoop(ASTWhileLoopNode node) {
+    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
+    ExprResult logicalExprResult = visit(logicalExprNode);
+
+    if (!logicalExprResult.getType().isOneOf(SuperType.TY_BOOL))
+      throw new SemaError(node, "While Loop - Condition expects boolean but got '" + logicalExprResult.getType().toString() + "'");
+
+    Type resultType = new Type(SuperType.TY_EMPTY);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
   public ExprResult visitCompareExpr(ASTCompareExprNode node) {
-    Type resultType;
     ExprResult left = visit(node.operands().get(0));
     if(node.operands().size() > 1){
       ExprResult right = visit(node.operands().get(1));
@@ -120,17 +116,13 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       if(!left.getType().equals(right.getType())){
         throw new RuntimeException("Type mismatch in compare expression");
       }
-      resultType = new Type(SuperType.TY_BOOL);
+      return new ExprResult(node.setEvaluatedSymbolType(new Type(SuperType.TY_BOOL)));
     }
-    else {
-      resultType = left.getType();
-    }
-
-    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+    return new ExprResult(node.setEvaluatedSymbolType(left.getType()));
   }
 
   @Override
-  public ExprResult visitAtomicExpr(ASTAtomicExprNode node) { //switch case -- identifier -> lookuptable type bekommen --> fctcall visit fctcall
+  public ExprResult visitAtomicExpr(ASTAtomicExprNode node) {
     ASTAtomicExprNode.AtomicType exprType = node.getExprType();
 
     switch (exprType) {
@@ -163,9 +155,9 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   }
 
   @Override
-  public ExprResult visitMultiplicativeExpr(ASTMultiplicativeExprNode node) { //Schleife
+  public ExprResult visitMultiplicativeExpr(ASTMultiplicativeExprNode node) {
     ExprResult left = visit(node.operands().get(0));
-    for (int i = 0; i <= node.operands().size(); i++){
+    for (int i = 1; i < node.operands().size(); i++){
       ExprResult right = visit(node.operands().get(i));
       if(!left.getType().equals(right.getType())){
         throw new RuntimeException("Type mismatch in multiplicative expression");
@@ -188,12 +180,6 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       }
     }
     return left;
-  }
-
-=======
-  public ExprResult visitLogicalExpr(ASTLogicalExprNode node) {
-    visitChildren(node);
-    return new ExprResult(new Type(SuperType.TY_BOOL));
   }
 
   @Override
@@ -228,5 +214,4 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     Type resultType = new Type(SuperType.TY_EMPTY);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
->>>>>>> main
 }
