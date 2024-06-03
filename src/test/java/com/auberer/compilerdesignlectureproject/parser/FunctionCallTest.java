@@ -8,6 +8,7 @@ import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
 import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import com.auberer.compilerdesignlectureproject.sema.SymbolTableEntry;
+import com.auberer.compilerdesignlectureproject.sema.TypeChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -77,6 +78,8 @@ public class FunctionCallTest {
         SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
         symboltablebuilder.visitFctDef(defNode);
         symboltablebuilder.visitFctCall(callNode);
+
+        new TypeChecker().visitFctCall(callNode);
     }
 
     private static void searchNodeForFctCallNode(ASTNode node, String path) {

@@ -86,4 +86,34 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     Type resultType = new Type(SuperType.TY_EMPTY);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
+
+  @Override
+  public ExprResult visitFctDef(ASTFctDefNode node) {
+    ASTParamLstNode params = node.getParams();
+
+    if(params != null){
+      ExprResult result = visit(params.getChildren().getFirst());
+      if (!result.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
+        throw new SemaError(node, "fct def statement expects type of boolean string, int or double, but got '" +
+                result.getType().toString() + "'");
+    }
+
+    Type resultType = new Type(SuperType.TY_EMPTY);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
+  public ExprResult visitFctCall(ASTFctCallNode node) {
+    ASTCallParamsNode params = node.getCallParams();
+
+    if(params != null){
+      ExprResult result = visit(params.getChildren().getFirst());
+      if (!result.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
+        throw new SemaError(node, "fct call statement expects type of boolean string, int or double, but got '" +
+                result.getType().toString() + "'");
+    }
+
+    Type resultType = new Type(SuperType.TY_EMPTY);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
 }
