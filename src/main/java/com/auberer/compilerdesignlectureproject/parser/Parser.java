@@ -153,6 +153,11 @@ public class Parser implements IParser {
         node.setDataType(ASTTypeNode.DataType.STRING);
         break;
       }
+      case TokenType.TOK_TYPE_BOOL: {
+        lexer.expect(TokenType.TOK_TYPE_BOOL);
+        node.setDataType(ASTTypeNode.DataType.BOOL);
+        break;
+      }
       case TokenType.TOK_TYPE_EMPTY: {
         lexer.expect(TokenType.TOK_TYPE_EMPTY);
         node.setDataType(ASTTypeNode.DataType.EMPTY);
@@ -379,10 +384,12 @@ public class Parser implements IParser {
     enterNode(node);
 
     parseType();
+    node.addParamName(lexer.getToken().getText());
     lexer.expect(TokenType.TOK_IDENTIFIER);
     while (lexer.getToken().getType() == TokenType.TOK_COMMA) {
       lexer.expect(TokenType.TOK_COMMA);
       parseType();
+      node.addParamName(lexer.getToken().getText());
       lexer.expect(TokenType.TOK_IDENTIFIER);
     }
     exitNode(node);
