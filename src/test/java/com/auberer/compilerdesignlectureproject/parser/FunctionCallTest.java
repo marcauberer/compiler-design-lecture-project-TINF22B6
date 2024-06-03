@@ -79,7 +79,7 @@ public class FunctionCallTest {
         symboltablebuilder.visitFctDef(defNode);
         symboltablebuilder.visitFctCall(callNode);
 
-        new TypeChecker().visitFctCall(callNode);
+        new TypeChecker(parseNode).visitFctCall(callNode);
     }
 
     private static void searchNodeForFctCallNode(ASTNode node, String path) {

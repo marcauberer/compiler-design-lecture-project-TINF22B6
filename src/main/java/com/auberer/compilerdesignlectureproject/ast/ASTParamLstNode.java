@@ -1,6 +1,7 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import com.auberer.compilerdesignlectureproject.sema.SuperType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,18 +13,17 @@ import java.util.Set;
 @Setter
 public class ASTParamLstNode extends ASTNode {
 
-    List<String> paramNames = new ArrayList<>();
-
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
         return visitor.visitParamLst(this);
+    }
+
+    public List<ASTParamNode> getParamNodes() {
+        return getChildren(ASTParamNode.class);
     }
 
     public static Set<TokenType> getSelectionSet() {
         return ASTTypeNode.getSelectionSet();
     }
 
-    public void addParamName(String paramNames) {
-        this.paramNames.add(paramNames);
-    }
 }

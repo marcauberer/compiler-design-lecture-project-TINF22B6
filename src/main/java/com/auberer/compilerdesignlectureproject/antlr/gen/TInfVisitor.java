@@ -119,6 +119,12 @@ public interface TInfVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParamLst(TInfParser.ParamLstContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link TInfParser#param}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParam(TInfParser.ParamContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link TInfParser#logic}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

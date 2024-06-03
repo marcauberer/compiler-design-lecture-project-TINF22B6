@@ -1,9 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTFctCallNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTParamLstNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
+import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -97,7 +94,9 @@ public class FunctionDefinitionTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
 
-        ASTFctDefNode astFctDefNode = parser.parseFctDef();
+
+        ASTEntryNode entryNode = parser.parse();
+        ASTFctDefNode astFctDefNode = entryNode.getChild(ASTFctDefNode.class, 0);
         assertInstanceOf(ASTFctDefNode.class, astFctDefNode);
         assertInstanceOf(ASTTypeNode.class, astFctDefNode.getDataType());
         assertInstanceOf(ASTParamLstNode.class, astFctDefNode.getParams());
@@ -105,6 +104,6 @@ public class FunctionDefinitionTest {
         SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
         symboltablebuilder.visitFctDef(astFctDefNode);
 
-        new TypeChecker().visitFctDef(astFctDefNode);
+        new TypeChecker(entryNode).visitFctDef(astFctDefNode);
     }
 }

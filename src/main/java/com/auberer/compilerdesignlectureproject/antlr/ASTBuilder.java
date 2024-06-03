@@ -225,13 +225,23 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     ASTParamLstNode node = new ASTParamLstNode();
     enterNode(node, ctx);
 
-    for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
-      node.addParamName(ctx.IDENTIFIER(i).toString());
+    for (TInfParser.ParamContext context : ctx.param()) {
+      visitParam(context);
     }
     visitChildren(ctx);
 
     exitNode(node);
     return node;
+  }
+
+  public ASTNode visitParam(TInfParser.ParamContext ctx){
+    ASTParamNode paramNode = new ASTParamNode();
+
+    enterNode(paramNode, ctx);
+    paramNode.setName(ctx.getText());
+    visitChildren(ctx);
+    exitNode(paramNode);
+    return paramNode;
   }
 
   @Override

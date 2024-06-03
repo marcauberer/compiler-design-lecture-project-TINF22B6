@@ -15,12 +15,20 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   Stack<Scope> currentScopes = new Stack<>();
 
-  public TypeChecker() {
+  final ASTEntryNode entryNode;
+
+  public TypeChecker(ASTEntryNode entryNode) {
+    this.entryNode = entryNode;
     assert currentScopes.empty();
   }
 
+  public TypeChecker(){
+    this(null);
+  }
+
   @Override
-  public ExprResult visitEntry(ASTEntryNode node) {
+  public ExprResult visitEntry(ASTEntryNode node)
+  {
     return super.visitEntry(node);
   }
 
@@ -104,9 +112,6 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   @Override
   public ExprResult visitFctDef(ASTFctDefNode node) {
 
-    ASTTypeNode typeNode = node.getDataType();
-    ExprResult type = visitType(typeNode);
-
 
     /*
     if(functionIstInOverload(node.getName()){
@@ -114,23 +119,23 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     }
      */
 
+    ASTTypeNode typeNode = node.getDataType();
+    ExprResult type = visitType(typeNode);
 
-    if (!type.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
-      throw new SemaError(node, "function definition expects type of boolean string, int or double, but got '" +
+    if (!type.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE, SuperType.TY_EMPTY))
+      throw new SemaError(node, "function definition expects type of boolean string, int , empty or double, but got '" +
               type.getType().toString() + "'");
 
 
     if(node.hasParams()){
       ASTParamLstNode params = node.getParams();
-      for( ASTNode astNode: params.getChildren()){
-        ExprResult result = visit(astNode);
-        if (!result.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
-          throw new SemaError(node, "paramerters expect type of boolean string, int or double, but got '" +
-                  result.getType().toString() + "'");
+      for(ASTParamNode paramNode: params.getParamNodes()){
+        visitParam(paramNode);
       }
     }
 
     node.setEvaluatedSymbolType(type.getType());
+
     // addeDieFunctionZuOverloadResolution(node.getName());
 
     Type resultType = new Type(SuperType.TY_FUNCTION);
@@ -154,6 +159,17 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     }
      */
     Type resultType = new Type(SuperType.TY_FUNCTION);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  public ExprResult visitParam(ASTParamNode node) {
+    ASTTypeNode typeNode = node.getDataType();
+    ExprResult type = visitType(typeNode);
+    if (!type.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
+      throw new SemaError(node, "param expects type of boolean string, int or double, but got '" +
+              type.getType().toString() + "'");
+
+    Type resultType = new Type(type.getType().getSuperType());
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 }
