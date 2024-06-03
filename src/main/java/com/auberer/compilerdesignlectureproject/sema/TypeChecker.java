@@ -2,7 +2,6 @@ package com.auberer.compilerdesignlectureproject.sema;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
 
-import java.lang.foreign.SymbolLookup;
 import java.util.Stack;
 
 /**
