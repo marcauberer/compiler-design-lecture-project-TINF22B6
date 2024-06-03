@@ -2,6 +2,7 @@ package com.auberer.compilerdesignlectureproject.sema;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
 
+import java.lang.foreign.SymbolLookup;
 import java.util.Stack;
 
 /**
@@ -14,6 +15,8 @@ import java.util.Stack;
 public class TypeChecker extends ASTVisitor<ExprResult> {
 
   Stack<Scope> currentScopes = new Stack<>();
+
+
 
   public TypeChecker() {
     assert currentScopes.empty();
@@ -210,8 +213,38 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
     if (!logicalExprResult.getType().is(SuperType.TY_BOOL))
       throw new SemaError(node, "While statement expects bool, but got '" + logicalExprResult.getType().toString() + "'");
-
+    
     Type resultType = new Type(SuperType.TY_EMPTY);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
+
+  @Override
+  public ExprResult visitVarDecl(ASTVarDeclNode node) {
+    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
+    ExprResult logicalExprResult = visit(logicalExprNode);
+    ASTTypeNode typeNode = node.getDataType();
+    Type declaredType = visit(typeNode).getType();
+
+    if (!logicalExprResult.getType().is(declaredType.getSuperType())) {
+      throw new SemaError(node, "Variable Declaration - Type mismatch: cannot assign type '"
+              + logicalExprResult.getType().toString() + "' to variable of type '" + declaredType.toString() + "'");
+    }
+
+    Type resultType = new Type(SuperType.TY_INVALID);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
+  public ExprResult visitAssignStmt(ASTAssignStmtNode node){
+    Type lefttype = node.getCurrentSymbol().getType();
+    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
+    ExprResult logicalExprResult = visit(logicalExprNode);
+
+    if (!logicalExprResult.getType().is(lefttype.getSuperType()))
+      throw new SemaError(node, "AssignStmt expects'"+lefttype.getSuperType()+",' but got '" + logicalExprResult.getType().toString() + "'");
+
+    Type resultType = new Type(SuperType.TY_INVALID);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
 }

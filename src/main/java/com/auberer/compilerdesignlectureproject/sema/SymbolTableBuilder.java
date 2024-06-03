@@ -47,10 +47,12 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     if (node.isAssignment()) {
       String variableName = node.getVariableName();
       SymbolTableEntry entry = currentScopes.peek().lookupSymbol(variableName, node);
+      node.setCurrentSymbol(entry);
       if (entry == null)
         throw new SemaError(node, "Variable '" + variableName + "' was not found");
     }
-    
+
+
     return null;
   }
 
