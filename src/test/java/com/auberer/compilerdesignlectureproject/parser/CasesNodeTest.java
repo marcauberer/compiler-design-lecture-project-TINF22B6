@@ -42,7 +42,7 @@ public class CasesNodeTest {
     void testCases() {
         List<Token> tokenList = new LinkedList<>();
         for(int i = 0; i < 3; i++){
-            Token token = new Token(TokenType.TOK_CASE, String.valueOf(i), new CodeLoc(1,1));
+            Token token = new Token(TokenType.TOK_CASE, ""+i, new CodeLoc(1,1));
             tokenList.add(token);
         }
         tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "end", new CodeLoc(1, 1)));
@@ -53,7 +53,7 @@ public class CasesNodeTest {
         doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
         doNothing().when(lexer).expect(TokenType.TOK_COLON);
         doReturn(mock(ASTStmtLstNode.class)).when(parser).parseStmtLst();
-        doReturn(tokenList.get(0), tokenList.get(0), tokenList.get(1), tokenList.get(2), tokenList.get(3)).when(lexer).getToken();
+        doReturn(tokenList.get(0), tokenList.get(1), tokenList.get(2), tokenList.get(3)).when(lexer).getToken();
 
 
         // Execute parse method

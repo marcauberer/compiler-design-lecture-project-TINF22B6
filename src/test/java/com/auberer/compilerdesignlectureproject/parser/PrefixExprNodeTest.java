@@ -7,6 +7,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,5 +71,18 @@ public class PrefixExprNodeTest {
         assertEquals(ASTPrefixExprNode.PrefixOperator.MINUS , prefixExpr.operator);
         assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, prefixExpr.operand().getExprType());
         assertEquals(4, prefixExpr.operand().getIntLit());
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void integrationTestSymbolTableBuilder() {
+        String code = "-4";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTPrefixExprNode prefixExpr = parser.parsePrefixExpression();
+        SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+
+        symbolTableBuilder.visitPrefixExpr(prefixExpr);
     }
 }

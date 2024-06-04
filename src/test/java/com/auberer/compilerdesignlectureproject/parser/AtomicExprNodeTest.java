@@ -6,6 +6,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,5 +60,18 @@ public class AtomicExprNodeTest {
         assertInstanceOf(ASTAtomicExprNode.class, atomicExpr);
         assertEquals(ASTAtomicExprNode.AtomicType.STRING_LIT, atomicExpr.getExprType());
         assertEquals("Roethig", atomicExpr.getStringLit());
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void integrationTestSymbolTableBuilder() {
+        String code = "\"Roethig\"";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTAtomicExprNode atomicExpr = parser.parseAtomicExpression();
+        SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+
+        symbolTableBuilder.visitAtomicExpr(atomicExpr);
     }
 }
