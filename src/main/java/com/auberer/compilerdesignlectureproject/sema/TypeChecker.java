@@ -22,14 +22,8 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     assert currentScopes.empty();
   }
 
-  public TypeChecker(){
+  public TypeChecker() {
     this(null);
-  }
-
-  @Override
-  public ExprResult visitEntry(ASTEntryNode node)
-  {
-    return super.visitEntry(node);
   }
 
   @Override
