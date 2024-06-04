@@ -3,10 +3,9 @@ package com.auberer.compilerdesignlectureproject.codegen.instructions;
 import com.auberer.compilerdesignlectureproject.ast.ASTNode;
 import lombok.Getter;
 
-@Getter
 public abstract class Instruction implements IInstruction {
 
-  private final ASTNode node;
+  protected final ASTNode node;
 
   public Instruction(ASTNode node) {
     this.node = node;

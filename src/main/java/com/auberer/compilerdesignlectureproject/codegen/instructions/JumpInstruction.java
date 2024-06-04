@@ -26,6 +26,6 @@ public class JumpInstruction extends Instruction {
 
   @Override
   public void trace(StringBuilder sb) {
-    sb.append("jump");
+    sb.append(node.getCodeLoc().toString()).append(": jump ");
   }
 }

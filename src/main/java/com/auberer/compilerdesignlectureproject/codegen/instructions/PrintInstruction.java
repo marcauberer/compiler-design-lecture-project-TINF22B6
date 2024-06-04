@@ -29,6 +29,6 @@ public class PrintInstruction extends Instruction {
 
   @Override
   public void trace(StringBuilder sb) {
-    sb.append("builtin function: print");
+    sb.append(node.getCodeLoc().toString()).append(": builtin function: print ");
   }
 }

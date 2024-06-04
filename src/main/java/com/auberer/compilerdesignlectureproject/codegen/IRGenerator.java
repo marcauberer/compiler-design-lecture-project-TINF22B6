@@ -33,10 +33,14 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   @Override
   public IRExprResult visitPrintBuiltin(ASTPrintBuiltinCallNode node) {
+    // Create print instruction and append it to the current BasicBlock
     PrintInstruction printInstruction = new PrintInstruction(node);
     pushToCurrentBlock(printInstruction);
-    return null;
+
+    return new IRExprResult(null, node, null);
   }
+
+  // ToDo: Insert other visit methods here
 
   /**
    * Can be used to set the instruction insert point to a specific block

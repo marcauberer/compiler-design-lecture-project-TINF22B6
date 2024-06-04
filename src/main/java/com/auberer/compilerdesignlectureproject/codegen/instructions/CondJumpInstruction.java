@@ -39,6 +39,6 @@ public class CondJumpInstruction extends Instruction {
 
   @Override
   public void trace(StringBuilder sb) {
-    sb.append("cond jump");
+    sb.append(node.getCodeLoc().toString()).append(": cond jump ");
   }
 }

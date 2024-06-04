@@ -39,6 +39,6 @@ public class LogicalExprInstruction extends Instruction {
 
   @Override
   public void trace(StringBuilder sb) {
-    sb.append("binary operation: logical_expr");
+    sb.append(node.getCodeLoc().toString()).append(": binary operation: logical_expr");
   }
 }

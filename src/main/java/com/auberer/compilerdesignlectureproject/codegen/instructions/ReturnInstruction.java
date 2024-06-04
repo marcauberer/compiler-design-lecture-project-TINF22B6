@@ -27,6 +27,6 @@ public class ReturnInstruction extends Instruction {
 
   @Override
   public void trace(StringBuilder sb) {
-    sb.append("return");
+    sb.append(node.getCodeLoc().toString()).append(": return");
   }
 }
