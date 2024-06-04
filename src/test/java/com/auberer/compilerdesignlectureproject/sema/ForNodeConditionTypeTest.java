@@ -26,7 +26,7 @@ public class ForNodeConditionTypeTest {
         Lexer lexerFalse = new Lexer(readerFalse, false);
         parserFalse = new Parser(lexerFalse);
 
-        typeChecker = new TypeChecker();
+        typeChecker = new TypeChecker(null);
     }
 
     // Test correct condition type

@@ -100,7 +100,7 @@ public class DoWhileLoopNodeTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTDoWhileLoopNode doWhileLoopNode = parser.parseDoWhile();
-        TypeChecker typeChecker = new TypeChecker();
+        TypeChecker typeChecker = new TypeChecker(null);
 
         ExprResult exprResult = typeChecker.visitDoWhileLoop(doWhileLoopNode);
 

@@ -15,14 +15,20 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   Stack<Scope> currentScopes = new Stack<>();
 
+  final ASTEntryNode entryNode;
 
-
-  public TypeChecker() {
+  public TypeChecker(ASTEntryNode entryNode) {
+    this.entryNode = entryNode;
     assert currentScopes.empty();
   }
 
+  public TypeChecker(){
+    this(null);
+  }
+
   @Override
-  public ExprResult visitEntry(ASTEntryNode node) {
+  public ExprResult visitEntry(ASTEntryNode node)
+  {
     return super.visitEntry(node);
   }
 
@@ -208,6 +214,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   @Override
   public ExprResult visitDoWhileLoop(ASTDoWhileLoopNode node) {
     ASTLogicalExprNode logicalExprNode = node.getCondition();
+
     ExprResult logicalExprResult = visit(logicalExprNode);
 
     if (!logicalExprResult.getType().is(SuperType.TY_BOOL))
@@ -274,6 +281,68 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     visitChildren(node);
 
     Type resultType = new Type(SuperType.TY_EMPTY);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
+  public ExprResult visitFctDef(ASTFctDefNode node) {
+
+    FunctionDef def = new FunctionDef(node);
+    if(! (entryNode.getFunctionDefOrNull(def) == null) ){
+      throw new SemaError(node, "function definition for function " + entryNode.getFunctionDefOrNull(def)  + " is already defined");
+    };
+
+    ASTTypeNode typeNode = node.getDataType();
+    ExprResult type = visitType(typeNode);
+
+    if (!type.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE, SuperType.TY_EMPTY))
+      throw new SemaError(node, "function definition expects type of boolean string, int , empty or double, but got '" +
+              type.getType().toString() + "'");
+
+    ASTParamLstNode params = node.getParams();
+    for(ASTParamNode paramNode: params.getParamNodes()){
+      visitParam(paramNode);
+    }
+
+    node.setEvaluatedSymbolType(type.getType());
+    entryNode.defineFunction(new FunctionDef(node));
+    Type resultType = new Type(SuperType.TY_FUNCTION);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
+  public ExprResult visitFctCall(ASTFctCallNode node) {
+
+    visitChildren(node);
+
+    ASTCallParamsNode params = node.getCallParams();
+
+    for (ASTLogicalExprNode exprNode: params.getParamsAsLogicNodes()){
+      ExprResult result = visit(exprNode);
+      if (!result.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
+        throw new SemaError(node, "fct call statement expects type of boolean string, int or double, but got '" +
+                result.getType().toString() + "'");
+      exprNode.setEvaluatedSymbolType(result.getType());
+    }
+
+    FunctionDef def = new FunctionDef(node);
+    if(entryNode.getFunctionDefOrNull(def) == null){
+      throw new SemaError(node, "function " + def + "is not yet defined");
+    }
+
+
+    Type resultType = new Type(SuperType.TY_FUNCTION);
+    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  public ExprResult visitParam(ASTParamNode node) {
+    ASTTypeNode typeNode = node.getDataType();
+    ExprResult type = visitType(typeNode);
+    if (!type.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
+      throw new SemaError(node, "param expects type of boolean string, int or double, but got '" +
+              type.getType().toString() + "'");
+
+    Type resultType = new Type(type.getType().getSuperType());
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 

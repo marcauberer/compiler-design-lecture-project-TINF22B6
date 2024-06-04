@@ -23,7 +23,7 @@ public class STBWhileLoopTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-        typeChecker = new TypeChecker();
+        typeChecker = new TypeChecker(null);
         typeChecker = spy(typeChecker);
     }
 

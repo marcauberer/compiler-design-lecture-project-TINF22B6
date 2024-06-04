@@ -181,14 +181,20 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   @Override
   public Void visitParamLst(ASTParamLstNode node) {
-    for (String name : node.getParamNames()) {
-      if (currentScopes.peek().lookupSymbol(name, node) != null) {
-        throw new SemaError(node, "Parameter name already in use");
-      } else {
-        currentScopes.peek().insertSymbol(name, node);
-      }
+    for (ASTParamNode node1 : node.getParamNodes()) {
+      visitParam(node1);
     }
 
+    return null;
+  }
+
+  @Override
+  public Void visitParam(ASTParamNode node) {
+    if (currentScopes.peek().lookupSymbol(node.getName(), node) != null) {
+      throw new SemaError(node, "Parameter name already in use");
+    } else {
+      currentScopes.peek().insertSymbol(node.getName(), node);
+    }
     return null;
   }
 

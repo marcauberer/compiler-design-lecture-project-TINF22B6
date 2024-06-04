@@ -383,15 +383,24 @@ public class Parser implements IParser {
     ASTParamLstNode node = new ASTParamLstNode();
     enterNode(node);
 
-    parseType();
-    node.addParamName(lexer.getToken().getText());
-    lexer.expect(TokenType.TOK_IDENTIFIER);
+
+    //lexer.expect(TokenType.TOK_IDENTIFIER);
+    parseParamNode();
+
     while (lexer.getToken().getType() == TokenType.TOK_COMMA) {
       lexer.expect(TokenType.TOK_COMMA);
-      parseType();
-      node.addParamName(lexer.getToken().getText());
-      lexer.expect(TokenType.TOK_IDENTIFIER);
+      parseParamNode();
     }
+    exitNode(node);
+    return node;
+  }
+
+  public ASTParamNode parseParamNode() {
+    ASTParamNode node = new ASTParamNode();
+    enterNode(node);
+    parseType();
+    node.setName(lexer.getToken().getText());
+    lexer.expect(TokenType.TOK_IDENTIFIER);
     exitNode(node);
     return node;
   }

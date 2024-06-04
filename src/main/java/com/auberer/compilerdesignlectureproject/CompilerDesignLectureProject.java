@@ -69,7 +69,7 @@ public class CompilerDesignLectureProject {
       symbolTableBuilder.visit(ast);
 
       // Perform type checking
-      TypeChecker typeChecker = new TypeChecker();
+      TypeChecker typeChecker = new TypeChecker(ast);
       typeChecker.visit(ast);
 
       // ToDo: Extend ...

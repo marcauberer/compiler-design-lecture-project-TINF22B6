@@ -30,10 +30,11 @@ default: DEFAULT COLON stmtLst;
 
 // Function definition / call (team 6)
 fctDef: FUNC type IDENTIFIER LPAREN paramLst? RPAREN logic CNUF;
-paramLst: type IDENTIFIER (COMMA type IDENTIFIER)*;
+paramLst: param (COMMA param)*;
+param: type IDENTIFIER;
 logic: stmtLst RETURN logicalExpr? SEMICOLON;
 fctCall: CALL IDENTIFIER LPAREN callParams? RPAREN;
-callParams: logicalExpr | logicalExpr COMMA callParams;
+callParams: logicalExpr (COMMA logicalExpr)*;
 
 // Variable declaration / assignment (team 7)
 varDecl: type IDENTIFIER (ASSIGN logicalExpr)?;
