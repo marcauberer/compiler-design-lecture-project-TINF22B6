@@ -29,7 +29,7 @@ public class ASTAtomicExprNode extends ASTNode {
   public boolean boolLit;
   public String identifier;
 
-  public SymbolTableEntry currentSymbolTable;
+  public SymbolTableEntry currentSymbol;
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {

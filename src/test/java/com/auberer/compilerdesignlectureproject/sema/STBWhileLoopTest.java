@@ -45,7 +45,7 @@ public class STBWhileLoopTest {
     @Test
     @DisplayName("Integration test - SymbolTableBuilder (Correct Input)")
     void testWhileLoopIntegratedTypeCheckerCorrectInput() {
-        String code = "while (i == 1) { int i = 5 + 6; double d = 12.3 + i; i = -13; }";
+        String code = "while (1 == 1) { int i = 5 + 6; double d = 12.3 + i; i = -13; }";
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
@@ -66,7 +66,7 @@ public class STBWhileLoopTest {
     @Test
     @DisplayName("Integration test - SymbolTableBuilder (Wrong Input)")
     void testWhileLoopIntegratedTypeCheckerWrongInput() {
-        String code = "while ( sdsd ) { int i = 5 + 6; double d = 12.3 + i; i = -13; }";
+        String code = "while ( \"sdsd\" ) { int i = 5 + 6; double d = 12.3 + i; i = -13; }";
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);

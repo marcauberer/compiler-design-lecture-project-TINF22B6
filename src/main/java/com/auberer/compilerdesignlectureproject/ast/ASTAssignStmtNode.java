@@ -13,7 +13,7 @@ public class ASTAssignStmtNode extends ASTNode {
 
   String variableName;
   boolean isAssignment = false;
-  public SymbolTableEntry currentSymbol;
+  SymbolTableEntry currentSymbol;
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {

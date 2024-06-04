@@ -87,14 +87,14 @@ public class SwitchStmtTest {
     void switchIntegrationTestExceptionCaseType() {
         String code = """
                 switch(3){
-                         case 1:
-                             int i = 0;
-                         case 2.2:
-                             int i = 3;
-                         default:
-                             int i = 5;
-                     }
-                    """;
+                     case 1:
+                         int i = 0;
+                     case 2.2:
+                         int i = 3;
+                     default:
+                         int i = 5;
+                }
+                """;
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);

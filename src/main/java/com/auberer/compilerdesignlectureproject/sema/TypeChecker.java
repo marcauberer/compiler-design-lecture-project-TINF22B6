@@ -34,20 +34,20 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   @Override
   public ExprResult visitForLoop(ASTForNode node) {
-    ASTLogicalExprNode logicalNode = node.getCondition();
-    ExprResult forNodeResult = visit(logicalNode);
+    ASTVarDeclNode initialization = node.getInitialization();
+    ExprResult initResult = visit(initialization);
+    assert initResult.getType().is(SuperType.TY_INVALID);
 
-    ExprResult initResult = visit(node.getInitialization());
-    //assert initResult.getType().equals(new Type(SuperType.TY_INVALID));
-
+    ASTLogicalExprNode condition = node.getCondition();
+    ExprResult forNodeResult = visit(condition);
     if (!forNodeResult.getType().is(SuperType.TY_BOOL))
       throw new SemaError(node, "Boolean Statement expected, but instead got '" + forNodeResult.getType().toString() + "'");
 
-    ExprResult incrementResult = visit(node.getIncrement());
-    //assert incrementResult.getType().equals(new Type(SuperType.TY_INVALID));
+    ASTAssignStmtNode increment = node.getIncrement();
+    ExprResult incrementResult = visit(increment);
+    assert incrementResult.getType().is(SuperType.TY_INVALID);
 
-    ExprResult bodyResult = visit(node.getBody());
-    //assert bodyResult.getType().equals(new Type(SuperType.TY_INVALID));
+    visit(node.getBody());
 
     Type resultType = new Type(SuperType.TY_INVALID);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
@@ -150,7 +150,9 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
         return visitLogicalExpr(node.getLogicalExpr());
       }
       case ASTAtomicExprNode.AtomicType.IDENTIFIER: {
-        return new ExprResult(node.setEvaluatedSymbolType(node.getCurrentSymbolTable().getType()));
+        SymbolTableEntry symbol = node.getCurrentSymbol();
+        assert symbol != null;
+        return new ExprResult(node.setEvaluatedSymbolType(symbol.getType()), symbol);
       }
       case ASTAtomicExprNode.AtomicType.FCT_CALL: {
         return visitFctCall(node.getFctCall());
@@ -242,7 +244,6 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       node.getCases().setExpectedType(ASTCasesNode.CaseType.STRING_LIT);
     }
 
-
     visit(node.getCases());
     visit(node.getDefault());
 
@@ -261,6 +262,8 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       throw new SemaError(node, "Variable Declaration - Type mismatch: cannot assign type '"
               + logicalExprResult.getType().toString() + "' to variable of type '" + declaredType.toString() + "'");
     }
+    SymbolTableEntry entry = node.getCurrentSymbol();
+    entry.updateType(declaredType);
 
     Type resultType = new Type(SuperType.TY_INVALID);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
@@ -273,7 +276,10 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
         throw new SemaError(node, "Switch case expects '" + node.getExpectedType() + "' but got '" + t + "'");
       }
     }
-    return super.visitCases(node);
+
+    visitChildren(node);
+
+    return null;
   }
 
   @Override
@@ -299,9 +305,11 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       throw new SemaError(node, "function definition expects type of boolean string, int , empty or double, but got '" +
               type.getType().toString() + "'");
 
-    ASTParamLstNode params = node.getParams();
-    for(ASTParamNode paramNode: params.getParamNodes()){
-      visitParam(paramNode);
+    if (node.hasParams()) {
+      ASTParamLstNode params = node.getParams();
+      for(ASTParamNode paramNode: params.getParamNodes()){
+        visitParam(paramNode);
+      }
     }
 
     node.setEvaluatedSymbolType(type.getType());
@@ -355,7 +363,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       ExprResult logicalExprResult = visit(logicalExprNode);
 
       if (!logicalExprResult.getType().is(leftType.getSuperType()))
-        throw new SemaError(node, "AssignStmt expects'" + leftType.getSuperType() + ",' but got '" + logicalExprResult.getType().toString() + "'");
+        throw new SemaError(node, "AssignStmt expects '" + leftType.getSuperType() + ",' but got '" + logicalExprResult.getType().toString() + "'");
     }
 
     Type resultType = new Type(SuperType.TY_INVALID);

@@ -63,7 +63,17 @@ public class FunctionCallTest {
     @Test
     @DisplayName("Integration test for function call")
     void testIntegrationTestForFunctionCall() {
-        String fctDef = "func int myFunc(int x) int i = 17; return x; cnuf func int fn2() call myFunc(7); return 2; cnuf";
+        String fctDef = """
+            func int myFunc(int x)
+                int i = 17;
+                return x;
+            cnuf
+            
+            func int fn2()
+                call myFunc(7);
+                return 2;
+            cnuf
+            """;
 
         Reader reader = new Reader(fctDef);
         Lexer lexer = new Lexer(reader, false);

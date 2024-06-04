@@ -33,23 +33,28 @@ public class STBAssignStmtTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTAssignStmtNode astAssignStmtNode = parser.parseAssignStmt();
-        ASTLogicalExprNode astLogicalExprNode = astAssignStmtNode.getLogicalExpr();
+        assertNotNull(astAssignStmtNode);
 
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+
+        // Fake the symbol table entry for i
+        Scope scope = symbolTableBuilder.getCurrentScopes().peek();
+        symbolTableBuilder.currentScopes.peek().insertSymbol("i", astAssignStmtNode);
+
         symbolTableBuilder.visitAssignStmt(astAssignStmtNode);
 
-        when(typeChecker.visitLogicalExpr(astLogicalExprNode)).thenReturn(new ExprResult(new Type(SuperType.TY_STRING)));
+        // Set type for i
+        SymbolTableEntry entry = scope.lookupSymbolStrict("i", astAssignStmtNode);
+        entry.updateType(new Type(SuperType.TY_INT));
 
         ExprResult result = typeChecker.visitAssignStmt(astAssignStmtNode);
-
-        assertNotNull(astAssignStmtNode);
-        assertTrue(result.getType().is(SuperType.TY_INT));
+        assertTrue(result.getType().is(SuperType.TY_INVALID));
     }
 
     @Test
     @DisplayName("Integration test - SymbolTableBuilder (Wrong Input)")
     void testAssignStmtIntegratedTypeCheckerWrongInput() {
-        String code = "i = 'hallo';";
+        String code = "i = \"hallo\";";
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
@@ -57,11 +62,17 @@ public class STBAssignStmtTest {
         ASTLogicalExprNode astLogicalExprNode = astAssignStmtNode.getLogicalExpr();
 
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+
+        // Fake the symbol table entry for i
+        symbolTableBuilder.currentScopes.peek().insertSymbol("i", astAssignStmtNode);
+        SymbolTableEntry entry = symbolTableBuilder.currentScopes.peek().lookupSymbolStrict("i", astAssignStmtNode);
+        entry.updateType(new Type(SuperType.TY_INT));
+
         symbolTableBuilder.visitAssignStmt(astAssignStmtNode);
 
         when(typeChecker.visitLogicalExpr(astLogicalExprNode)).thenReturn(new ExprResult(new Type(SuperType.TY_STRING)));
 
         Exception exception = assertThrows(SemaError.class, () -> typeChecker.visitAssignStmt(astAssignStmtNode));
-        assertTrue(exception.getMessage().contains("Assignment - Type mismatch: cannot assign type 'TY_STRING'"));
+        assertTrue(exception.getMessage().contains("L1C1: AssignStmt expects 'TY_INT,' but got 'TY_STRING'"));
     }
 }

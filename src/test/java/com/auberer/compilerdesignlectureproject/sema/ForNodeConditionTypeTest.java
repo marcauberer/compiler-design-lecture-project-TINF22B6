@@ -14,25 +14,30 @@ import org.junit.jupiter.api.Test;
 public class ForNodeConditionTypeTest {
     private Parser parserCorrect;
     private Parser parserFalse;
+    private SymbolTableBuilder symbolTableBuilder;
     private TypeChecker typeChecker;
 
     @BeforeEach
     void setUp() {
-        Reader readerCorrect = new Reader("for (int i = 0; i == 10; i = i + 1) {  } cnuf");
+        Reader readerCorrect = new Reader("for (int i = 0; i == 10; i = i + 1) {  }");
         Lexer lexerCorrect = new Lexer(readerCorrect, false);
         parserCorrect = new Parser(lexerCorrect);
 
-        Reader readerFalse = new Reader("for (int i = 0; 10.5; i = i + 1) {  } cnuf");
+        Reader readerFalse = new Reader("for (int i = 0; 10.5; i = i + 1) {  }");
         Lexer lexerFalse = new Lexer(readerFalse, false);
         parserFalse = new Parser(lexerFalse);
 
-        typeChecker = new TypeChecker(null);
+        symbolTableBuilder = new SymbolTableBuilder();
+        typeChecker = new TypeChecker();
     }
 
     // Test correct condition type
     @Test
     void testCorrectForNodeConditionType() {
         ASTForNode forNode = assertDoesNotThrow(() -> parserCorrect.parseForLoop());
+
+        symbolTableBuilder.visitForLoop(forNode);
+
         assertDoesNotThrow(() -> typeChecker.visitForLoop(forNode));
     }
 
@@ -41,12 +46,14 @@ public class ForNodeConditionTypeTest {
     void testForNodeConditionType() {
         ASTForNode forNode = assertDoesNotThrow(() -> parserFalse.parseForLoop());
 
+        symbolTableBuilder.visitForLoop(forNode);
+
         SemaError thrown = assertThrows(
             SemaError.class,
             () -> typeChecker.visitForLoop(forNode),
             "For loop condition must be a boolean expression"
         );
 
-        assertTrue(thrown.getMessage().contains("For loop condition must be a boolean expression"));
+        assertTrue(thrown.getMessage().contains("L1C1: Boolean Statement expected, but instead got 'TY_DOUBLE'"));
     }
 }

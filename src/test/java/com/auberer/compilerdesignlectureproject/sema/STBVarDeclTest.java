@@ -33,22 +33,20 @@ public class STBVarDeclTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTVarDeclNode astVarDeclNode = parser.parseVarDecl();
+        assertNotNull(astVarDeclNode);
 
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
         symbolTableBuilder.visitVarDecl(astVarDeclNode);
 
-        when(typeChecker.visit(any())).thenReturn(new ExprResult(new Type(SuperType.TY_INT)));
-
         ExprResult result = typeChecker.visitVarDecl(astVarDeclNode);
 
-        assertNotNull(astVarDeclNode);
-        assertTrue(result.getType().is(SuperType.TY_INT));
+        assertTrue(result.getType().is(SuperType.TY_INVALID));
     }
 
     @Test
     @DisplayName("Integration test - SymbolTableBuilder (Wrong Input)")
     void testVarDeclIntegratedTypeCheckerWrongInput() {
-        String code = "int i = 'hallo';";
+        String code = "int i = \"hallo\";";
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
@@ -56,8 +54,6 @@ public class STBVarDeclTest {
 
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
         symbolTableBuilder.visitVarDecl(astVarDeclNode);
-
-        doReturn(new ExprResult(new Type(SuperType.TY_STRING))).when(typeChecker).visit(any());
 
         Exception exception = assertThrows(SemaError.class, () -> typeChecker.visitVarDecl(astVarDeclNode));
         assertTrue(exception.getMessage().contains("Variable Declaration - Type mismatch: cannot assign type 'TY_STRING'"));

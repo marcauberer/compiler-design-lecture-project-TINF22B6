@@ -20,8 +20,8 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     visitChildren(node);
 
     // Check if main function is present
-    //if (currentScopes.peek().lookupSymbol("main", node) == null)
-    //  throw new SemaError(node, "No main function found");
+    if (currentScopes.peek().lookupSymbol("main", node) == null)
+      throw new SemaError(node, "No main function found");
 
     return null;
   }
@@ -34,6 +34,8 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
     SymbolTableEntry entry = currentScopes.peek().lookupSymbolStrict(variableName, node);
     if (entry == null) {
       currentScopes.peek().insertSymbol(variableName, node);
+      entry = currentScopes.peek().lookupSymbolStrict(variableName, node);
+      node.setCurrentSymbol(entry);
     } else {
       throw new SemaError(node, "The variable '" + variableName + "' has already been declared in this scope");
     }
@@ -51,7 +53,6 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
       if (entry == null)
         throw new SemaError(node, "Variable '" + variableName + "' was not found");
     }
-
 
     return null;
   }
@@ -157,12 +158,11 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   }
 
   public Void visitFctDef(ASTFctDefNode node) {
-    Scope functionScope = new Scope();
+    Scope functionScope = currentScopes.peek().createChildScope();
 
     visit(node.getDataType());
 
     currentScopes.push(functionScope);
-
 
     if (node.hasParams())
       visit(node.getParams());
@@ -181,8 +181,8 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
 
   @Override
   public Void visitParamLst(ASTParamLstNode node) {
-    for (ASTParamNode node1 : node.getParamNodes()) {
-      visitParam(node1);
+    for (ASTParamNode param : node.getParamNodes()) {
+      visitParam(param);
     }
 
     return null;
@@ -207,7 +207,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
       if (currentScopes.peek().lookupSymbol(identifier, node) == null)
         throw new SemaError(node, "Identifier " + identifier + " not found");
       else
-        node.setCurrentSymbolTable(currentScopes.peek().lookupSymbol(identifier, node));
+        node.setCurrentSymbol(currentScopes.peek().lookupSymbol(identifier, node));
     }
 
     return null;

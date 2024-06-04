@@ -218,6 +218,14 @@ public class Parser implements IParser {
     while (ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())) {
       casesSize++;
       lexer.expect(TokenType.TOK_CASE);
+      TokenType tokenType = lexer.getToken().getType();
+      if (tokenType == TokenType.TOK_INT_LIT) {
+        node.addCaseType(ASTCasesNode.CaseType.INT_LIT);
+      } else if (tokenType == TokenType.TOK_DOUBLE_LIT) {
+        node.addCaseType(ASTCasesNode.CaseType.DOUBLE_LIT);
+      } else if (tokenType == TokenType.TOK_STRING_LIT) {
+        node.addCaseType(ASTCasesNode.CaseType.STRING_LIT);
+      }
       lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
       lexer.expect(TokenType.TOK_COLON);
       parseStmtLst();
@@ -370,6 +378,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_LPAREN);
     if (ASTParamLstNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseParamLst();
+      node.hasParams(true);
     }
     lexer.expect(TokenType.TOK_RPAREN);
     parseLogic();
@@ -429,6 +438,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_LPAREN);
     if (ASTCallParamsNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseCallParams();
+      node.hasArgs(true);
     }
     lexer.expect(TokenType.TOK_RPAREN);
 

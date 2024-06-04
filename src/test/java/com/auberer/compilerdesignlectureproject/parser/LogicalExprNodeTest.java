@@ -7,7 +7,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
-import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
+import com.auberer.compilerdesignlectureproject.sema.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,7 +85,22 @@ public class LogicalExprNodeTest {
         Parser parser = new Parser(lexer);
         ASTLogicalExprNode logicalExpr = parser.parseLogicalExpression();
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+        TypeChecker typeChecker = new TypeChecker();
+
+        // Fake entries for a and b
+        Scope scope = symbolTableBuilder.getCurrentScopes().peek();
+        scope.insertSymbol("a", logicalExpr);
+        scope.insertSymbol("b", logicalExpr);
 
         symbolTableBuilder.visitLogicalExpr(logicalExpr);
+
+        // Set types for a and b
+        SymbolTableEntry a = scope.lookupSymbolStrict("a", logicalExpr);
+        a.updateType(new Type(SuperType.TY_BOOL));
+        SymbolTableEntry b = scope.lookupSymbolStrict("b", logicalExpr);
+        b.updateType(new Type(SuperType.TY_BOOL));
+
+        ExprResult result = typeChecker.visitLogicalExpr(logicalExpr);
+        assertEquals(SuperType.TY_BOOL, result.getType().getSuperType());
     }
 }

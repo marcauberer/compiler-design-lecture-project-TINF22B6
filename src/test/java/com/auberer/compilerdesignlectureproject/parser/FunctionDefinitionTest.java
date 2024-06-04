@@ -48,12 +48,6 @@ public class FunctionDefinitionTest {
         tokenList.add(new Token(TokenType.TOK_RPAREN, "", new CodeLoc(1, 3)));
         tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "", new CodeLoc(1, 4)));
 
-        /*
-        func empty myfunction()
-            return;
-        cnuf
-         */
-
         doNothing().when(lexer).expect(TokenType.TOK_FUNC);
         doReturn(null).when(parser).parseParamNode();
         doReturn(null).when(parser).parseType();
@@ -91,7 +85,12 @@ public class FunctionDefinitionTest {
     @Test
     @DisplayName("Integration test for function definition")
     void testIntegrationTestForFunctionCall() {
-        String fctDef = "func int myFunc(int x) int i = 17; return x; cnuf";
+        String fctDef = """
+            func int myFunc(int x)
+                int i = 17;
+                return x;
+            cnuf
+            """;
         Reader reader = new Reader(fctDef);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
