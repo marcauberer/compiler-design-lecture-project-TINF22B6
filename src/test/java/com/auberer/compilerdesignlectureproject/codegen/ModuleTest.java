@@ -9,6 +9,8 @@ import com.auberer.compilerdesignlectureproject.sema.TypeChecker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ModuleTest {
 
   @Test
@@ -21,6 +23,16 @@ public class ModuleTest {
         """;
 
     // Lex and parse
+    Module module = compileModule(input);
+
+    // Dump module
+    StringBuilder sb = new StringBuilder();
+    module.dumpIR(sb);
+
+    assertEquals("module test.tinf:", sb.toString());
+  }
+
+  private static Module compileModule(String input) {
     Reader reader = new Reader(input);
     Lexer lexer = new Lexer(reader, false);
     Parser parser = new Parser(lexer);
@@ -31,26 +43,14 @@ public class ModuleTest {
     symbolTableBuilder.visit(ast);
 
     // Perform type checking
-    TypeChecker typeChecker = new TypeChecker();
+    TypeChecker typeChecker = new TypeChecker(ast);
     typeChecker.visit(ast);
 
     // Generate code
     String moduleName = "test.tinf";
     IRGenerator irGenerator = new IRGenerator(moduleName);
     irGenerator.visit(ast);
-    Module module = irGenerator.getModule();
-
-    // Dump module
-    StringBuilder sb = new StringBuilder();
-    module.dumpIR(sb);
-
-    String expectedOutput = """
-        module test.tinf:
-
-        function main: {
-          entry:
-        }
-        """;
+    return irGenerator.getModule();
   }
 
 }

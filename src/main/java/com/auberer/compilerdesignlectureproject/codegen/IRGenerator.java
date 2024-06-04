@@ -27,8 +27,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     // Visit children
     visitChildren(node);
 
-    // Close the last block
-    finalizeFunction();
+    assert currentBlock == null;
     return null;
   }
 
