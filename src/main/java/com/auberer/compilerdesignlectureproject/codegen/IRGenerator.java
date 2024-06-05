@@ -1,8 +1,7 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
+import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.CallInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
 import lombok.Getter;
@@ -89,4 +88,19 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     return !block.getInstructions().isEmpty() && block.getInstructions().getLast().isTerminator();
   }
 
+  @Override
+  public IRExprResult visitFctCall(ASTFctCallNode node) {
+    CallInstruction callInstruction = new CallInstruction(node, module.getFunction(node.getName()), node.getCallParams());
+    pushToCurrentBlock(callInstruction);
+    return new IRExprResult(node.getValue(), node, null);
+  }
+
+  @Override
+  public IRExprResult visitFctDef(ASTFctDefNode node) {
+    Function function = new Function(node.getName());
+    function.setEntryBlock(new BasicBlock("entry"));
+    module.addFunction(function);
+    switchToBlock(function.getEntryBlock());
+    return new IRExprResult(node.getValue(), node, null);
+  }
 }
