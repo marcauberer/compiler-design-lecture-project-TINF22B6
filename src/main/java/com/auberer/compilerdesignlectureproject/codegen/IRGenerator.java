@@ -1,11 +1,12 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
+import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
 import lombok.Getter;
+import lombok.Setter;
 
 public class IRGenerator extends ASTVisitor<IRExprResult> {
 
@@ -13,6 +14,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Getter
   private final Module module;
   // The basic block, which is currently the insert point for new instructions
+  @Setter
   private BasicBlock currentBlock = null;
 
   public IRGenerator(String moduleName) {
@@ -41,6 +43,26 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   }
 
   // ToDo: Insert other visit methods here
+
+
+  @Override
+  public IRExprResult visitIf(ASTIfStmtNode node) {
+    // if, continue in currentBlock
+    BasicBlock trueBlock = new BasicBlock("trueBlock");
+    BasicBlock falseBlock = new BasicBlock("falseBlock");
+    BasicBlock exitBlock = new BasicBlock("exitBlock");
+
+    currentBlock.pushInstruction(new CondJumpInstruction(node, node.getCondition(), trueBlock, falseBlock));
+    switchToBlock(trueBlock);
+    visit(node.getBody());
+    currentBlock.pushInstruction(new JumpInstruction(node, exitBlock));
+    switchToBlock(falseBlock);
+    if (node.getAfterIf() != null) {
+      visit(node.getAfterIf());
+    }
+    currentBlock.pushInstruction(new JumpInstruction(node,exitBlock));
+    return new IRExprResult(null, node, null);
+  }
 
   /**
    * Can be used to set the instruction insert point to a specific block

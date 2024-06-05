@@ -5,20 +5,24 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import java.util.Set;
 
 public class ASTIfStmtNode extends ASTNode {
-    public static Set<TokenType> getSelectionSet() {
-        return Set.of(TokenType.TOK_IF);
-    }
+  public static Set<TokenType> getSelectionSet() {
+    return Set.of(TokenType.TOK_IF);
+  }
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visitIf(this);
-    }
+  @Override
+  public <T> T accept(ASTVisitor<T> visitor) {
+    return visitor.visitIf(this);
+  }
 
-    public ASTLogicalExprNode getCondition() {
-        return getChild(ASTLogicalExprNode.class, 0);
-    }
+  public ASTLogicalExprNode getCondition() {
+    return getChild(ASTLogicalExprNode.class, 0);
+  }
 
-    public ASTStmtLstNode getBody() {
-        return getChild(ASTStmtLstNode.class, 0);
-    }
+  public ASTStmtLstNode getBody() {
+    return getChild(ASTStmtLstNode.class, 0);
+  }
+
+  public ASTAfterIfNode getAfterIf() {
+    return getChild(ASTAfterIfNode.class, 0);
+  }
 }
