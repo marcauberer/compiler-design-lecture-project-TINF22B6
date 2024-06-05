@@ -1,9 +1,12 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTForNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
 import lombok.Getter;
 
@@ -17,6 +20,36 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   public IRGenerator(String moduleName) {
     module = new Module(moduleName);
+  }
+
+  @Override
+  public IRExprResult visitForLoop(ASTForNode node) {
+    BasicBlock loopHeadBlock = new BasicBlock("loopHead");
+    BasicBlock loopBodyBlock = new BasicBlock("loopBody");
+    BasicBlock loopEndBlock = new BasicBlock("loopEnd");
+
+    visit(node.getInitialization());
+
+    JumpInstruction jumpToLoopHead = new JumpInstruction(node, loopHeadBlock);
+    pushToCurrentBlock(jumpToLoopHead);
+
+    switchToBlock(loopHeadBlock);
+    IRExprResult conditionResult = visit(node.getCondition());
+
+    CondJumpInstruction condJumpInstruction = new CondJumpInstruction(node, conditionResult.getValue().getNode(), loopBodyBlock, loopEndBlock);
+    pushToCurrentBlock(condJumpInstruction);
+
+    switchToBlock(loopBodyBlock);
+    visit(node.getBody());
+
+    visit(node.getIncrement());
+
+    JumpInstruction jumpInstruction = new JumpInstruction(node, loopHeadBlock);
+    pushToCurrentBlock(jumpInstruction);
+
+    switchToBlock(loopEndBlock);
+
+    return null;
   }
 
   @Override
