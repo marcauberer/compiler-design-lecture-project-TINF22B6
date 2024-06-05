@@ -29,4 +29,9 @@ public class ReturnInstruction extends Instruction {
   public void trace(StringBuilder sb) {
     sb.append(node.getCodeLoc().toString()).append(": return");
   }
+
+  @Override
+  public boolean isTerminator() {
+    return true;
+  }
 }

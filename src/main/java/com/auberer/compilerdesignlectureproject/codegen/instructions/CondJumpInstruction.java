@@ -41,4 +41,9 @@ public class CondJumpInstruction extends Instruction {
   public void trace(StringBuilder sb) {
     sb.append(node.getCodeLoc().toString()).append(": cond jump ");
   }
+
+  @Override
+  public boolean isTerminator() {
+    return true;
+  }
 }

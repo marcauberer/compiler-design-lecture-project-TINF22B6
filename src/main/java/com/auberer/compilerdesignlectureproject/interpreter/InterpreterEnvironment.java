@@ -26,6 +26,7 @@ public class InterpreterEnvironment {
       throw new RuntimeException("No main function found in module " + irModule.getName());
 
     // Main loop
+    instructionIterator = mainFunction.getEntryBlock().getInstructions().listIterator();
     while (instructionIterator.hasNext()) {
       Instruction instruction = instructionIterator.next();
       if (doTracing) {
