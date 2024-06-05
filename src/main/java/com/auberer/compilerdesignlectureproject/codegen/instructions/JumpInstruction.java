@@ -28,4 +28,9 @@ public class JumpInstruction extends Instruction {
   public void trace(StringBuilder sb) {
     sb.append(node.getCodeLoc().toString()).append(": jump ");
   }
+
+  @Override
+  public boolean isTerminator() {
+    return true;
+  }
 }
