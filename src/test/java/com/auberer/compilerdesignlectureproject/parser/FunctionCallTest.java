@@ -1,12 +1,15 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTCallParamsNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTFctCallNode;
+import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.ExprResult;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableEntry;
+import com.auberer.compilerdesignlectureproject.sema.TypeChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,14 +63,50 @@ public class FunctionCallTest {
     @Test
     @DisplayName("Integration test for function call")
     void testIntegrationTestForFunctionCall() {
-        String fctDef = "call myFunc(7);";
+        String fctDef = """
+            func int myFunc(int x)
+                int i = 17;
+                return x;
+            cnuf
+            
+            func int fn2()
+                call myFunc(7);
+                return 2;
+            cnuf
+            """;
+
         Reader reader = new Reader(fctDef);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
 
-        ASTFctCallNode astFctCallNode = parser.parseFctCall();
+        ASTEntryNode parseNode = parser.parse();
 
-        assertInstanceOf(ASTFctCallNode.class, astFctCallNode);
-        assertInstanceOf(ASTCallParamsNode.class, astFctCallNode.getCallParams());
+        ASTFctDefNode defNode = parseNode.getChild(ASTFctDefNode.class, 0);
+        ASTFctDefNode defWithCallNode = parseNode.getChild(ASTFctDefNode.class, 1);
+
+        ASTFctCallNode callNode = defWithCallNode.getChild(ASTLogicNode.class, 0).getChild(ASTStmtLstNode.class, 0).getChild(ASTStmtNode.class, 0).getChild(ASTAssignStmtNode.class, 0).getChild(ASTLogicalExprNode.class, 0).getChild(ASTCompareExprNode.class, 0).getChild(ASTAdditiveExprNode.class, 0).getChild(ASTMultiplicativeExprNode.class, 0).getChild(ASTPrefixExprNode.class, 0).getChild(ASTAtomicExprNode.class, 0).getFctCall();
+
+        SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
+        symboltablebuilder.visitFctDef(defNode);
+        symboltablebuilder.visitFctCall(callNode);
+
+
+        TypeChecker checker =  new TypeChecker(parseNode);
+        checker.visitFctDef(defNode);
+        checker.visitFctCall(callNode);
+    }
+
+    private static void searchNodeForFctCallNode(ASTNode node, String path) {
+        if(node.getChildren().isEmpty()){
+            System.out.println("no node found for path: " + path);
+        }
+        node.getChildren().forEach((child) -> {
+            if (child instanceof ASTFctCallNode) {
+                System.out.println(path + "ASTFctCallNode");
+            }
+            else {
+                searchNodeForFctCallNode(child, path  + child.getClass().toString()+  " -> ");
+            }
+        });
     }
 }

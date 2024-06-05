@@ -7,6 +7,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,8 +71,36 @@ public class LogicalExprNodeTest {
         assertInstanceOf(ASTLogicalExprNode.class, logicalExpr);
         assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, logicalExpr.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
         assertEquals("a", logicalExpr.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
-        assertEquals(ASTLogicalExprNode.LogicalOperator.AND, logicalExpr.operatorList.getFirst());
+        assertEquals(ASTLogicalExprNode.LogicalOperator.AND, logicalExpr.getOperatorList().getFirst());
         assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, logicalExpr.operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
         assertEquals("b", logicalExpr.operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
+    }
+
+    @Test
+    @DisplayName("Integration test")
+    void integrationTestSymbolTableBuilder() {
+        String code = "a && b";
+        Reader reader = new Reader(code);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTLogicalExprNode logicalExpr = parser.parseLogicalExpression();
+        SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+        TypeChecker typeChecker = new TypeChecker();
+
+        // Fake entries for a and b
+        Scope scope = symbolTableBuilder.getCurrentScopes().peek();
+        scope.insertSymbol("a", logicalExpr);
+        scope.insertSymbol("b", logicalExpr);
+
+        symbolTableBuilder.visitLogicalExpr(logicalExpr);
+
+        // Set types for a and b
+        SymbolTableEntry a = scope.lookupSymbolStrict("a", logicalExpr);
+        a.updateType(new Type(SuperType.TY_BOOL));
+        SymbolTableEntry b = scope.lookupSymbolStrict("b", logicalExpr);
+        b.updateType(new Type(SuperType.TY_BOOL));
+
+        ExprResult result = typeChecker.visitLogicalExpr(logicalExpr);
+        assertEquals(SuperType.TY_BOOL, result.getType().getSuperType());
     }
 }

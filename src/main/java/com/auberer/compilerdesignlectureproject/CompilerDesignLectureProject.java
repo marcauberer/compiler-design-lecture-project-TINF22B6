@@ -5,6 +5,9 @@ import com.auberer.compilerdesignlectureproject.antlr.gen.TInfLexer;
 import com.auberer.compilerdesignlectureproject.antlr.gen.TInfParser;
 import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTVisualizer;
+import com.auberer.compilerdesignlectureproject.codegen.IRGenerator;
+import com.auberer.compilerdesignlectureproject.codegen.Module;
+import com.auberer.compilerdesignlectureproject.interpreter.InterpreterEnvironment;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
@@ -58,7 +61,7 @@ public class CompilerDesignLectureProject {
 
       // Dump AST
       if (cli.hasOption("ast")) {
-        System.out.println("Dumping AST...");
+        System.out.println("Dumping AST ...");
         ASTVisualizer visualizer = new ASTVisualizer();
         String dot = visualizer.visitEntry(ast);
         System.out.println(dot);
@@ -69,10 +72,27 @@ public class CompilerDesignLectureProject {
       symbolTableBuilder.visit(ast);
 
       // Perform type checking
-      TypeChecker typeChecker = new TypeChecker();
+      TypeChecker typeChecker = new TypeChecker(ast);
       typeChecker.visit(ast);
 
-      // ToDo: Extend ...
+      // Generate IR
+      String moduleName = path.getFileName().toString();
+      IRGenerator irGenerator = new IRGenerator(moduleName);
+      irGenerator.visit(ast);
+      Module irModule = irGenerator.getModule();
+
+      // Dump IR
+      if (cli.hasOption("ir")) {
+        System.out.println("Dumping IR ...");
+        StringBuilder sb = new StringBuilder();
+        irModule.dumpIR(sb);
+        System.out.println(sb);
+      }
+
+      // Interpret
+      boolean doTracing = cli.hasOption("trace");
+      InterpreterEnvironment environment = new InterpreterEnvironment(irModule, doTracing);
+      environment.interpret();
     } catch (ParseException e) {
       new HelpFormatter().printHelp("apache args...", cliOptions);
     } catch (Exception e) {

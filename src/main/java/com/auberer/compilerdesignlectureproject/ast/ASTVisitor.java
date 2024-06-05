@@ -44,6 +44,10 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
+  public T visitParam(ASTParamNode node) {
+    return visitChildren(node);
+  }
+
   public T visitLogic(ASTLogicNode node) {
     return visitChildren(node);
   }

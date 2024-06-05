@@ -153,6 +153,11 @@ public class Parser implements IParser {
         node.setDataType(ASTTypeNode.DataType.STRING);
         break;
       }
+      case TokenType.TOK_TYPE_BOOL: {
+        lexer.expect(TokenType.TOK_TYPE_BOOL);
+        node.setDataType(ASTTypeNode.DataType.BOOL);
+        break;
+      }
       case TokenType.TOK_TYPE_EMPTY: {
         lexer.expect(TokenType.TOK_TYPE_EMPTY);
         node.setDataType(ASTTypeNode.DataType.EMPTY);
@@ -213,6 +218,14 @@ public class Parser implements IParser {
     while (ASTCasesNode.getSelectionSet().contains(lexer.getToken().getType())) {
       casesSize++;
       lexer.expect(TokenType.TOK_CASE);
+      TokenType tokenType = lexer.getToken().getType();
+      if (tokenType == TokenType.TOK_INT_LIT) {
+        node.addCaseType(ASTCasesNode.CaseType.INT_LIT);
+      } else if (tokenType == TokenType.TOK_DOUBLE_LIT) {
+        node.addCaseType(ASTCasesNode.CaseType.DOUBLE_LIT);
+      } else if (tokenType == TokenType.TOK_STRING_LIT) {
+        node.addCaseType(ASTCasesNode.CaseType.STRING_LIT);
+      }
       lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
       lexer.expect(TokenType.TOK_COLON);
       parseStmtLst();
@@ -365,6 +378,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_LPAREN);
     if (ASTParamLstNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseParamLst();
+      node.hasParams(true);
     }
     lexer.expect(TokenType.TOK_RPAREN);
     parseLogic();
@@ -378,13 +392,24 @@ public class Parser implements IParser {
     ASTParamLstNode node = new ASTParamLstNode();
     enterNode(node);
 
-    parseType();
-    lexer.expect(TokenType.TOK_IDENTIFIER);
+
+    //lexer.expect(TokenType.TOK_IDENTIFIER);
+    parseParamNode();
+
     while (lexer.getToken().getType() == TokenType.TOK_COMMA) {
       lexer.expect(TokenType.TOK_COMMA);
-      parseType();
-      lexer.expect(TokenType.TOK_IDENTIFIER);
+      parseParamNode();
     }
+    exitNode(node);
+    return node;
+  }
+
+  public ASTParamNode parseParamNode() {
+    ASTParamNode node = new ASTParamNode();
+    enterNode(node);
+    parseType();
+    node.setName(lexer.getToken().getText());
+    lexer.expect(TokenType.TOK_IDENTIFIER);
     exitNode(node);
     return node;
   }
@@ -413,6 +438,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_LPAREN);
     if (ASTCallParamsNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseCallParams();
+      node.hasArgs(true);
     }
     lexer.expect(TokenType.TOK_RPAREN);
 

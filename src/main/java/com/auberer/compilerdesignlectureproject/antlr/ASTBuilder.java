@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.List;
 import java.util.Stack;
 
 public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
@@ -60,6 +61,8 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
       node.setDataType(ASTTypeNode.DataType.DOUBLE);
     } else if (ctx.TYPE_STRING() != null) {
       node.setDataType(ASTTypeNode.DataType.STRING);
+    } else if (ctx.TYPE_BOOL() != null) {
+      node.setDataType(ASTTypeNode.DataType.BOOL);
     } else if (ctx.TYPE_EMPTY() != null) {
       node.setDataType(ASTTypeNode.DataType.EMPTY);
     }
@@ -189,6 +192,20 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     int casesSize = ctx.CASE().size();
     node.setCasesSize(casesSize);
 
+    List<TerminalNode> doubles = ctx.DOUBLE_LIT();
+    List<TerminalNode> ints = ctx.INT_LIT();
+    List<TerminalNode> strings = ctx.STRING_LIT();
+
+    for(TerminalNode ignored : doubles){
+      node.addCaseType(ASTCasesNode.CaseType.DOUBLE_LIT);
+    }
+    for(TerminalNode ignored : ints){
+      node.addCaseType(ASTCasesNode.CaseType.INT_LIT);
+    }
+    for(TerminalNode ignored : strings){
+      node.addCaseType(ASTCasesNode.CaseType.STRING_LIT);
+    }
+
     visitChildren(ctx);
 
     exitNode(node);
@@ -223,13 +240,23 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     ASTParamLstNode node = new ASTParamLstNode();
     enterNode(node, ctx);
 
-    for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
-      node.addParamName(ctx.IDENTIFIER(i).toString());
+    for (TInfParser.ParamContext context : ctx.param()) {
+      visitParam(context);
     }
     visitChildren(ctx);
 
     exitNode(node);
     return node;
+  }
+
+  public ASTNode visitParam(TInfParser.ParamContext ctx){
+    ASTParamNode paramNode = new ASTParamNode();
+
+    enterNode(paramNode, ctx);
+    paramNode.setName(ctx.getText());
+    visitChildren(ctx);
+    exitNode(paramNode);
+    return paramNode;
   }
 
   @Override
@@ -249,6 +276,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     enterNode(node, ctx);
 
     visitChildren(ctx);
+    node.hasArgs(ctx.callParams() != null);
 
     exitNode(node);
     return node;
@@ -283,7 +311,8 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     enterNode(node, ctx);
 
     visitChildren(ctx);
-    node.setVariableName(ctx.IDENTIFIER().toString());
+    if (ctx.IDENTIFIER() != null)
+      node.setVariableName(ctx.IDENTIFIER().toString());
 
     exitNode(node);
     return node;
@@ -322,6 +351,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     } else if (ctx.NOT_EQUAL() != null) {
       node.setOperator(ASTCompareExprNode.CompareOperator.NOT_EQUAL);
     }
+    visitChildren(ctx);
 
     exitNode(node);
     return node;
@@ -385,6 +415,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     } else if (ctx.MINUS() != null) {
       node.setOperator(ASTPrefixExprNode.PrefixOperator.MINUS);
     }
+    visitChildren(ctx);
 
     exitNode(node);
     return node;

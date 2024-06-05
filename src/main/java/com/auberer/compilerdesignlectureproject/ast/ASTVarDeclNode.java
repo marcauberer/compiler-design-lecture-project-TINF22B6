@@ -12,6 +12,7 @@ import java.util.Set;
 public class ASTVarDeclNode extends ASTNode {
 
     String variableName;
+    SymbolTableEntry currentSymbol;
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {

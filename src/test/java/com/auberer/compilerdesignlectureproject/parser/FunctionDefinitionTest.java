@@ -1,13 +1,13 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTFctDefNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTParamLstNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTTypeNode;
+import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
+import com.auberer.compilerdesignlectureproject.sema.TypeChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,13 +48,8 @@ public class FunctionDefinitionTest {
         tokenList.add(new Token(TokenType.TOK_RPAREN, "", new CodeLoc(1, 3)));
         tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "", new CodeLoc(1, 4)));
 
-        /*
-        func empty myfunction()
-            return;
-        cnuf
-         */
-
         doNothing().when(lexer).expect(TokenType.TOK_FUNC);
+        doReturn(null).when(parser).parseParamNode();
         doReturn(null).when(parser).parseType();
         doNothing().when(lexer).expect(TokenType.TOK_IDENTIFIER);
         doNothing().when(lexer).expect(TokenType.TOK_LPAREN);
@@ -75,8 +70,9 @@ public class FunctionDefinitionTest {
         assertNotNull(astFctDefNode);
 
         verify(lexer, times(1)).expect(TokenType.TOK_FUNC);
-        verify(parser, times(2)).parseType();
-        verify(lexer, times(2)).expect(TokenType.TOK_IDENTIFIER);
+        verify(parser, times(1)).parseType();
+        verify(parser, times(1)).parseParamNode();
+        verify(lexer, times(1)).expect(TokenType.TOK_IDENTIFIER);
         verify(parser, times(1)).parseParamLst();
         verify(lexer, times(1)).expect(TokenType.TOK_LPAREN);
         verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
@@ -89,15 +85,26 @@ public class FunctionDefinitionTest {
     @Test
     @DisplayName("Integration test for function definition")
     void testIntegrationTestForFunctionCall() {
-        String fctDef = "func int myFunc(int x) int i = 17; return x; cnuf";
+        String fctDef = """
+            func int myFunc(int x)
+                int i = 17;
+                return x;
+            cnuf
+            """;
         Reader reader = new Reader(fctDef);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
 
-        ASTFctDefNode astFctDefNode = parser.parseFctDef();
 
+        ASTEntryNode entryNode = parser.parse();
+        ASTFctDefNode astFctDefNode = entryNode.getChild(ASTFctDefNode.class, 0);
         assertInstanceOf(ASTFctDefNode.class, astFctDefNode);
         assertInstanceOf(ASTTypeNode.class, astFctDefNode.getDataType());
         assertInstanceOf(ASTParamLstNode.class, astFctDefNode.getParams());
+      
+        SymbolTableBuilder symboltablebuilder = new SymbolTableBuilder();
+        symboltablebuilder.visitFctDef(astFctDefNode);
+
+        new TypeChecker(entryNode).visitFctDef(astFctDefNode);
     }
 }

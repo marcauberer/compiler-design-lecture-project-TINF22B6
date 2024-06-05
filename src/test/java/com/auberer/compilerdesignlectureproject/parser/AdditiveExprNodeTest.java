@@ -7,6 +7,7 @@ import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,5 +74,18 @@ public class AdditiveExprNodeTest {
     assertEquals(ASTAdditiveExprNode.AdditiveOperator.PLUS, additiveExpr.operatorList.getFirst());
     assertEquals(ASTAtomicExprNode.AtomicType.INT_LIT, additiveExpr.operands().getLast().operands().getFirst().operand().getExprType());
     assertEquals(2, additiveExpr.operands().getLast().operands().getFirst().operand().getIntLit());
+  }
+
+  @Test
+  @DisplayName("Integration test")
+  void integrationTestSymbolTableBuilder() {
+    String code = "1 + 2";
+    Reader reader = new Reader(code);
+    Lexer lexer = new Lexer(reader, false);
+    Parser parser = new Parser(lexer);
+    ASTAdditiveExprNode additiveExpr = parser.parseAdditiveExpression();
+    SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+
+    symbolTableBuilder.visitAdditiveExpr(additiveExpr);
   }
 }
