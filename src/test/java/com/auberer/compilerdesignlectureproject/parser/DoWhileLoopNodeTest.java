@@ -1,6 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.codegen.*;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -119,5 +120,41 @@ public class DoWhileLoopNodeTest {
         doCallRealMethod().when(typeChecker).visitDoWhileLoop(doWhileLoopNode);
 
         Assertions.assertThrows(SemaError.class, () -> typeChecker.visitDoWhileLoop(doWhileLoopNode), "L1C1: While statement expects bool, but got 'TY_INT'");
+    }
+
+    @Test
+    void testIRGeneration() {
+        String input = "do {int i = 0; i = i + 1;} while (true);";
+        Reader reader = new Reader(input);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTDoWhileLoopNode doWhileLoopNode = parser.parseDoWhile();
+        IRGenerator irGenerator = new IRGenerator("test_module");
+        BasicBlock startBlock = new BasicBlock("start");
+        irGenerator.setCurrentBlock(startBlock);
+        IRExprResult result = irGenerator.visitDoWhileLoop(doWhileLoopNode);
+
+        assert result.getValue() == null;
+        assert result.getNode() == doWhileLoopNode;
+        assert result.getEntry() == null;
+
+        BasicBlock endBlock = irGenerator.getCurrentBlock();
+        assert endBlock.getLabel() == "end_do_while";
+
+        StringBuilder stringBuilder = new StringBuilder();
+        Function function = new Function("test");
+        function.setEntryBlock(startBlock);
+        function.dumpIR(stringBuilder);
+        String irCode = stringBuilder.toString();
+        assert irCode.startsWith(
+                "function test: {\n" +
+                "start:\n" +
+                "  jump do_while\n" +
+                "do_while:\n"
+                   /* statements */);
+        assert irCode.endsWith(
+                   /* condition */ "? do_while : end_do_while\n" +
+                "}\n" +
+                "\n");
     }
 }

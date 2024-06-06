@@ -1,11 +1,15 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
+import com.auberer.compilerdesignlectureproject.ast.ASTDoWhileLoopNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
 import lombok.Getter;
+import lombok.Setter;
 
 public class IRGenerator extends ASTVisitor<IRExprResult> {
 
@@ -13,6 +17,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Getter
   private final Module module;
   // The basic block, which is currently the insert point for new instructions
+  @Getter @Setter
   private BasicBlock currentBlock = null;
 
   public IRGenerator(String moduleName) {
@@ -40,7 +45,24 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     return new IRExprResult(null, node, null);
   }
 
-  // ToDo: Insert other visit methods here
+  @Override
+  public IRExprResult visitDoWhileLoop(ASTDoWhileLoopNode node) {
+    BasicBlock doWhileBlock = new BasicBlock("do_while");
+    BasicBlock endDoWhileBlock = new BasicBlock("end_do_while");
+    CondJumpInstruction condJumpInstruction = new CondJumpInstruction(node, node.getCondition(), doWhileBlock, endDoWhileBlock);
+
+    if (currentBlock != null) {
+      JumpInstruction jumpInstruction = new JumpInstruction(node, doWhileBlock);
+      currentBlock.pushInstruction(jumpInstruction);
+    }
+
+    switchToBlock(doWhileBlock);
+    visitStmtLst(node.getBody());
+    doWhileBlock.pushInstruction(condJumpInstruction);
+    switchToBlock(endDoWhileBlock);
+
+    return new IRExprResult(null, node, null);
+  }
 
   /**
    * Can be used to set the instruction insert point to a specific block
