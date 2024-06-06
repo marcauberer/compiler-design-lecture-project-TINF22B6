@@ -3,9 +3,14 @@ package com.auberer.compilerdesignlectureproject.codegen;
 import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
+import com.auberer.compilerdesignlectureproject.ast.ASTWhileLoopNode;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class IRGenerator extends ASTVisitor<IRExprResult> {
 
@@ -13,6 +18,8 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Getter
   private final Module module;
   // The basic block, which is currently the insert point for new instructions
+  @Getter
+  @Setter
   private BasicBlock currentBlock = null;
 
   public IRGenerator(String moduleName) {
@@ -37,6 +44,35 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     PrintInstruction printInstruction = new PrintInstruction(node);
     pushToCurrentBlock(printInstruction);
 
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitWhileLoop(ASTWhileLoopNode node) {
+    BasicBlock conditionBlock = new BasicBlock("While-Condition");
+    BasicBlock bodyBlock = new BasicBlock("While-Body");
+    BasicBlock exitBlock = new BasicBlock("Exit");
+
+    if (currentBlock != null) {
+      JumpInstruction jump1 = new JumpInstruction(node, conditionBlock);
+      currentBlock.pushInstruction(jump1);
+      //pushToCurrentBlock(jump1);
+    }
+
+    switchToBlock(conditionBlock);
+    visitLogicalExpr(node.getLogicalExpr());
+    CondJumpInstruction condJumpInstruction = new CondJumpInstruction(node, node.getLogicalExpr(), bodyBlock, exitBlock);
+    currentBlock.pushInstruction(condJumpInstruction);
+    //pushToCurrentBlock(condJumpInstruction);
+    switchToBlock(bodyBlock);
+
+    visitStmtLst(node.getStmtLstNode());
+    JumpInstruction jump2 = new JumpInstruction(node, conditionBlock);
+    currentBlock.pushInstruction(jump2);
+    //pushToCurrentBlock(jump2);
+    switchToBlock(conditionBlock);
+
+    switchToBlock(exitBlock);
     return new IRExprResult(null, node, null);
   }
 

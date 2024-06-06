@@ -19,6 +19,10 @@ public class ASTWhileLoopNode extends ASTNode {
     return getChild(ASTLogicalExprNode.class, 0);
   }
 
+  public ASTStmtLstNode getStmtLstNode(){
+    return getChild(ASTStmtLstNode.class, 0);
+  }
+
   public List<ASTStmtLstNode> getStmtLst() {
     return getChildren(ASTStmtLstNode.class);
   }
