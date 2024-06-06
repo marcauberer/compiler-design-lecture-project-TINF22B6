@@ -130,8 +130,8 @@ public class DoWhileLoopNodeTest {
         Parser parser = new Parser(lexer);
         ASTDoWhileLoopNode doWhileLoopNode = parser.parseDoWhile();
         IRGenerator irGenerator = new IRGenerator("test_module");
-        BasicBlock startBlock = new BasicBlock("start");
-        irGenerator.setCurrentBlock(startBlock);
+        BasicBlock entryBlock = new BasicBlock("entry");
+        irGenerator.setCurrentBlock(entryBlock);
         IRExprResult result = irGenerator.visitDoWhileLoop(doWhileLoopNode);
 
         assert result.getValue() == null;
@@ -139,22 +139,23 @@ public class DoWhileLoopNodeTest {
         assert result.getEntry() == null;
 
         BasicBlock endBlock = irGenerator.getCurrentBlock();
-        assert endBlock.getLabel() == "end_do_while";
+        assert endBlock.getLabel().equals("do_while.exit");
 
         StringBuilder stringBuilder = new StringBuilder();
         Function function = new Function("test");
-        function.setEntryBlock(startBlock);
+        function.setEntryBlock(entryBlock);
         function.dumpIR(stringBuilder);
         String irCode = stringBuilder.toString();
-        assert irCode.startsWith(
-                "function test: {\n" +
-                "start:\n" +
-                "  jump do_while\n" +
-                "do_while:\n"
-                   /* statements */);
-        assert irCode.endsWith(
-                   /* condition */ "? do_while : end_do_while\n" +
-                "}\n" +
-                "\n");
+        assert irCode.startsWith("""
+                function test: {
+                entry:
+                  jump do_while.body
+                do_while.body:
+                """ /* statements */);
+        assert irCode.endsWith( /* condition */ """
+                ? do_while.body : do_while.exit
+                }
+
+                """);
     }
 }

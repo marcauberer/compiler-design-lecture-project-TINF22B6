@@ -1,25 +1,19 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTDoWhileLoopNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
-import com.auberer.compilerdesignlectureproject.ast.ASTWhileLoopNode;
+import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Getter
 public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   // IR module, which represents the whole program
-  @Getter
   private final Module module;
   // The basic block, which is currently the insert point for new instructions
-  @Getter
   @Setter
   private BasicBlock currentBlock = null;
 
@@ -50,27 +44,22 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   @Override
   public IRExprResult visitWhileLoop(ASTWhileLoopNode node) {
-    BasicBlock conditionBlock = new BasicBlock("While-Condition");
-    BasicBlock bodyBlock = new BasicBlock("While-Body");
-    BasicBlock exitBlock = new BasicBlock("Exit");
+    BasicBlock conditionBlock = new BasicBlock("while.cond");
+    BasicBlock bodyBlock = new BasicBlock("while.body");
+    BasicBlock exitBlock = new BasicBlock("while.exit");
 
-    if (currentBlock != null) {
-      JumpInstruction jump1 = new JumpInstruction(node, conditionBlock);
-      currentBlock.pushInstruction(jump1);
-      //pushToCurrentBlock(jump1);
-    }
+    JumpInstruction jump = new JumpInstruction(node, conditionBlock);
+    pushToCurrentBlock(jump);
 
     switchToBlock(conditionBlock);
-    visitLogicalExpr(node.getLogicalExpr());
-    CondJumpInstruction condJumpInstruction = new CondJumpInstruction(node, node.getLogicalExpr(), bodyBlock, exitBlock);
-    currentBlock.pushInstruction(condJumpInstruction);
-    //pushToCurrentBlock(condJumpInstruction);
+    visitLogicalExpr(node.getCondition());
+    CondJumpInstruction condJump = new CondJumpInstruction(node, node.getCondition(), bodyBlock, exitBlock);
+    pushToCurrentBlock(condJump);
     switchToBlock(bodyBlock);
 
-    visitStmtLst(node.getStmtLstNode());
-    JumpInstruction jump2 = new JumpInstruction(node, conditionBlock);
-    currentBlock.pushInstruction(jump2);
-    //pushToCurrentBlock(jump2);
+    visitStmtLst(node.getBody());
+    jump = new JumpInstruction(node, conditionBlock);
+    pushToCurrentBlock(jump);
     switchToBlock(conditionBlock);
 
     switchToBlock(exitBlock);
@@ -79,14 +68,12 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   @Override
   public IRExprResult visitDoWhileLoop(ASTDoWhileLoopNode node) {
-    BasicBlock doWhileBlock = new BasicBlock("do_while");
-    BasicBlock endDoWhileBlock = new BasicBlock("end_do_while");
+    BasicBlock doWhileBlock = new BasicBlock("do_while.body");
+    BasicBlock endDoWhileBlock = new BasicBlock("do_while.exit");
     CondJumpInstruction condJumpInstruction = new CondJumpInstruction(node, node.getCondition(), doWhileBlock, endDoWhileBlock);
 
-    if (currentBlock != null) {
-      JumpInstruction jumpInstruction = new JumpInstruction(node, doWhileBlock);
-      currentBlock.pushInstruction(jumpInstruction);
-    }
+    JumpInstruction jumpInstruction = new JumpInstruction(node, doWhileBlock);
+    currentBlock.pushInstruction(jumpInstruction);
 
     switchToBlock(doWhileBlock);
     visitStmtLst(node.getBody());
@@ -127,7 +114,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   private void pushToCurrentBlock(Instruction instruction) {
     assert instruction != null;
     assert currentBlock != null;
-    assert isBlockTerminated(currentBlock);
+    assert !isBlockTerminated(currentBlock);
 
     // Push to the back of the current block
     currentBlock.pushInstruction(instruction);

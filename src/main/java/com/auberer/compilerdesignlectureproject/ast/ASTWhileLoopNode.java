@@ -2,7 +2,6 @@ package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
-import java.util.List;
 import java.util.Set;
 
 public class ASTWhileLoopNode extends ASTNode {
@@ -15,15 +14,11 @@ public class ASTWhileLoopNode extends ASTNode {
     return Set.of(TokenType.TOK_WHILE);
   }
   
-  public ASTLogicalExprNode getLogicalExpr() {
+  public ASTLogicalExprNode getCondition() {
     return getChild(ASTLogicalExprNode.class, 0);
   }
 
-  public ASTStmtLstNode getStmtLstNode(){
+  public ASTStmtLstNode getBody(){
     return getChild(ASTStmtLstNode.class, 0);
-  }
-
-  public List<ASTStmtLstNode> getStmtLst() {
-    return getChildren(ASTStmtLstNode.class);
   }
 }
