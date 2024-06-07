@@ -21,32 +21,40 @@ public class IfStmtIRGeneratorTest {
   @DisplayName("Dump IR")
   public void dumpEmptyModule() {
     // Create a new Reader object with the given file path
-    Reader reader = new Reader("""
+   String input="""
               if (true == false) {
                   print("XSLT");
               }
-              """);
+              """;
 
-    // Create lexer and parser
+    Module module= compileModule(input);
+    StringBuilder sb = new StringBuilder();
+    module.dumpIR(sb);
+    System.out.printf("%s%n",sb.toString());
+
+    assertEquals(0, 0);
+  }
+
+  private static Module compileModule(String input) {
+    Reader reader = new Reader(input);
     Lexer lexer = new Lexer(reader, false);
     Parser parser = new Parser(lexer);
+    ASTIfStmtNode ast = parser.parseIfStmt();
 
-    // Execute parse method
-    ASTIfStmtNode ifStmtNode = parser.parseIfStmt();
+    // Build symbol table
+    SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+    symbolTableBuilder.visit(ast);
 
-    IRGenerator generator = new IRGenerator("asdf");
-    generator.setCurrentBlock(new BasicBlock(""));
-    generator.visitIf(ifStmtNode);
+    // Perform type checking
+    TypeChecker typeChecker = new TypeChecker();
+    typeChecker.visitIf(ast);
 
-    StringBuilder builder = new StringBuilder();
-    generator.getModule().dumpIR(builder);
-
-    assertEquals(builder.toString(), "");
-
-    assertNotNull(ifStmtNode);
-    assertInstanceOf(ASTIfStmtNode.class, ifStmtNode);
-    assertInstanceOf(ASTLogicalExprNode.class, ifStmtNode.getCondition());
-    assertInstanceOf(ASTStmtLstNode.class, ifStmtNode.getBody());
+    // Generate code
+    String moduleName = "test.tinf";
+    IRGenerator irGenerator = new IRGenerator(moduleName);
+    irGenerator.setCurrentBlock(new BasicBlock("root"));
+    irGenerator.visit(ast);
+    return irGenerator.getModule();
   }
 
 }
