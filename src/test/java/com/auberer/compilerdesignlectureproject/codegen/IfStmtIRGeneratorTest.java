@@ -13,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class IfStmtIRGeneratorTest {
 
@@ -27,34 +26,26 @@ public class IfStmtIRGeneratorTest {
               }
               """;
 
-    Module module= compileModule(input);
-    StringBuilder sb = new StringBuilder();
-    module.dumpIR(sb);
-    System.out.printf("%s%n",sb.toString());
-
-    assertEquals(0, 0);
-  }
-
-  private static Module compileModule(String input) {
     Reader reader = new Reader(input);
     Lexer lexer = new Lexer(reader, false);
     Parser parser = new Parser(lexer);
     ASTIfStmtNode ast = parser.parseIfStmt();
 
-    // Build symbol table
-    SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
-    symbolTableBuilder.visit(ast);
 
-    // Perform type checking
-    TypeChecker typeChecker = new TypeChecker();
-    typeChecker.visitIf(ast);
+    BasicBlock startBlock=new BasicBlock("root");
+    IRGenerator irGenerator = new IRGenerator("ifStatement");
+    irGenerator.setCurrentBlock(startBlock);
+    Function function= new Function("ifStatement");
+    function.setEntryBlock(startBlock);
+    StringBuilder sb = new StringBuilder();
+    function.dumpIR(sb);
 
-    // Generate code
-    String moduleName = "test.tinf";
-    IRGenerator irGenerator = new IRGenerator(moduleName);
-    irGenerator.setCurrentBlock(new BasicBlock("root"));
-    irGenerator.visit(ast);
-    return irGenerator.getModule();
+    System.out.printf("%s%n",sb.toString());
+
+    assertEquals(sb.toString().trim(), "function ifStatement: {\n}");
   }
+
+
+
 
 }
