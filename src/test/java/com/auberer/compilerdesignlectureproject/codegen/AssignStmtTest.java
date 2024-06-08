@@ -16,11 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 public class AssignStmtTest {
-
     @Test
     @DisplayName("Integration test - Codegen AssignStmt (Correct Input)")
-    public void AssignStmtTesttrue() {
-        String code = "x=10";
+    public void AssignStmtTestTrue() {
+        String code = "x = 20;";
 
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
@@ -31,22 +30,23 @@ public class AssignStmtTest {
         BasicBlock basicBlock = new BasicBlock("Start-Block");
         irGenerator.setCurrentBlock(basicBlock);
 
+        assertNotNull(node);
         IRExprResult irExprResult = irGenerator.visitAssignStmt(node);
 
+        assertEquals(irExprResult.getEntry().getType(), irExprResult.getNode().getType());
         assertEquals(irExprResult.getValue(), "x");
-        assertEquals(irExprResult.getNode(), "10");
+        assertEquals(irExprResult.getNode(), "20");
         assertNull(irExprResult.getEntry(), "");
 
         assertTrue(irGenerator.getCurrentBlock().getLabel().equals("Exit"));
 
         StringBuilder sb = new StringBuilder();
-        Function function = new Function("whileLoop");
+        Function function = new Function("assignStmt");
         function.setEntryBlock(basicBlock);
         function.dumpIR(sb);
         String irCode = sb.toString();
         assertTrue(irCode.contains("Start-Block"));
-        assertTrue(irCode.contains("While-Condition"));
-        assertTrue(irCode.contains("While-Body"));
+        assertTrue(irCode.contains("Assign-Body"));
         assertTrue(irCode.contains("Exit"));
     }
 }

@@ -3,25 +3,18 @@ import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
-import com.auberer.compilerdesignlectureproject.sema.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 public class VarDeclTest {
 
     @Test
     @DisplayName("Integration test - Codegen VarDecl (Correct Input)")
-    public void VarDeclTesttrue() {
-        String code = "int x = 10";
+    public void VarDeclTestTrue() {
+        String code = "int x = 20";
 
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
@@ -34,21 +27,19 @@ public class VarDeclTest {
 
         IRExprResult irExprResult = irGenerator.visitVarDecl(node);
 
-        assertEquals(irExprResult.getEntry().getType(), irExprResult.getNode().getType());
-        assertEquals(irExprResult.getValue(), "x");
-        assertEquals(irExprResult.getNode(), "10");
-        assertNull(irExprResult.getEntry(), "");
+        assertEquals(irExprResult.getValue(), node.getCurrentSymbol().getType());
+        assertEquals(irExprResult.getNode(), node);
+        assertEquals(irExprResult.getEntry(), node.getCurrentSymbol());
 
         assertTrue(irGenerator.getCurrentBlock().getLabel().equals("Exit"));
 
         StringBuilder sb = new StringBuilder();
-        Function function = new Function("whileLoop");
+        Function function = new Function("varDecl");
         function.setEntryBlock(basicBlock);
         function.dumpIR(sb);
         String irCode = sb.toString();
         assertTrue(irCode.contains("Start-Block"));
-        assertTrue(irCode.contains("While-Condition"));
-        assertTrue(irCode.contains("While-Body"));
+        assertTrue(irCode.contains("VarDecl-Body"));
         assertTrue(irCode.contains("Exit"));
     }
 }
