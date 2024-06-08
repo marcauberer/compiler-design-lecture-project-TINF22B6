@@ -3,12 +3,16 @@ package com.auberer.compilerdesignlectureproject.codegen;
 import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.*;
 import lombok.Getter;
+import lombok.Setter;
 
 public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   // IR module, which represents the whole program
   @Getter
   private final Module module;
+
+  @Getter
+  @Setter
   // The basic block, which is currently the insert point for new instructions
   private BasicBlock currentBlock = null;
 
@@ -27,7 +31,6 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     assert currentBlock == null;
     return null;
   }
-
   @Override
   public IRExprResult visitPrintBuiltin(ASTPrintBuiltinCallNode node) {
     // Create print instruction and append it to the current BasicBlock
@@ -46,7 +49,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
       return new IRExprResult(node.getCurrentSymbol().getValue(), node, node.getCurrentSymbol());
   }
 
-  public IRExprResult VarDecl(ASTVarDeclNode node) {
+  public IRExprResult visitVarDecl(ASTVarDeclNode node) {
     IRExprResult datatype = visit(node.getDataType());
 
 
