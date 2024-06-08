@@ -1,10 +1,7 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
-import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
-import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
+import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.*;
 import lombok.Getter;
 
 public class IRGenerator extends ASTVisitor<IRExprResult> {
@@ -41,6 +38,26 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   }
 
   // ToDo: Insert other visit methods here
+  public IRExprResult visitAssignStmt(ASTAssignStmtNode node) {
+    IRExprResult logicalExpr = visit(node.getLogicalExpr());
+
+    StoreInstruction storeInstruction = new StoreInstruction(logicalExpr.getNode(), node.getCurrentSymbol());
+    pushToCurrentBlock(storeInstruction);
+      return new IRExprResult(node.getCurrentSymbol().getValue(), node, node.getCurrentSymbol());
+  }
+
+  public IRExprResult VarDecl(ASTVarDeclNode node) {
+    IRExprResult datatype = visit(node.getDataType());
+
+
+    AllocaInstruction instruction = new AllocaInstruction(datatype.getNode(), node.getCurrentSymbol());
+    pushToCurrentBlock(instruction);
+    if (node.getCurrentSymbol().isUsed()) {
+      StoreInstruction instruction1 = new StoreInstruction(datatype.getNode(), node.getCurrentSymbol());
+      pushToCurrentBlock(instruction1);
+    }
+      return new IRExprResult(datatype.getValue(), node, node.getCurrentSymbol());
+  }
 
   /**
    * Can be used to set the instruction insert point to a specific block
