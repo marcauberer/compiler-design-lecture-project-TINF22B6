@@ -5,8 +5,15 @@ import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpIns
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
+import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.*;
+import com.auberer.compilerdesignlectureproject.interpreter.Value;
 import lombok.Getter;
 import lombok.Setter;
+import org.antlr.v4.runtime.Token;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class IRGenerator extends ASTVisitor<IRExprResult> {
@@ -82,6 +89,67 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
     return new IRExprResult(null, node, null);
   }
+
+  @Override
+  public IRExprResult visitSwitchStmt(ASTSwitchStmtNode node) {
+
+    BasicBlock defaultBlock = null;
+
+    if(node.getDefault() != null){
+      defaultBlock = new BasicBlock("switch-default");
+    }
+
+    List<BasicBlock> casesBlocks = new ArrayList<>();
+    for(int i = 0; i < node.getCases().getCasesSize(); i++){
+      casesBlocks.add(new BasicBlock("switch-case " + node.getCases().getCases().get(i)));
+    }
+
+    BasicBlock endBlock = new BasicBlock("switch-end");
+
+    SwitchInstruction switchInstruction = new SwitchInstruction(node, node.getLogicalExpr().getValue(), casesBlocks, node.getCases().getCases(), defaultBlock);
+    pushToCurrentBlock(switchInstruction);
+
+    JumpInstruction casesJumpToEnd = new JumpInstruction(node.getCases(), endBlock);
+
+    for(BasicBlock b: casesBlocks){
+      switchToBlock(b);
+      visitCases(node.getCases());
+      b.pushInstruction(casesJumpToEnd);
+    }
+
+    if(defaultBlock != null) {
+      switchToBlock(defaultBlock);
+      visitDefault(node.getDefault());
+      JumpInstruction defaultJumpToEnd = new JumpInstruction(node.getDefault(), endBlock);
+      defaultBlock.pushInstruction(defaultJumpToEnd);
+    }
+
+    switchToBlock(endBlock);
+
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitCases(ASTCasesNode node) {
+
+    String caseName = currentBlock.getLabel().substring(12);
+    int index = node.findCaseIndex(caseName);
+
+    visitStmtLst(node.getStmtLists().get(index));
+
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitDefault(ASTDefaultNode node) {
+
+    visitStmtLst(node.getStmtList());
+
+    return new IRExprResult(null, node, null);
+  }
+
+
+  // ToDo: Insert other visit methods here
 
   /**
    * Can be used to set the instruction insert point to a specific block

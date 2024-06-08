@@ -2,6 +2,7 @@ package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 public class ASTSwitchStmtNode extends ASTNode {
@@ -20,7 +21,11 @@ public class ASTSwitchStmtNode extends ASTNode {
     }
 
     public ASTDefaultNode getDefault(){
-        return getChild(ASTDefaultNode.class, 0);
+        ArrayList<ASTDefaultNode> child = getChildren(ASTDefaultNode.class);
+        if(!child.isEmpty()){
+            return child.get(0);
+        }
+        return null;
     }
 
     public ASTLogicalExprNode getLogicalExpr(){

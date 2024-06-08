@@ -4,10 +4,9 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.sema.Type;
 import lombok.Getter;
 import lombok.Setter;
+import org.antlr.v4.runtime.Token;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 public class ASTCasesNode extends ASTNode {
@@ -24,6 +23,9 @@ public class ASTCasesNode extends ASTNode {
   private CaseType expectedType;
   private final List<CaseType> caseTypes = new ArrayList<>();
 
+  @Getter
+  private List<String> cases;
+
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
     return visitor.visitCases(this);
@@ -39,5 +41,18 @@ public class ASTCasesNode extends ASTNode {
 
   public void addCaseType(CaseType type){
     caseTypes.add(type);
+  }
+
+  public void setCases(List<String> cases) {
+    this.cases = cases;
+  }
+
+  public int findCaseIndex(String caseValue){
+    Optional<String> optionalString = cases.stream().filter(token -> token.equals(caseValue)).findAny();
+    if(optionalString.isPresent()){
+      String caseString = optionalString.get();
+      return cases.indexOf(caseString);
+    }
+    return -1;
   }
 }
