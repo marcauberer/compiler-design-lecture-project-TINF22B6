@@ -99,7 +99,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   @Override
   public ExprResult visitWhileLoop(ASTWhileLoopNode node) {
-    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
+    ASTLogicalExprNode logicalExprNode = node.getCondition();
     ExprResult logicalExprResult = visit(logicalExprNode);
 
     if (!logicalExprResult.getType().isOneOf(SuperType.TY_BOOL))
