@@ -205,6 +205,20 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
 
     node.setCases(cases);
 
+    List<TerminalNode> doubles = ctx.DOUBLE_LIT();
+    List<TerminalNode> ints = ctx.INT_LIT();
+    List<TerminalNode> strings = ctx.STRING_LIT();
+
+    for(TerminalNode ignored : doubles){
+      node.addCaseType(ASTCasesNode.CaseType.DOUBLE_LIT);
+    }
+    for(TerminalNode ignored : ints) {
+      node.addCaseType(ASTCasesNode.CaseType.INT_LIT);
+    }
+    for(TerminalNode ignored : strings){
+      node.addCaseType(ASTCasesNode.CaseType.STRING_LIT);
+    }
+
 
     visitChildren(ctx);
 
