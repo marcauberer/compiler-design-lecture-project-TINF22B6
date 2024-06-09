@@ -21,11 +21,12 @@ public class ASTSwitchStmtNode extends ASTNode {
     }
 
     public ASTDefaultNode getDefault(){
-        ArrayList<ASTDefaultNode> child = getChildren(ASTDefaultNode.class);
-        if(!child.isEmpty()){
-            return child.get(0);
+        try{
+            return getChild(ASTDefaultNode.class, 0);
         }
-        return null;
+        catch(IndexOutOfBoundsException e){
+            return null;
+        }
     }
 
     public ASTLogicalExprNode getLogicalExpr(){
