@@ -97,10 +97,39 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   @Override
   public IRExprResult visitFctDef(ASTFctDefNode node) {
+
+    BasicBlock body = new BasicBlock("body");
+    BasicBlock params = new BasicBlock("params");
+
+    switchToBlock(params);
+    visitParamLst(node.getParams());
+
     Function function = new Function(node.getName());
-    function.setEntryBlock(new BasicBlock("entry"));
+    function.setEntryBlock(body);
     module.addFunction(function);
-    switchToBlock(function.getEntryBlock());
+    visitLogic(node.getBody());
+
+    switchToBlock(new BasicBlock("exit"));
     return new IRExprResult(node.getValue(), node, null);
   }
+
+  @Override
+  public IRExprResult visitParamLst(ASTParamLstNode node){
+    int i = 0;
+    for (ASTParamNode paramNode: node.getParamNodes()){
+      BasicBlock block = new BasicBlock("param" + i);
+      switchToBlock(block);
+      i++;
+      visitParam(paramNode);
+    }
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitParam(ASTParamNode node){
+    visitType(node.getDataType());
+    return new IRExprResult(null, node, null);
+  }
 }
+
+

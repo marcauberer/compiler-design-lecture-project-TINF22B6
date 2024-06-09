@@ -59,7 +59,7 @@ public class FunctionDef {
     return def.getName().equals(getName()) && isSameParams(def.getParams());
   }
 
-  public boolean isSameParams(List<SuperType> otherParams) {
+  private boolean isSameParams(List<SuperType> otherParams) {
     if (params.size() != otherParams.size()) {
       return false;
     }

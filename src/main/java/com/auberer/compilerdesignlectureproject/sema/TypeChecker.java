@@ -333,10 +333,11 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     }
 
 
-    Type resultType = new Type(SuperType.TY_FUNCTION);
+    Type resultType = new Type(def.getReturnType());
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 
+@Override
   public ExprResult visitParam(ASTParamNode node) {
     ASTTypeNode typeNode = node.getDataType();
     ExprResult type = visitType(typeNode);
