@@ -1,6 +1,7 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.codegen.*;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
@@ -119,5 +120,42 @@ public class DoWhileLoopNodeTest {
         doCallRealMethod().when(typeChecker).visitDoWhileLoop(doWhileLoopNode);
 
         Assertions.assertThrows(SemaError.class, () -> typeChecker.visitDoWhileLoop(doWhileLoopNode), "L1C1: While statement expects bool, but got 'TY_INT'");
+    }
+
+    @Test
+    void testIRGeneration() {
+        String input = "do {int i = 0; i = i + 1;} while (true);";
+        Reader reader = new Reader(input);
+        Lexer lexer = new Lexer(reader, false);
+        Parser parser = new Parser(lexer);
+        ASTDoWhileLoopNode doWhileLoopNode = parser.parseDoWhile();
+        IRGenerator irGenerator = new IRGenerator("test_module");
+        BasicBlock entryBlock = new BasicBlock("entry");
+        irGenerator.setCurrentBlock(entryBlock);
+        IRExprResult result = irGenerator.visitDoWhileLoop(doWhileLoopNode);
+
+        assert result.getValue() == null;
+        assert result.getNode() == doWhileLoopNode;
+        assert result.getEntry() == null;
+
+        BasicBlock endBlock = irGenerator.getCurrentBlock();
+        assert endBlock.getLabel().equals("do_while.exit");
+
+        StringBuilder stringBuilder = new StringBuilder();
+        Function function = new Function("test");
+        function.setEntryBlock(entryBlock);
+        function.dumpIR(stringBuilder);
+        String irCode = stringBuilder.toString();
+        assert irCode.startsWith("""
+                function test: {
+                entry:
+                  jump do_while.body
+                do_while.body:
+                """ /* statements */);
+        assert irCode.endsWith( /* condition */ """
+                ? do_while.body : do_while.exit
+                }
+
+                """);
     }
 }

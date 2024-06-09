@@ -73,7 +73,7 @@ class WhileLoopNodeTest {
 
     assertNotNull(astWhileLoopNode);
     assertInstanceOf(ASTWhileLoopNode.class, astWhileLoopNode);
-    assertInstanceOf(ASTLogicalExprNode.class, astWhileLoopNode.getLogicalExpr());
-    astWhileLoopNode.getStmtLst().forEach(s -> assertInstanceOf(ASTStmtLstNode.class, s));
+    assertInstanceOf(ASTLogicalExprNode.class, astWhileLoopNode.getCondition());
+    assertInstanceOf(ASTStmtLstNode.class, astWhileLoopNode.getBody());
   }
 }

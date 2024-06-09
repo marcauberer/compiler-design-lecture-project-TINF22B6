@@ -6,6 +6,8 @@ import com.auberer.compilerdesignlectureproject.codegen.Function;
 import com.auberer.compilerdesignlectureproject.interpreter.InterpreterEnvironment;
 import lombok.Getter;
 
+import java.util.ListIterator;
+
 @Getter
 public class CallInstruction extends Instruction {
     private final Function function;
@@ -19,11 +21,19 @@ public class CallInstruction extends Instruction {
 
     @Override
     public void run(InterpreterEnvironment env) {
-        env.setInstructionIterator(function.getEntryBlock().getInstructions().listIterator());
+        // Save the current instruction iterator
+        ListIterator<Instruction> returnIterator = env.getInstructionIterator();
+        // Advance the iterator to the instruction after the call
+        if (returnIterator.hasNext()) {
+            returnIterator.next();
+        }
+        // Handle the function call in the interpreter environment
+        env.callFunction(returnIterator, function);
     }
 
     @Override
     public void dumpIR(StringBuilder sb) {
+        // call <functionName>(<params>)
         sb.append("call ").append(function.getName()).append("(").append(callParamsNode.getParamsAsLogicNodes()).append(")");
     }
 
