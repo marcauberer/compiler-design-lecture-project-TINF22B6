@@ -22,6 +22,36 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   }
 
   @Override
+  public IRExprResult visitForLoop(ASTForNode node) {
+    BasicBlock loopHeadBlock = new BasicBlock("loopHead");
+    BasicBlock loopBodyBlock = new BasicBlock("loopBody");
+    BasicBlock loopEndBlock = new BasicBlock("loopEnd");
+
+    visit(node.getInitialization());
+
+    JumpInstruction jumpToLoopHead = new JumpInstruction(node, loopHeadBlock);
+    pushToCurrentBlock(jumpToLoopHead);
+
+    switchToBlock(loopHeadBlock);
+    IRExprResult conditionResult = visit(node.getCondition());
+
+    CondJumpInstruction condJumpInstruction = new CondJumpInstruction(node, conditionResult.getValue().getNode(), loopBodyBlock, loopEndBlock);
+    pushToCurrentBlock(condJumpInstruction);
+
+    switchToBlock(loopBodyBlock);
+    visit(node.getBody());
+
+    visit(node.getIncrement());
+
+    JumpInstruction jumpInstruction = new JumpInstruction(node, loopHeadBlock);
+    pushToCurrentBlock(jumpInstruction);
+
+    switchToBlock(loopEndBlock);
+
+    return null;
+  }
+
+  @Override
   public IRExprResult visitEntry(ASTEntryNode node) {
     // We did not enter a function yet, so the current block has to be null
     assert currentBlock == null;
