@@ -15,6 +15,9 @@ public class ASTLogicNode extends ASTNode {
     }
 
     public ASTLogicalExprNode getReturnNode() {
+        if(getChildren(ASTLogicalExprNode.class).isEmpty()){
+            return null;
+        }
         return getChild(ASTLogicalExprNode.class, 0);
     }
 

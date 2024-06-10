@@ -4,6 +4,10 @@ import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public class IRGenerator extends ASTVisitor<IRExprResult> {
 
@@ -143,7 +147,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   private void pushToCurrentBlock(Instruction instruction) {
     assert instruction != null;
     assert currentBlock != null;
-    assert isBlockTerminated(currentBlock);
+    assert !isBlockTerminated(currentBlock);
 
     // Push to the back of the current block
     currentBlock.pushInstruction(instruction);
@@ -161,25 +165,32 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   @Override
   public IRExprResult visitFctCall(ASTFctCallNode node) {
-    CallInstruction callInstruction = new CallInstruction(node, module.getFunction(node.getName()), node.getCallParams());
+    CallInstruction callInstruction = new CallInstruction(node, module.getFunction(node.getName(), node.getCallParams().getParamsAsLogicNodes().stream().map(ASTNode::getType).toList()), node.getCallParams());
     pushToCurrentBlock(callInstruction);
     return new IRExprResult(node.getValue(), node, null);
   }
 
   @Override
   public IRExprResult visitFctDef(ASTFctDefNode node) {
+    BasicBlock fctDef = new BasicBlock("fctDef");
 
-    BasicBlock body = new BasicBlock("body");
-    BasicBlock params = new BasicBlock("params");
+    switchToBlock(fctDef);
+    if(node.hasParams()){
+      visitParamLst(node.getParams());
+    }
 
-    switchToBlock(params);
-    visitParamLst(node.getParams());
 
-    Function function = new Function(node.getName());
-    function.setEntryBlock(body);
+    List<Function.Parameter> params = node.hasParams()?
+            node.getParams().getParamNodes().stream().map((paramNode) -> new Function.Parameter(paramNode.getName(), paramNode.getType())).toList()
+            :new ArrayList<>();
+
+    Function function = new Function(node.getName(), params);
+    function.setEntryBlock(fctDef);
     module.addFunction(function);
+
     visitLogic(node.getBody());
 
+    currentBlock = null;
     return new IRExprResult(node.getValue(), node, null);
   }
 
@@ -194,6 +205,8 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Override
   public IRExprResult visitParam(ASTParamNode node){
     IRExprResult datatype = visitType(node.getDataType());
+    AllocaInstruction allocaInstruction = new AllocaInstruction(node, datatype.getEntry());
+    pushToCurrentBlock(allocaInstruction);
     StoreInstruction storeParam = new StoreInstruction(node, datatype.getEntry());
     pushToCurrentBlock(storeParam);
     return new IRExprResult(null, node, null);

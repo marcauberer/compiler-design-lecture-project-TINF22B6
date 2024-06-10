@@ -21,9 +21,9 @@ public class ReturnInstruction extends Instruction {
 
   @Override
   public void dumpIR(StringBuilder sb) {
-    sb.append("return ");
+    sb.append("return");
     if (returnExpr != null)
-      sb.append(returnExpr.getValue().getName());
+      sb.append(" ").append(returnExpr.getValue().getName());
   }
 
   @Override

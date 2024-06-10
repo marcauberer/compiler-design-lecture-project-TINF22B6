@@ -29,7 +29,16 @@ public class ModuleTest {
     StringBuilder sb = new StringBuilder();
     module.dumpIR(sb);
 
-    assertEquals("module test.tinf:", sb.toString());
+    String expectedOutput = """
+module test.tinf:
+
+function main(): {
+fctDef:
+  return
+}
+
+""";
+    assertEquals(expectedOutput, sb.toString());
   }
 
   static Module compileModule(String input) {

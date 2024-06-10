@@ -6,6 +6,7 @@ import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Stack;
 
@@ -24,7 +25,7 @@ public class InterpreterEnvironment {
 
   public void interpret() {
     // Search for main function
-    Function mainFunction = irModule.getFunction("main");
+    Function mainFunction = irModule.getFunction("main", new ArrayList<>());
     if (mainFunction == null)
       throw new RuntimeException("No main function found in module " + irModule.getName());
 

@@ -7,6 +7,8 @@ import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,7 +36,7 @@ public class WhileLoopTest {
         assertTrue(irGenerator.getCurrentBlock().getLabel().equals("while.exit"));
 
         StringBuilder sb = new StringBuilder();
-        Function function = new Function("whileLoop");
+        Function function = new Function("whileLoop", new ArrayList<>());
         function.setEntryBlock(basicBlock);
         function.dumpIR(sb);
         String irCode = sb.toString();
