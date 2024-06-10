@@ -5,6 +5,7 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import java.util.Set;
 
 public class ASTLogicNode extends ASTNode {
+
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
         return visitor.visitLogic(this);
@@ -21,6 +22,9 @@ public class ASTLogicNode extends ASTNode {
         return getChild(ASTLogicalExprNode.class, 0);
     }
 
+    public boolean hasReturn(){
+        return getReturnNode() != null;
+    }
     public ASTStmtLstNode getBody() {
         return getChild(ASTStmtLstNode.class, 0);
     }

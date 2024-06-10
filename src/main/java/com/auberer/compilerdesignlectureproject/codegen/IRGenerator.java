@@ -165,8 +165,11 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   @Override
   public IRExprResult visitFctCall(ASTFctCallNode node) {
+    //BasicBlock basicBlock = new BasicBlock("fctCall");
+    //switchToBlock(basicBlock);
     CallInstruction callInstruction = new CallInstruction(node, module.getFunction(node.getName(), node.getCallParams().getParamsAsLogicNodes().stream().map(ASTNode::getType).toList()), node.getCallParams());
     pushToCurrentBlock(callInstruction);
+    //currentBlock = null;
     return new IRExprResult(node.getValue(), node, null);
   }
 
@@ -204,10 +207,9 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   @Override
   public IRExprResult visitParam(ASTParamNode node){
-    IRExprResult datatype = visitType(node.getDataType());
-    AllocaInstruction allocaInstruction = new AllocaInstruction(node, datatype.getEntry());
+    AllocaInstruction allocaInstruction = new AllocaInstruction(node, node.getSymbol());
     pushToCurrentBlock(allocaInstruction);
-    StoreInstruction storeParam = new StoreInstruction(node, datatype.getEntry());
+    StoreInstruction storeParam = new StoreInstruction(node, node.getSymbol());
     pushToCurrentBlock(storeParam);
     return new IRExprResult(null, node, null);
   }
