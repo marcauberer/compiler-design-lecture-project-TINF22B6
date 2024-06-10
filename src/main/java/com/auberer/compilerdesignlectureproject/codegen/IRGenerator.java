@@ -13,6 +13,8 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   // IR module, which represents the whole program
   private final Module module;
+
+  @Getter
   // The basic block, which is currently the insert point for new instructions
   @Setter
   private BasicBlock currentBlock = null;
@@ -62,7 +64,6 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     assert currentBlock == null;
     return null;
   }
-
   @Override
   public IRExprResult visitPrintBuiltin(ASTPrintBuiltinCallNode node) {
     // Create print instruction and append it to the current BasicBlock
@@ -72,6 +73,27 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     return new IRExprResult(null, node, null);
   }
 
+  public IRExprResult visitAssignStmt(ASTAssignStmtNode node) {
+    IRExprResult logicalExpr = visit(node.getLogicalExpr());
+
+    StoreInstruction storeInstruction = new StoreInstruction(node.getLogicalExpr(), node.getCurrentSymbol());
+    pushToCurrentBlock(storeInstruction);
+    
+    return new IRExprResult(node.getCurrentSymbol().getValue(), node, node.getCurrentSymbol());
+  }
+
+  public IRExprResult visitVarDecl(ASTVarDeclNode node) {
+
+    AllocaInstruction instruction = new AllocaInstruction(node, node.getCurrentSymbol());
+    pushToCurrentBlock(instruction);
+    if (node.getCurrentSymbol().isUsed()) {
+      StoreInstruction instructionfill = new StoreInstruction(node, node.getCurrentSymbol());
+      pushToCurrentBlock(instructionfill);
+    }
+    
+    return new IRExprResult(node.getValue(), node, node.getCurrentSymbol());
+  }
+  
   @Override
   public IRExprResult visitWhileLoop(ASTWhileLoopNode node) {
     BasicBlock conditionBlock = new BasicBlock("while.cond");
