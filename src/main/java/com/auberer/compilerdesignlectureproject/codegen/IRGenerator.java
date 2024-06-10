@@ -50,6 +50,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   }
 
   public IRExprResult visitVarDecl(ASTVarDeclNode node) {
+
     AllocaInstruction instruction = new AllocaInstruction(node, node.getCurrentSymbol());
     pushToCurrentBlock(instruction);
     if (node.getCurrentSymbol().isUsed()) {

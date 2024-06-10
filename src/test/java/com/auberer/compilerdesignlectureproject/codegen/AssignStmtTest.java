@@ -1,6 +1,7 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.StoreInstruction;
 import com.auberer.compilerdesignlectureproject.interpreter.Value;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
@@ -43,9 +44,11 @@ public class AssignStmtTest {
         assertNotNull(irExprResult.getEntry());
 
         assertTrue(irGenerator.getCurrentBlock().getLabel().equals("Start-Block"));
+
         assertTrue(irGenerator.getCurrentBlock().getInstructions().size() == 1);
+
         Instruction instruction = irGenerator.getCurrentBlock().getInstructions().get(0);
-        assertTrue(irGenerator.getCurrentBlock().getInstructions().contains(instruction));
+        assertTrue(instruction instanceof StoreInstruction);
 
         StringBuilder sb = new StringBuilder();
         Function function = new Function("assignStmt");
