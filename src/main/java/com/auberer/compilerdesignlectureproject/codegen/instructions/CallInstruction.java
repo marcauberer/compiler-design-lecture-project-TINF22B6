@@ -23,10 +23,6 @@ public class CallInstruction extends Instruction {
     public void run(InterpreterEnvironment env) {
         // Save the current instruction iterator
         ListIterator<Instruction> returnIterator = env.getInstructionIterator();
-        // Advance the iterator to the instruction after the call
-        if (returnIterator.hasNext()) {
-            returnIterator.next();
-        }
         // Handle the function call in the interpreter environment
         env.callFunction(returnIterator, function);
     }

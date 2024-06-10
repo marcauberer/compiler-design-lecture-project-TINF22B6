@@ -14,7 +14,11 @@ public class ASTLogicNode extends ASTNode {
         return ASTStmtLstNode.getSelectionSet();
     }
 
-    public ASTLogicalExprNode logicalExpr() {
+    public ASTLogicalExprNode getReturnNode() {
         return getChild(ASTLogicalExprNode.class, 0);
+    }
+
+    public ASTStmtLstNode getBody() {
+        return getChild(ASTStmtLstNode.class, 0);
     }
 }

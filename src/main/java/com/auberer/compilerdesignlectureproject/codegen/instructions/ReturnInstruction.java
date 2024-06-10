@@ -10,7 +10,7 @@ public class ReturnInstruction extends Instruction {
 
   public ReturnInstruction(ASTLogicNode logicNode) {
     super(logicNode);
-    returnExpr = logicNode.logicalExpr();
+    returnExpr = logicNode.getReturnNode();
   }
 
   @Override
