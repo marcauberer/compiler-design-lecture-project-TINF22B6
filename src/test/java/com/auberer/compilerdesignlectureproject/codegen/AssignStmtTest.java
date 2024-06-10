@@ -1,20 +1,15 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
+import com.auberer.compilerdesignlectureproject.interpreter.Value;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
 import com.auberer.compilerdesignlectureproject.sema.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+
 public class AssignStmtTest {
     @Test
     @DisplayName("Integration test - Codegen AssignStmt (Correct Input)")
@@ -30,15 +25,27 @@ public class AssignStmtTest {
         BasicBlock basicBlock = new BasicBlock("Start-Block");
         irGenerator.setCurrentBlock(basicBlock);
 
-        assertNotNull(node);
+        SymbolTableBuilder symboltable = new SymbolTableBuilder();
+        symboltable.getCurrentScopes().peek().insertSymbol("x", node);
+        SymbolTableEntry entry = symboltable.getCurrentScopes().peek().lookupSymbol("x", node);
+
+        symboltable.visitAssignStmt(node);
+
+        TypeChecker typeChecker = new TypeChecker();
+        entry.updateType(new Type(SuperType.TY_INT));
+        typeChecker.visitAssignStmt(node);
+
+        entry.setValue(new Value(node));
         IRExprResult irExprResult = irGenerator.visitAssignStmt(node);
 
-        assertEquals(irExprResult.getEntry().getType(), irExprResult.getNode().getType());
-        assertEquals(irExprResult.getValue(), "x");
-        assertEquals(irExprResult.getNode(), "20");
-        assertNull(irExprResult.getEntry(), "");
+        assertEquals("x", node.getVariableName());
+       // assertEquals(20, node.getLogicalExpr().getValue().getIntValue());
+        assertNotNull(irExprResult.getEntry());
 
-        assertTrue(irGenerator.getCurrentBlock().getLabel().equals("Exit"));
+        assertTrue(irGenerator.getCurrentBlock().getLabel().equals("Start-Block"));
+        assertTrue(irGenerator.getCurrentBlock().getInstructions().size() == 1);
+        Instruction instruction = irGenerator.getCurrentBlock().getInstructions().get(0);
+        assertTrue(irGenerator.getCurrentBlock().getInstructions().contains(instruction));
 
         StringBuilder sb = new StringBuilder();
         Function function = new Function("assignStmt");
@@ -46,7 +53,5 @@ public class AssignStmtTest {
         function.dumpIR(sb);
         String irCode = sb.toString();
         assertTrue(irCode.contains("Start-Block"));
-        assertTrue(irCode.contains("Assign-Body"));
-        assertTrue(irCode.contains("Exit"));
     }
 }

@@ -12,7 +12,6 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   private final Module module;
 
   @Getter
-  @Setter
   // The basic block, which is currently the insert point for new instructions
   @Setter
   private BasicBlock currentBlock = null;
@@ -44,24 +43,21 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   public IRExprResult visitAssignStmt(ASTAssignStmtNode node) {
     IRExprResult logicalExpr = visit(node.getLogicalExpr());
 
-    StoreInstruction storeInstruction = new StoreInstruction(logicalExpr.getNode(), node.getCurrentSymbol());
+    StoreInstruction storeInstruction = new StoreInstruction(node.getLogicalExpr(), node.getCurrentSymbol());
     pushToCurrentBlock(storeInstruction);
     
     return new IRExprResult(node.getCurrentSymbol().getValue(), node, node.getCurrentSymbol());
   }
 
   public IRExprResult visitVarDecl(ASTVarDeclNode node) {
-    IRExprResult datatype = visit(node.getDataType());
-
-
-    AllocaInstruction instruction = new AllocaInstruction(datatype.getNode(), node.getCurrentSymbol());
+    AllocaInstruction instruction = new AllocaInstruction(node, node.getCurrentSymbol());
     pushToCurrentBlock(instruction);
     if (node.getCurrentSymbol().isUsed()) {
-      StoreInstruction instruction1 = new StoreInstruction(datatype.getNode(), node.getCurrentSymbol());
-      pushToCurrentBlock(instruction1);
+      StoreInstruction instructionfill = new StoreInstruction(node, node.getCurrentSymbol());
+      pushToCurrentBlock(instructionfill);
     }
     
-    return new IRExprResult(datatype.getValue(), node, node.getCurrentSymbol());
+    return new IRExprResult(node.getValue(), node, node.getCurrentSymbol());
   }
   
   @Override
