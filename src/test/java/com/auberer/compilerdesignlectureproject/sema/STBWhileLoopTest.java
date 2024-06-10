@@ -9,7 +9,6 @@ import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
@@ -50,7 +49,7 @@ public class STBWhileLoopTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTWhileLoopNode astWhileLoopNode = parser.parseWhileLoop();
-        ASTLogicalExprNode astLogicalExprNode = astWhileLoopNode.getLogicalExpr();
+        ASTLogicalExprNode astLogicalExprNode = astWhileLoopNode.getCondition();
 
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
         symbolTableBuilder.visitWhileLoop(astWhileLoopNode);
@@ -71,7 +70,7 @@ public class STBWhileLoopTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTWhileLoopNode astWhileLoopNode = parser.parseWhileLoop();
-        ASTLogicalExprNode astLogicalExprNode = astWhileLoopNode.getLogicalExpr();
+        ASTLogicalExprNode astLogicalExprNode = astWhileLoopNode.getCondition();
 
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
         symbolTableBuilder.visitWhileLoop(astWhileLoopNode);
