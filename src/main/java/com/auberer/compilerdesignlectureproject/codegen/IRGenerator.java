@@ -52,7 +52,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     BasicBlock afterIfBlock = new BasicBlock("afterIfBlock");
     BasicBlock exitBlock = new BasicBlock("exitBlock");
 
-    if (node.getAfterIf() != null) {
+    if (node.isHasAfterIf()) {
       pushToCurrentBlock(new CondJumpInstruction(node, node.getCondition(), trueBlock, afterIfBlock));
     } else {
       pushToCurrentBlock(new CondJumpInstruction(node, node.getCondition(), trueBlock, exitBlock));
@@ -60,10 +60,9 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     switchToBlock(trueBlock);
     visit(node.getBody());
     pushToCurrentBlock(new JumpInstruction(node, exitBlock));
-    if (node.getAfterIf() != null) {
+    if (node.isHasAfterIf()) {
       switchToBlock(afterIfBlock);
       visit(node.getAfterIf());
-      pushToCurrentBlock(new JumpInstruction(node, exitBlock));
     }
     return new IRExprResult(null, node, null);
   }

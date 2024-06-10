@@ -1,6 +1,8 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -10,6 +12,10 @@ public class ASTIfStmtNode extends ASTNode {
     public static Set<TokenType> getSelectionSet() {
         return Set.of(TokenType.TOK_IF);
     }
+
+    @Setter
+    @Getter
+    private boolean hasAfterIf;
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
@@ -24,14 +30,7 @@ public class ASTIfStmtNode extends ASTNode {
         return getChild(ASTStmtLstNode.class, 0);
     }
 
-    private boolean hasAfterIf() {
-        return !getChildren()
-                .stream()
-                .filter(astNode -> astNode instanceof ASTIfStmtNode)
-                .collect(Collectors.toCollection(ArrayList::new)).isEmpty();
-    }
-
     public ASTAfterIfNode getAfterIf() {
-        return hasAfterIf() ? getChild(ASTAfterIfNode.class, 0) : null;
+        return getChild(ASTAfterIfNode.class, 0);
     }
 }

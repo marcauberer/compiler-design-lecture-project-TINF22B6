@@ -263,6 +263,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_RBRACE);
     if (ASTAfterIfNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseAfterIf();
+      node.setHasAfterIf(true);
     }
 
     exitNode(node);
