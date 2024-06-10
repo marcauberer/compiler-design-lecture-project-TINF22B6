@@ -1,6 +1,9 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
-import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTIfStmtNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
@@ -49,18 +52,22 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   public IRExprResult visitIf(ASTIfStmtNode node) {
     // if, continue in currentBlock
     BasicBlock trueBlock = new BasicBlock("trueBlock");
-    BasicBlock falseBlock = new BasicBlock("falseBlock");
+    BasicBlock afterIfBlock = new BasicBlock("afterIfBlock");
     BasicBlock exitBlock = new BasicBlock("exitBlock");
 
-    currentBlock.pushInstruction(new CondJumpInstruction(node, node.getCondition(), trueBlock, falseBlock));
+    if (node.getAfterIf() != null) {
+      currentBlock.pushInstruction(new CondJumpInstruction(node, node.getCondition(), trueBlock, afterIfBlock));
+    } else {
+      currentBlock.pushInstruction(new CondJumpInstruction(node, node.getCondition(), trueBlock, exitBlock));
+    }
     switchToBlock(trueBlock);
     visit(node.getBody());
     currentBlock.pushInstruction(new JumpInstruction(node, exitBlock));
-    switchToBlock(falseBlock);
     if (node.getAfterIf() != null) {
+      switchToBlock(afterIfBlock);
       visit(node.getAfterIf());
+      currentBlock.pushInstruction(new JumpInstruction(node, exitBlock));
     }
-    currentBlock.pushInstruction(new JumpInstruction(node,exitBlock));
     return new IRExprResult(null, node, null);
   }
 
