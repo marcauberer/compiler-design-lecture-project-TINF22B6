@@ -1,12 +1,12 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
-import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpInstruction;
-import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
-import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
-import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class IRGenerator extends ASTVisitor<IRExprResult> {
@@ -111,6 +111,123 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     switchToBlock(endDoWhileBlock);
 
     return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitLogicalExpr(ASTLogicalExprNode node) {
+
+    List<ASTCompareExprNode> operandsList = node.operands();
+    List<ASTLogicalExprNode.LogicalOperator> operatorsList = node.getOperatorList();
+
+    for (int i = 0; i < operatorsList.size(); i++) {
+
+      if(operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.AND) {
+        AndInstruction andInstruction = new AndInstruction(node, operandsList.get(i), operandsList.get(i+1));
+        pushToCurrentBlock(andInstruction);
+
+      }
+      else if(operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.OR) {
+        OrInstruction orInstruction = new OrInstruction(node, operandsList.get(i), operandsList.get(i+1));
+        pushToCurrentBlock(orInstruction);
+      }
+    }
+
+    return null;
+  }
+
+  @Override
+  public IRExprResult visitCompareExpr(ASTCompareExprNode node) {
+    List<ASTAdditiveExprNode> operands = node.operands();
+    ASTCompareExprNode.CompareOperator operator = node.operator;
+
+    if (operator == ASTCompareExprNode.CompareOperator.EQUAL) {
+      EqualInstruction equalInstruction = new EqualInstruction(node, operands.get(0), operands.get(1));
+      pushToCurrentBlock(equalInstruction);
+    }
+    else if (operator == ASTCompareExprNode.CompareOperator.NOT_EQUAL) {
+      NotEqualInstruction notEqualInstruction = new NotEqualInstruction(node, operands.get(0), operands.get(1));
+      pushToCurrentBlock(notEqualInstruction);
+    }
+    return null;
+  }
+
+  @Override
+  public IRExprResult visitAdditiveExpr(ASTAdditiveExprNode node) {
+    List<ASTMultiplicativeExprNode> operandsList = node.operands();
+    List<ASTAdditiveExprNode.AdditiveOperator> operatorsList = node.operatorList;
+
+    for (int i = 0; i < operatorsList.size(); i++) {
+
+      if(operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.PLUS) {
+        PlusInstruction plusInstruction = new PlusInstruction(node, operandsList.get(i), operandsList.get(i+1));
+        pushToCurrentBlock(plusInstruction);
+
+      }
+      else if(operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.MINUS) {
+        MinusInstruction minusInstruction = new MinusInstruction(node, operandsList.get(i), operandsList.get(i+1));
+        pushToCurrentBlock(minusInstruction);
+      }
+    }
+
+    return null;
+  }
+
+  @Override
+  public IRExprResult visitMultiplicativeExpr(ASTMultiplicativeExprNode node) {
+    List<ASTPrefixExprNode> operandsList = node.operands();
+    List<ASTMultiplicativeExprNode.MultiplicativeOperator> operatorsList = node.operatorList;
+
+    for (int i = 0; i < operatorsList.size(); i++) {
+
+      if(operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.MUL) {
+        MultiplicativeInstruction multiplicativeInstruction = new MultiplicativeInstruction(node, operandsList.get(i), operandsList.get(i+1));
+        pushToCurrentBlock(multiplicativeInstruction);
+
+      }
+      else if(operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.DIV) {
+        DivisionInstruction divisionInstruction = new DivisionInstruction(node, operandsList.get(i), operandsList.get(i+1));
+        pushToCurrentBlock(divisionInstruction);
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public IRExprResult visitPrefixExpr(ASTPrefixExprNode node) {
+    ASTAtomicExprNode operand = node.operand();
+    ASTPrefixExprNode.PrefixOperator prefixOperator = node.operator;
+
+    if (prefixOperator == ASTPrefixExprNode.PrefixOperator.PLUS){
+      PrefixPlusInstruction prefixPlusInstruction = new PrefixPlusInstruction(node, operand);
+      pushToCurrentBlock(prefixPlusInstruction);
+    } else if (prefixOperator == ASTPrefixExprNode.PrefixOperator.MINUS) {
+      PrefixMinusInstruction prefixMinusInstruction = new PrefixMinusInstruction(node, operand);
+      pushToCurrentBlock(prefixMinusInstruction);
+    }
+    return null;
+  }
+
+  @Override
+  public IRExprResult visitAtomicExpr(ASTAtomicExprNode node) {
+    ASTAtomicExprNode.AtomicType atomicOperator = node.getExprType();
+
+    switch (atomicOperator){
+      case IDENTIFIER -> {
+        LoadInstruction loadInstruction = new LoadInstruction(node, node.getCurrentSymbol());
+        pushToCurrentBlock(loadInstruction);
+      }
+      case FCT_CALL -> {
+        visitFctCall(node.getFctCall());
+      }
+      case LOGICAL_EXPR -> {
+        visitLogicalExpr(node.getLogicalExpr());
+      }
+      case PRINT_BUILTIN_CALL -> {
+        visitPrintBuiltin(node.getPrintCall());
+      }
+    }
+
+    return null;
   }
 
   /**
