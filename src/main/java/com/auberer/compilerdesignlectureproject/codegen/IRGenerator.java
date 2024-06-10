@@ -1,9 +1,6 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTEntryNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTIfStmtNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTPrintBuiltinCallNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTVisitor;
+import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
@@ -56,18 +53,29 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     BasicBlock exitBlock = new BasicBlock("exitBlock");
 
     if (node.getAfterIf() != null) {
-      currentBlock.pushInstruction(new CondJumpInstruction(node, node.getCondition(), trueBlock, afterIfBlock));
+      pushToCurrentBlock(new CondJumpInstruction(node, node.getCondition(), trueBlock, afterIfBlock));
     } else {
-      currentBlock.pushInstruction(new CondJumpInstruction(node, node.getCondition(), trueBlock, exitBlock));
+      pushToCurrentBlock(new CondJumpInstruction(node, node.getCondition(), trueBlock, exitBlock));
     }
     switchToBlock(trueBlock);
     visit(node.getBody());
-    currentBlock.pushInstruction(new JumpInstruction(node, exitBlock));
+    pushToCurrentBlock(new JumpInstruction(node, exitBlock));
     if (node.getAfterIf() != null) {
       switchToBlock(afterIfBlock);
       visit(node.getAfterIf());
-      currentBlock.pushInstruction(new JumpInstruction(node, exitBlock));
+      pushToCurrentBlock(new JumpInstruction(node, exitBlock));
     }
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitElse(ASTElseNode node) {
+    BasicBlock stmtList = new BasicBlock("stmtList");
+    BasicBlock afterList = new BasicBlock("afterList");
+    pushToCurrentBlock(new JumpInstruction(node, stmtList));
+    switchToBlock(stmtList);
+    visit(node.getStmtLstNode());
+    pushToCurrentBlock(new JumpInstruction(node, afterList));
     return new IRExprResult(null, node, null);
   }
 
@@ -102,7 +110,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   private void pushToCurrentBlock(Instruction instruction) {
     assert instruction != null;
     assert currentBlock != null;
-    assert isBlockTerminated(currentBlock);
+    assert !isBlockTerminated(currentBlock);
 
     // Push to the back of the current block
     currentBlock.pushInstruction(instruction);
