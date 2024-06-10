@@ -4,6 +4,7 @@ import com.auberer.compilerdesignlectureproject.ast.ASTCompareExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTLogicalExprNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTNode;
 import com.auberer.compilerdesignlectureproject.interpreter.InterpreterEnvironment;
+import com.auberer.compilerdesignlectureproject.interpreter.Value;
 
 public class AndInstruction extends Instruction {
 
@@ -38,6 +39,11 @@ public class AndInstruction extends Instruction {
 
     @Override
     public void run(InterpreterEnvironment env) {
+        boolean leftValue = leftOperand.getValue().isTrue();
+        boolean rightValue = rightOperand.getValue().isTrue();
 
+        Value value = new Value(node);
+        value.setBoolValue(leftValue && rightValue);
+        node.setValue(value);
     }
 }

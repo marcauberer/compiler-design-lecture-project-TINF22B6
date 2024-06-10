@@ -3,6 +3,8 @@ package com.auberer.compilerdesignlectureproject.codegen.instructions;
 import com.auberer.compilerdesignlectureproject.ast.ASTNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTPrefixExprNode;
 import com.auberer.compilerdesignlectureproject.interpreter.InterpreterEnvironment;
+import com.auberer.compilerdesignlectureproject.interpreter.Value;
+import com.auberer.compilerdesignlectureproject.sema.SuperType;
 
 public class DivisionInstruction extends Instruction {
 
@@ -32,6 +34,19 @@ public class DivisionInstruction extends Instruction {
 
     @Override
     public void run(InterpreterEnvironment env) {
+        Value value = new Value(node);
 
+        if (node.getType().is(SuperType.TY_DOUBLE)){
+            double doubleValue = leftOperand.getValue().getDoubleValue();
+            double doubleValue2 = rightOperand.getValue().getDoubleValue();
+            value.setDoubleValue(doubleValue / doubleValue2);
+
+        } else if (node.getType().is(SuperType.TY_INT)) {
+            int intValue = leftOperand.getValue().getIntValue();
+            int intValue2 = rightOperand.getValue().getIntValue();
+            value.setIntValue(intValue / intValue2);
+        }
+
+        node.setValue(value);
     }
 }
