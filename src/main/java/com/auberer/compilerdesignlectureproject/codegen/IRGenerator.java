@@ -142,8 +142,8 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
     switch (atomicOperator){
       case IDENTIFIER -> {
-        IdentifierInstruction identifierInstruction = new IdentifierInstruction(node);
-        pushToCurrentBlock(identifierInstruction);
+        LoadInstruction loadInstruction = new LoadInstruction(node, node.getCurrentSymbol());
+        pushToCurrentBlock(loadInstruction);
       }
       case FCT_CALL -> {
         visitFctCall(node.getFctCall());
