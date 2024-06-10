@@ -32,7 +32,7 @@ public class ModuleTest {
     assertEquals("module test.tinf:", sb.toString());
   }
 
-  private static Module compileModule(String input) {
+  static Module compileModule(String input) {
     Reader reader = new Reader(input);
     Lexer lexer = new Lexer(reader, false);
     Parser parser = new Parser(lexer);
