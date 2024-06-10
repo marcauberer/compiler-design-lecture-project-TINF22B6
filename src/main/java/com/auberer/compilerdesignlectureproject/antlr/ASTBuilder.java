@@ -300,6 +300,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
 
     visitChildren(ctx);
     node.setVariableName(ctx.IDENTIFIER().toString());
+    node.setHasLogicalExpr(ctx.logicalExpr() != null);
 
     exitNode(node);
     return node;

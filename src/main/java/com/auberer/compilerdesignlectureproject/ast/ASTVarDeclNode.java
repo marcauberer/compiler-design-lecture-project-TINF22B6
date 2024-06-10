@@ -4,6 +4,7 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import com.auberer.compilerdesignlectureproject.sema.SymbolTableEntry;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.Set;
 
@@ -13,6 +14,7 @@ public class ASTVarDeclNode extends ASTNode {
 
     String variableName;
     SymbolTableEntry currentSymbol;
+    boolean hasLogicalExpr = false;
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
@@ -26,6 +28,7 @@ public class ASTVarDeclNode extends ASTNode {
     public ASTTypeNode getDataType() {
         return getChild(ASTTypeNode.class, 0);
     }
+
     public ASTLogicalExprNode getLogicalExpr() {
         return getChild(ASTLogicalExprNode.class, 0);
     }

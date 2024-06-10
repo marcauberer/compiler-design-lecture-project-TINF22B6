@@ -1,15 +1,13 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.auberer.compilerdesignlectureproject.ast.ASTForNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ForNodeConditionTypeTest {
     private Parser parserCorrect;
@@ -54,6 +52,6 @@ public class ForNodeConditionTypeTest {
             "For loop condition must be a boolean expression"
         );
 
-        assertTrue(thrown.getMessage().contains("L1C1: Boolean Statement expected, but instead got 'TY_DOUBLE'"));
+        assertEquals("L1C1: Boolean type expected, but instead got 'TY_DOUBLE'", thrown.getMessage());
     }
 }

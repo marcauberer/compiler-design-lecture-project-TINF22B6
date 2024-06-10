@@ -35,7 +35,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     ASTLogicalExprNode condition = node.getCondition();
     ExprResult forNodeResult = visit(condition);
     if (!forNodeResult.getType().is(SuperType.TY_BOOL))
-      throw new SemaError(node, "Boolean Statement expected, but instead got '" + forNodeResult.getType().toString() + "'");
+      throw new SemaError(node, "Boolean type expected, but instead got '" + forNodeResult.getType().toString() + "'");
 
     ASTAssignStmtNode increment = node.getIncrement();
     ExprResult incrementResult = visit(increment);

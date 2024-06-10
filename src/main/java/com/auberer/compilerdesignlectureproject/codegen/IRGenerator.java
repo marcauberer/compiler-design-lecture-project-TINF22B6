@@ -74,7 +74,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   }
 
   public IRExprResult visitAssignStmt(ASTAssignStmtNode node) {
-    IRExprResult logicalExpr = visit(node.getLogicalExpr());
+    visit(node.getLogicalExpr());
 
     StoreInstruction storeInstruction = new StoreInstruction(node.getLogicalExpr(), node.getCurrentSymbol());
     pushToCurrentBlock(storeInstruction);
@@ -83,12 +83,11 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   }
 
   public IRExprResult visitVarDecl(ASTVarDeclNode node) {
-
-    AllocaInstruction instruction = new AllocaInstruction(node, node.getCurrentSymbol());
-    pushToCurrentBlock(instruction);
-    if (node.getCurrentSymbol().isUsed()) {
-      StoreInstruction instructionfill = new StoreInstruction(node, node.getCurrentSymbol());
-      pushToCurrentBlock(instructionfill);
+    AllocaInstruction allocaInstruction = new AllocaInstruction(node, node.getCurrentSymbol());
+    pushToCurrentBlock(allocaInstruction);
+    if (node.isHasLogicalExpr()) {
+      StoreInstruction storeInstruction = new StoreInstruction(node, node.getCurrentSymbol());
+      pushToCurrentBlock(storeInstruction);
     }
     
     return new IRExprResult(node.getValue(), node, node.getCurrentSymbol());

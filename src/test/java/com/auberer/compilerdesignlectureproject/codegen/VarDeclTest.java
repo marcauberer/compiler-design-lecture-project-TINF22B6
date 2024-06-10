@@ -42,13 +42,11 @@ public class VarDeclTest {
         assertEquals(irExprResult.getNode(), node);
         assertEquals(irExprResult.getEntry(), node.getCurrentSymbol());
 
-        assertTrue(irGenerator.getCurrentBlock().getLabel().equals("Start-Block"));
-        assertTrue(irGenerator.getCurrentBlock().getInstructions().size() == 1);
+        assertEquals("Start-Block", irGenerator.getCurrentBlock().getLabel());
+        assertEquals(2, irGenerator.getCurrentBlock().getInstructions().size());
 
-        Instruction allocainstruction = irGenerator.getCurrentBlock().getInstructions().get(0);
-        assertTrue(allocainstruction instanceof AllocaInstruction);
-        allocainstruction.equals(StoreInstruction.class); //100% Falsch
-
+        Instruction allocaInstruction = irGenerator.getCurrentBlock().getInstructions().getFirst();
+        assertTrue(allocaInstruction instanceof AllocaInstruction);
 
         StringBuilder sb = new StringBuilder();
         Function function = new Function("varDecl");
@@ -81,10 +79,10 @@ public class VarDeclTest {
         assertEquals(irExprResult.getNode(), node);
         assertEquals(irExprResult.getEntry(), node.getCurrentSymbol());
 
-        assertTrue(irGenerator.getCurrentBlock().getLabel().equals("Start-Block"));
-        assertTrue(irGenerator.getCurrentBlock().getInstructions().size() == 1);
+        assertEquals("Start-Block", irGenerator.getCurrentBlock().getLabel());
+        assertEquals(1, irGenerator.getCurrentBlock().getInstructions().size());
 
-        Instruction instruction = irGenerator.getCurrentBlock().getInstructions().get(0);
+        Instruction instruction = irGenerator.getCurrentBlock().getInstructions().getFirst();
         assertTrue(instruction instanceof AllocaInstruction);
 
         StringBuilder sb = new StringBuilder();
