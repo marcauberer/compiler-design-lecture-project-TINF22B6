@@ -9,20 +9,40 @@ import com.auberer.compilerdesignlectureproject.reader.Reader;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class IfStmtIRGeneratorTest {
 
-    @Test
-    @DisplayName("Dump IR")
-    public void dumpEmptyModule() {
-        // Create a new Reader object with the given file path
-        String input = """
-                if (true == false) {
-                    print("XSLT");
-                }
-                """;
-
-        Reader reader = new Reader(input);
+    @ParameterizedTest
+    @ValueSource(strings = {"""
+            if (true == false) {
+                print("XSLT");
+            }
+        """, """
+            if (true == false) {
+                print("XSLT");
+            } else {
+                print("Else Bad");
+            }
+        """, """
+            if (true == false) {
+                print("XSLT");
+            } else if (false == true) {
+                print("Else Bad");
+            }
+        """, """
+            if (true == false) {
+                print("XSLT");
+            } else if (false == true) {
+                print("Else Bad");
+            } else {
+                print("XML");
+            }
+        """})
+    @DisplayName("Test IfStmt IR Generator")
+    public void testIfStmtIRGen(String s) {
+        Reader reader = new Reader(s);
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTIfStmtNode ast = parser.parseIfStmt();
@@ -36,7 +56,7 @@ public class IfStmtIRGeneratorTest {
         StringBuilder sb = new StringBuilder();
         function.dumpIR(sb);
 
-        System.out.printf("%s%n", sb.toString());
+        System.out.printf("%s%n", sb);
 
         assertEquals(sb.toString().trim(), "function ifStatement: {\n}");
     }
