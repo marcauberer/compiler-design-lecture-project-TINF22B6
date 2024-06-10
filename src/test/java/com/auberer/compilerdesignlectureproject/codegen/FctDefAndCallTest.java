@@ -25,9 +25,9 @@ public class FctDefAndCallTest {
                     return x;
             cnuf
             
-            func int fn2()
+            func empty main()
                     call myFunc(7);
-                    return 2;
+                    return;
             cnuf
             
             """;
@@ -47,13 +47,11 @@ public class FctDefAndCallTest {
         // Build symbol table
 
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
-        symbolTableBuilder.visitFctDef(defNode);
-        symbolTableBuilder.visitFctDef(defWithCallNode);
+        symbolTableBuilder.visit(parseNode);
 
         // Perform type checking
         TypeChecker typeChecker = new TypeChecker(parseNode);
-        typeChecker.visitFctDef(defNode);
-        typeChecker.visitFctDef(defWithCallNode);
+        typeChecker.visit(parseNode);
 
 
         //definition of IRGenerator
