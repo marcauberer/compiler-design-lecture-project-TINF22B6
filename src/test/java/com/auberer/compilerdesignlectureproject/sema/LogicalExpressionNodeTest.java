@@ -23,38 +23,34 @@ public class LogicalExpressionNodeTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
 
-        ASTLogicalExprNode astLogicalExprNode = parser.parseLogicalExpression();
+        ASTStmtLstNode astStmtLstNode = parser.parseStmtLst();
 
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
         TypeChecker typeChecker = new TypeChecker();
 
         // Fake the symbol table entry for a,b,c
         Scope scope = symbolTableBuilder.getCurrentScopes().peek();
-        symbolTableBuilder.currentScopes.peek().insertSymbol("a", astLogicalExprNode);
-        symbolTableBuilder.currentScopes.peek().insertSymbol("b", astLogicalExprNode);
-        symbolTableBuilder.currentScopes.peek().insertSymbol("c", astLogicalExprNode);
+        symbolTableBuilder.currentScopes.peek().insertSymbol("a", astStmtLstNode);
+        symbolTableBuilder.currentScopes.peek().insertSymbol("b", astStmtLstNode);
+        symbolTableBuilder.currentScopes.peek().insertSymbol("c", astStmtLstNode);
 
-        symbolTableBuilder.visitLogicalExpr(astLogicalExprNode);
+        symbolTableBuilder.visitStmtLst(astStmtLstNode);
 
         // Set type for a,b,c
-        SymbolTableEntry entryA = scope.lookupSymbolStrict("a", astLogicalExprNode);
+        SymbolTableEntry entryA = scope.lookupSymbolStrict("a", astStmtLstNode);
         entryA.updateType(new Type(SuperType.TY_BOOL));
-        SymbolTableEntry entryB = scope.lookupSymbolStrict("b", astLogicalExprNode);
+        SymbolTableEntry entryB = scope.lookupSymbolStrict("b", astStmtLstNode);
         entryB.updateType(new Type(SuperType.TY_BOOL));
-        SymbolTableEntry entryC = scope.lookupSymbolStrict("c", astLogicalExprNode);
+        SymbolTableEntry entryC = scope.lookupSymbolStrict("c", astStmtLstNode);
         entryC.updateType(new Type(SuperType.TY_BOOL));
 
-        ExprResult result = typeChecker.visitLogicalExpr(astLogicalExprNode);
-        assertTrue(result.getType().is(SuperType.TY_BOOL));
-        assertNotNull(astLogicalExprNode);
-        assertInstanceOf(ASTLogicalExprNode.class, astLogicalExprNode);
-        assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, astLogicalExprNode.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
-        assertEquals("a", astLogicalExprNode.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
-        assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, astLogicalExprNode.operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
-        assertEquals("b", astLogicalExprNode.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
-        assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, astLogicalExprNode.operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
-        assertEquals("c", astLogicalExprNode.operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
-        assertEquals(ASTLogicalExprNode.LogicalOperator.AND, astLogicalExprNode.operatorList.getFirst());
+        typeChecker.visitStmtLst(astStmtLstNode);
+        assertNotNull(astStmtLstNode);
+        assertInstanceOf(ASTStmtLstNode.class, astStmtLstNode);
+        assertEquals(3, astStmtLstNode.getChildren(ASTStmtNode.class).size());
+        ASTAssignStmtNode assignStmtNode = astStmtLstNode.getChild(ASTStmtNode.class, 2).getChild(ASTAssignStmtNode.class, 0);
+        assertInstanceOf(ASTLogicalExprNode.class, assignStmtNode.getLogicalExpr());
+        assertTrue(assignStmtNode.getLogicalExpr().getType().is(SuperType.TY_BOOL));
     }
 
     @Test
@@ -75,7 +71,7 @@ public class LogicalExpressionNodeTest {
 
         assertNotNull(astLogicalExprNode);
         assertInstanceOf(ASTLogicalExprNode.class, astLogicalExprNode);
-        assertEquals(ASTLogicalExprNode.LogicalOperator.AND, astLogicalExprNode.operatorList.getFirst());
+        assertEquals(ASTLogicalExprNode.LogicalOperator.AND, astLogicalExprNode.getOperatorList().getFirst());
 
         SemaError exception = Assertions.assertThrows(SemaError.class, () -> typeChecker.visitLogicalExpr(astLogicalExprNode));
         assertTrue(exception.getMessage().contains("Type mismatch in logical expression"));

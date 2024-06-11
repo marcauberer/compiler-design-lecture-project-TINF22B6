@@ -113,39 +113,34 @@ public class AtomicExpressionNodeTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
 
-        ASTAtomicExprNode astAtomicExprNode = parser.parseAtomicExpression();
+        ASTStmtLstNode stmtLstNode = parser.parseStmtLst();
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
-
 
         TypeChecker typeChecker = new TypeChecker();
 
         // Fake the symbol table entry for a,b,c
         Scope scope = symbolTableBuilder.getCurrentScopes().peek();
-        symbolTableBuilder.currentScopes.peek().insertSymbol("a", astAtomicExprNode);
-        symbolTableBuilder.currentScopes.peek().insertSymbol("b", astAtomicExprNode);
-        symbolTableBuilder.currentScopes.peek().insertSymbol("c", astAtomicExprNode);
+        symbolTableBuilder.currentScopes.peek().insertSymbol("a", stmtLstNode);
+        symbolTableBuilder.currentScopes.peek().insertSymbol("b", stmtLstNode);
+        symbolTableBuilder.currentScopes.peek().insertSymbol("c", stmtLstNode);
 
-        symbolTableBuilder.visitAtomicExpr(astAtomicExprNode);
+        symbolTableBuilder.visitStmtLst(stmtLstNode);
 
         // Set type for a,b,c
-        SymbolTableEntry entryA = scope.lookupSymbolStrict("a", astAtomicExprNode);
+        SymbolTableEntry entryA = scope.lookupSymbolStrict("a", stmtLstNode);
         entryA.updateType(new Type(SuperType.TY_BOOL));
-        SymbolTableEntry entryB = scope.lookupSymbolStrict("b", astAtomicExprNode);
+        SymbolTableEntry entryB = scope.lookupSymbolStrict("b", stmtLstNode);
         entryB.updateType(new Type(SuperType.TY_BOOL));
-        SymbolTableEntry entryC = scope.lookupSymbolStrict("c", astAtomicExprNode);
+        SymbolTableEntry entryC = scope.lookupSymbolStrict("c", stmtLstNode);
         entryC.updateType(new Type(SuperType.TY_BOOL));
 
-        ExprResult result = typeChecker.visitAtomicExpr(astAtomicExprNode);
-        assertTrue(result.getType().is(SuperType.TY_BOOL));
-        assertNotNull(astAtomicExprNode);
-        assertInstanceOf(ASTAtomicExprNode.class, astAtomicExprNode);
-        assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, astAtomicExprNode.getLogicalExpr().operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
-        assertEquals("a", astAtomicExprNode.getLogicalExpr().operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
-        assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, astAtomicExprNode.getLogicalExpr().operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
-        assertEquals("b", astAtomicExprNode.getLogicalExpr().operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
-        assertEquals(ASTAtomicExprNode.AtomicType.IDENTIFIER, astAtomicExprNode.getLogicalExpr().operands().getLast().operands().getFirst().operands().getFirst().operands().getFirst().operand().getExprType());
-        assertEquals("c", astAtomicExprNode.getLogicalExpr().operands().getFirst().operands().getFirst().operands().getFirst().operands().getFirst().operand().getIdentifier());
-        assertEquals(ASTLogicalExprNode.LogicalOperator.AND, astAtomicExprNode.getLogicalExpr().operatorList.get(0));
+        typeChecker.visitStmtLst(stmtLstNode);
+        assertNotNull(stmtLstNode);
+        assertInstanceOf(ASTStmtLstNode.class, stmtLstNode);
+        assertEquals(3, stmtLstNode.getChildren(ASTStmtNode.class).size());
+        ASTAssignStmtNode assignStmtNode = stmtLstNode.getChildren(ASTStmtNode.class).get(2).getChild(ASTAssignStmtNode.class, 0);
+        assertInstanceOf(ASTLogicalExprNode.class, assignStmtNode.getLogicalExpr());
+        assertTrue(assignStmtNode.getLogicalExpr().getType().is(SuperType.TY_BOOL));
     }
 
     @Test
@@ -177,7 +172,7 @@ public class AtomicExpressionNodeTest {
     public void checkFunctionCallResult() {
         // Create a new Reader object with the given file path
         String code = """
-                    counter.getNumber()
+                    call getNumber()
                     """;
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
@@ -187,14 +182,11 @@ public class AtomicExpressionNodeTest {
         ASTAtomicExprNode astAtomicExprNode = parser.parseAtomicExpression();
 
         Scope scope = symbolTableBuilder.getCurrentScopes().peek();
-        symbolTableBuilder.currentScopes.peek().insertSymbol("counter", astAtomicExprNode);
-        symbolTableBuilder.currentScopes.peek().insertSymbol("getNumber()", astAtomicExprNode);
+        symbolTableBuilder.currentScopes.peek().insertSymbol("getNumber", astAtomicExprNode);
 
         symbolTableBuilder.visitAtomicExpr(astAtomicExprNode);
 
-        SymbolTableEntry entryIdentifier = scope.lookupSymbolStrict("counter", astAtomicExprNode);
-        entryIdentifier.updateType(new Type(SuperType.TY_INVALID));
-        SymbolTableEntry entryFunction = scope.lookupSymbolStrict("getNumber()", astAtomicExprNode);
+        SymbolTableEntry entryFunction = scope.lookupSymbolStrict("getNumber", astAtomicExprNode);
         entryFunction.updateType(new Type(SuperType.TY_FUNCTION));
 
         assertNotNull(astAtomicExprNode);
@@ -206,7 +198,7 @@ public class AtomicExpressionNodeTest {
     public void checkPrintBuiltInCallResult() {
         // Create a new Reader object with the given file path
         String code = """
-                    System.Println("Hello World");
+                    print("Hello World");
                     """;
         Reader reader = new Reader(code);
         Lexer lexer = new Lexer(reader, false);
@@ -215,20 +207,11 @@ public class AtomicExpressionNodeTest {
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
         ASTAtomicExprNode astAtomicExprNode = parser.parseAtomicExpression();
 
-        Scope scope = symbolTableBuilder.getCurrentScopes().peek();
-        symbolTableBuilder.currentScopes.peek().insertSymbol("System", astAtomicExprNode);
-        symbolTableBuilder.currentScopes.peek().insertSymbol("Println()", astAtomicExprNode);
-
         symbolTableBuilder.visitAtomicExpr(astAtomicExprNode);
-
-        SymbolTableEntry entryIdentifier = scope.lookupSymbolStrict("System", astAtomicExprNode);
-        entryIdentifier.updateType(new Type(SuperType.TY_INVALID));
-        SymbolTableEntry entryFunction = scope.lookupSymbolStrict("Println()", astAtomicExprNode);
-        entryFunction.updateType(new Type(SuperType.TY_FUNCTION));
 
         assertNotNull(astAtomicExprNode);
         assertInstanceOf(ASTAtomicExprNode.class, astAtomicExprNode);
-        assertInstanceOf(ASTPrintBuiltinCallNode.class , astAtomicExprNode.getPrintCall());
+        assertInstanceOf(ASTPrintBuiltinCallNode.class, astAtomicExprNode.getPrintCall());
     }
 
 }
