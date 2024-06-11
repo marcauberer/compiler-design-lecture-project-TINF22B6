@@ -129,6 +129,13 @@ public class DoWhileLoopNodeTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTDoWhileLoopNode doWhileLoopNode = parser.parseDoWhile();
+
+        SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+        symbolTableBuilder.visitDoWhileLoop(doWhileLoopNode);
+
+        TypeChecker typeChecker = new TypeChecker();
+        typeChecker.visitDoWhileLoop(doWhileLoopNode);
+
         IRGenerator irGenerator = new IRGenerator("test_module");
         BasicBlock entryBlock = new BasicBlock("entry");
         irGenerator.setCurrentBlock(entryBlock);

@@ -12,12 +12,11 @@ public class AllocaInstruction extends Instruction {
   public AllocaInstruction(ASTNode node, SymbolTableEntry entry) {
     super(node);
     this.entry = entry;
+    entry.setValue(new Value(node));
   }
 
   @Override
-  public void run(InterpreterEnvironment env) {
-    entry.setValue(new Value(node));
-  }
+  public void run(InterpreterEnvironment env) {}
 
   @Override
   public void dumpIR(StringBuilder sb) {
