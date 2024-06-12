@@ -20,13 +20,13 @@ public class FctDefAndCallTest {
     void testIntegrationTestForFunctionCall() {
         String fctDef = """
             
-            func int myFunc(int x)
+            func int myFunc(int x, int y)
                     int i = 17;
                     return x;
             cnuf
             
             func empty main()
-                    call myFunc(7);
+                    call myFunc(7, 8);
                     return;
             cnuf
             
@@ -47,11 +47,13 @@ public class FctDefAndCallTest {
         // Build symbol table
 
         SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
-        symbolTableBuilder.visit(parseNode);
+        symbolTableBuilder.visitFctDef(defNode);
+        symbolTableBuilder.visitFctDef(defWithCallNode);
 
         // Perform type checking
         TypeChecker typeChecker = new TypeChecker(parseNode);
-        typeChecker.visit(parseNode);
+        typeChecker.visitFctDef(defNode);
+        typeChecker.visitFctCall(callNode);
 
 
         //definition of IRGenerator
@@ -72,7 +74,7 @@ public class FctDefAndCallTest {
 
 
         //fctDef Check
-        assertTrue(irCode.contains("function myFunc(TY_INT x)"));
+        assertTrue(irCode.contains("function myFunc(TY_INT x,TY_INT y)"));
         assertTrue(irCode.contains("alloca x"));
         assertTrue(irCode.contains("store x"));
         assertTrue(irCode.contains("return"));
@@ -81,7 +83,8 @@ public class FctDefAndCallTest {
 
 
         IRGenerator callGenerator = new IRGenerator(moduleName);
-        callGenerator.visitFctCall(callNode);
+        callGenerator.visit(parseNode);
+        //callGenerator.visitFctCall(callNode);
         StringBuilder callBuilder = new StringBuilder();
         defGenerator.getModule().dumpIR(callBuilder);
         irCode = defBuilder.toString();

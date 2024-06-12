@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class Function implements IDumpable {
@@ -28,9 +29,9 @@ public class Function implements IDumpable {
   public void dumpIR(StringBuilder sb) {
     sb.append("function ").append(name).
             append("(");
-    for (Parameter parameter : parameters) {
-      sb.append(parameter.getType()).append(" ").append(parameter.getName());
-    }
+    String params = parameters.stream().map(parameter -> parameter.getType() + " " + parameter.getName()).collect(Collectors.joining(","));
+
+    sb.append(params);
     sb.append(")");
     sb.append(": {\n");
     List<BasicBlock> dumpedBlocks = new ArrayList<>();
