@@ -35,7 +35,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     ASTLogicalExprNode condition = node.getCondition();
     ExprResult forNodeResult = visit(condition);
     if (!forNodeResult.getType().is(SuperType.TY_BOOL))
-      throw new SemaError(node, "Boolean Statement expected, but instead got '" + forNodeResult.getType().toString() + "'");
+      throw new SemaError(node, "Boolean type expected, but instead got '" + forNodeResult.getType().toString() + "'");
 
     ASTAssignStmtNode increment = node.getIncrement();
     ExprResult incrementResult = visit(increment);
@@ -64,7 +64,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     for (int i = 1; i < node.operands().size(); i++){
       ExprResult right = visit(node.operands().get(i));
       if (!left.getType().equals(right.getType())){
-        throw new RuntimeException("Type mismatch in logical expression");
+        throw new SemaError(node, "Type mismatch in logical expression");
       }
     }
     Type resultType = left.getType();
@@ -90,7 +90,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     for (int i = 1; i < node.operands().size(); i++){
       ExprResult right = visit(node.operands().get(i));
       if(!left.getType().equals(right.getType())){
-        throw new RuntimeException("Type mismatch in additive expression");
+        throw new SemaError(node, "Type mismatch in additive expression");
       }
     }
     Type resultType = left.getType();
@@ -116,7 +116,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       ExprResult right = visit(node.operands().get(1));
 
       if(!left.getType().equals(right.getType())){
-        throw new RuntimeException("Type mismatch in compare expression");
+        throw new SemaError(node, "Type mismatch in compare expression");
       }
       return new ExprResult(node.setEvaluatedSymbolType(new Type(SuperType.TY_BOOL)));
     }
@@ -164,7 +164,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     for (int i = 1; i < node.operands().size(); i++){
       ExprResult right = visit(node.operands().get(i));
       if(!left.getType().equals(right.getType())){
-        throw new RuntimeException("Type mismatch in multiplicative expression");
+        throw new SemaError(node, "Type mismatch in multiplicative expression");
       }
     }
     Type resultType = left.getType();
@@ -180,7 +180,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
         return new ExprResult(node.setEvaluatedSymbolType(resultType));
       }
       else {
-        throw new RuntimeException("Type mismatch in prefix expression");
+        throw new SemaError(node, "Type mismatch in prefix expression");
       }
     }
     return left;

@@ -19,8 +19,8 @@ public class ForLoopIntegrationTest {
             for (int i = 0; i == 10; i = i + 1) {
                 print(i);
             }
-        return 0;
-         cnuf
+            return 0;
+        cnuf
         """;
 
         Reader reader = new Reader(input);

@@ -4,6 +4,8 @@ import com.auberer.compilerdesignlectureproject.ast.ASTWhileLoopNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
+import com.auberer.compilerdesignlectureproject.sema.TypeChecker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +25,12 @@ public class WhileLoopTest {
         Lexer lexer = new Lexer(reader, false);
         Parser parser = new Parser(lexer);
         ASTWhileLoopNode node = parser.parseWhileLoop();
+
+        SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+        symbolTableBuilder.visitWhileLoop(node);
+
+        TypeChecker typeChecker = new TypeChecker();
+        typeChecker.visitWhileLoop(node);
 
         IRGenerator irGenerator = new IRGenerator("whileLoop");
         BasicBlock basicBlock = new BasicBlock("entry");
