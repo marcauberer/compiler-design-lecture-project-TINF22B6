@@ -1,4 +1,0 @@
-func empty main()
-    print(false);
-    return;
-cnuf

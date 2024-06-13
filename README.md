@@ -1,2 +1,0 @@
-# Compiler Design Lecture Project
-
