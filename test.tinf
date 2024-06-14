@@ -1,4 +1,4 @@
 func empty main()
-    print(false);
+    print("Hello, World!");
     return;
 cnuf

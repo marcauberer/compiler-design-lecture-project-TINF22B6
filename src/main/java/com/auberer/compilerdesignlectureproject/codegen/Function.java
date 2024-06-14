@@ -4,9 +4,7 @@ import com.auberer.compilerdesignlectureproject.sema.Type;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class Function implements IDumpable {
@@ -27,20 +25,21 @@ public class Function implements IDumpable {
 
   @Override
   public void dumpIR(StringBuilder sb) {
-    sb.append("function ").append(name).
-            append("(");
-    String params = parameters.stream().map(parameter -> parameter.getType() + " " + parameter.getName()).collect(Collectors.joining(","));
-
-    sb.append(params);
-    sb.append(")");
-    sb.append(": {\n");
+    sb.append("function ").append(name).append("(");
+    for (int i = 0; i < parameters.size(); i++) {
+      Parameter param = parameters.get(i);
+      sb.append(param.getType()).append(" ").append(param.getName());
+      if (i < parameters.size() - 1)
+        sb.append(", ");
+    }
+    sb.append("): {\n");
     List<BasicBlock> dumpedBlocks = new ArrayList<>();
     entryBlock.dumpIR(sb, dumpedBlocks);
     sb.append("}\n\n");
   }
 
   @Getter
-  public static class Parameter{
+  public static class Parameter {
     private final String name;
     private final Type type;
 

@@ -2,6 +2,7 @@ package com.auberer.compilerdesignlectureproject.codegen;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.*;
+import com.auberer.compilerdesignlectureproject.sema.SemaError;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -69,6 +70,9 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   @Override
   public IRExprResult visitPrintBuiltin(ASTPrintBuiltinCallNode node) {
+    // Visit expression to print
+    visit(node.logicalExpr());
+
     // Create print instruction and append it to the current BasicBlock
     PrintInstruction printInstruction = new PrintInstruction(node);
     pushToCurrentBlock(printInstruction);
@@ -175,14 +179,20 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Override
   public IRExprResult visitLogicalExpr(ASTLogicalExprNode node) {
     List<ASTCompareExprNode> operandsList = node.operands();
+    if (operandsList.size() == 1)
+      return visit(operandsList.getFirst());
     List<ASTLogicalExprNode.LogicalOperator> operatorsList = node.getOperatorList();
 
-    for (int i = 0; i < operatorsList.size(); i++) {
+    // Visit the first operand
+    visit(operandsList.getFirst());
+
+    for (int i = 1; i < operandsList.size(); i++) {
+      visit(operandsList.get(i));
       if (operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.AND) {
-        AndInstruction andInstruction = new AndInstruction(node, operandsList.get(i), operandsList.get(i + 1));
+        AndInstruction andInstruction = new AndInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(andInstruction);
       } else if (operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.OR) {
-        OrInstruction orInstruction = new OrInstruction(node, operandsList.get(i), operandsList.get(i + 1));
+        OrInstruction orInstruction = new OrInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(orInstruction);
       }
     }
@@ -193,12 +203,16 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Override
   public IRExprResult visitCompareExpr(ASTCompareExprNode node) {
     List<ASTAdditiveExprNode> operands = node.operands();
-    ASTCompareExprNode.CompareOperator operator = node.operator;
+    if (operands.size() == 1)
+      return visit(operands.getFirst());
 
-    if (operator == ASTCompareExprNode.CompareOperator.EQUAL) {
+    visit(operands.get(0));
+    visit(operands.get(1));
+
+    if (node.operator == ASTCompareExprNode.CompareOperator.EQUAL) {
       EqualInstruction equalInstruction = new EqualInstruction(node, operands.get(0), operands.get(1));
       pushToCurrentBlock(equalInstruction);
-    } else if (operator == ASTCompareExprNode.CompareOperator.NOT_EQUAL) {
+    } else if (node.operator == ASTCompareExprNode.CompareOperator.NOT_EQUAL) {
       NotEqualInstruction notEqualInstruction = new NotEqualInstruction(node, operands.get(0), operands.get(1));
       pushToCurrentBlock(notEqualInstruction);
     }
@@ -209,15 +223,20 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Override
   public IRExprResult visitAdditiveExpr(ASTAdditiveExprNode node) {
     List<ASTMultiplicativeExprNode> operandsList = node.operands();
+    if (operandsList.size() == 1)
+      return visit(operandsList.getFirst());
     List<ASTAdditiveExprNode.AdditiveOperator> operatorsList = node.operatorList;
 
-    for (int i = 0; i < operatorsList.size(); i++) {
-      if (operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.PLUS) {
-        PlusInstruction plusInstruction = new PlusInstruction(node, operandsList.get(i), operandsList.get(i + 1));
-        pushToCurrentBlock(plusInstruction);
+    // Visit the first operand
+    visit(operandsList.getFirst());
 
+    for (int i = 1; i < operandsList.size(); i++) {
+      visit(operandsList.get(i));
+      if (operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.PLUS) {
+        PlusInstruction plusInstruction = new PlusInstruction(node, operandsList.get(i - 1), operandsList.get(i));
+        pushToCurrentBlock(plusInstruction);
       } else if (operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.MINUS) {
-        MinusInstruction minusInstruction = new MinusInstruction(node, operandsList.get(i), operandsList.get(i + 1));
+        MinusInstruction minusInstruction = new MinusInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(minusInstruction);
       }
     }
@@ -228,14 +247,20 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Override
   public IRExprResult visitMultiplicativeExpr(ASTMultiplicativeExprNode node) {
     List<ASTPrefixExprNode> operandsList = node.operands();
+    if (operandsList.size() == 1)
+      return visit(operandsList.getFirst());
     List<ASTMultiplicativeExprNode.MultiplicativeOperator> operatorsList = node.operatorList;
 
-    for (int i = 0; i < operatorsList.size(); i++) {
+    // Visit the first operand
+    visit(operandsList.getFirst());
+
+    for (int i = 1; i < operandsList.size(); i++) {
+      visit(operandsList.get(i));
       if (operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.MUL) {
-        MultiplicativeInstruction multiplicativeInstruction = new MultiplicativeInstruction(node, operandsList.get(i), operandsList.get(i + 1));
+        MultiplicativeInstruction multiplicativeInstruction = new MultiplicativeInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(multiplicativeInstruction);
       } else if (operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.DIV) {
-        DivisionInstruction divisionInstruction = new DivisionInstruction(node, operandsList.get(i), operandsList.get(i + 1));
+        DivisionInstruction divisionInstruction = new DivisionInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(divisionInstruction);
       }
     }
@@ -246,12 +271,12 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Override
   public IRExprResult visitPrefixExpr(ASTPrefixExprNode node) {
     ASTAtomicExprNode operand = node.operand();
-    ASTPrefixExprNode.PrefixOperator prefixOperator = node.operator;
+    visit(operand);
 
-    if (prefixOperator == ASTPrefixExprNode.PrefixOperator.PLUS) {
+    if (node.operator == ASTPrefixExprNode.PrefixOperator.PLUS) {
       PrefixPlusInstruction prefixPlusInstruction = new PrefixPlusInstruction(node, operand);
       pushToCurrentBlock(prefixPlusInstruction);
-    } else if (prefixOperator == ASTPrefixExprNode.PrefixOperator.MINUS) {
+    } else if (node.operator == ASTPrefixExprNode.PrefixOperator.MINUS) {
       PrefixMinusInstruction prefixMinusInstruction = new PrefixMinusInstruction(node, operand);
       pushToCurrentBlock(prefixMinusInstruction);
     }
@@ -264,13 +289,31 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     ASTAtomicExprNode.AtomicType atomicOperator = node.getExprType();
 
     switch (atomicOperator) {
+      case INT_LIT -> node.getValue().setIntValue(node.getIntLit());
+      case DOUBLE_LIT -> node.getValue().setDoubleValue(node.getDoubleLit());
+      case BOOL_LIT -> node.getValue().setBoolValue(node.isBoolLit());
+      case STRING_LIT -> node.getValue().setStringValue(node.getStringLit());
       case IDENTIFIER -> {
         LoadInstruction loadInstruction = new LoadInstruction(node, node.getCurrentSymbol());
         pushToCurrentBlock(loadInstruction);
+        return new IRExprResult(node.getCurrentSymbol().getValue(), node, node.getCurrentSymbol());
       }
-      case FCT_CALL -> visitFctCall(node.getFctCall());
-      case LOGICAL_EXPR -> visitLogicalExpr(node.getLogicalExpr());
-      case PRINT_BUILTIN_CALL -> visitPrintBuiltin(node.getPrintCall());
+      case FCT_CALL -> {
+        IRExprResult exprResult = visitFctCall(node.getFctCall());
+        node.setValue(exprResult.getValue());
+        return exprResult;
+      }
+      case PRINT_BUILTIN_CALL -> {
+        IRExprResult exprResult = visitPrintBuiltin(node.getPrintCall());
+        node.setValue(exprResult.getValue());
+        return exprResult;
+      }
+      case LOGICAL_EXPR -> {
+        IRExprResult exprResult = visitLogicalExpr(node.getLogicalExpr());
+        node.setValue(exprResult.getValue());
+        return exprResult;
+      }
+      default -> throw new SemaError(node, "Unknown atomic operator: " + atomicOperator);
     }
 
     return new IRExprResult(node.getValue(), node, null);

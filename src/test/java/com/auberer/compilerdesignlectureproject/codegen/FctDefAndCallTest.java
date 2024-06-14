@@ -63,7 +63,7 @@ public class FctDefAndCallTest {
         String irCode = defBuilder.toString();
 
         //fctDef Check
-        assertTrue(irCode.contains("function myFunc(TY_INT x,TY_INT y)"));
+        assertTrue(irCode.contains("function myFunc(TY_INT x, TY_INT y)"));
         assertTrue(irCode.contains("alloca x"));
         assertTrue(irCode.contains("store x"));
         assertTrue(irCode.contains("return"));

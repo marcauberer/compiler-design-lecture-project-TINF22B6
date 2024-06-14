@@ -25,8 +25,8 @@ public class ASTAtomicExprNode extends ASTNode {
   public AtomicType exprType;
   public int intLit;
   public double doubleLit;
-  public String stringLit;
   public boolean boolLit;
+  public String stringLit;
   public String identifier;
 
   public SymbolTableEntry currentSymbol;

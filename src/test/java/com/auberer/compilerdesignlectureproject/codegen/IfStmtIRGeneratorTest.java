@@ -4,12 +4,13 @@ import com.auberer.compilerdesignlectureproject.ast.ASTIfStmtNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IfStmtIRGeneratorTest {
 
@@ -60,9 +61,7 @@ public class IfStmtIRGeneratorTest {
         StringBuilder sb = new StringBuilder();
         function.dumpIR(sb);
 
-        System.out.printf("%s%n", sb);
-
-        // assertEquals(sb.toString().trim(), "function ifStatement: {\n}");
+        assertTrue(sb.toString().contains("function main(): {\n"));
     }
 
 }
