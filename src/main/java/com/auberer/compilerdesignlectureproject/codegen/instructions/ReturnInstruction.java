@@ -10,19 +10,20 @@ public class ReturnInstruction extends Instruction {
 
   public ReturnInstruction(ASTLogicNode logicNode) {
     super(logicNode);
-    returnExpr = logicNode.logicalExpr();
+    returnExpr = logicNode.getReturnNode();
   }
 
   @Override
   public void run(InterpreterEnvironment env) {
-    // ToDo(Team 6): Implement
+    // Return from the current function and set the instruction iterator to the instruction after the call
+    env.returnFromFunction();
   }
 
   @Override
   public void dumpIR(StringBuilder sb) {
-    sb.append("return ");
+    sb.append("return");
     if (returnExpr != null)
-      sb.append(returnExpr.getValue().getName());
+      sb.append(" ").append(returnExpr.getValue().getName());
   }
 
   @Override

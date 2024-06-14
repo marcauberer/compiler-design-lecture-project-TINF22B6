@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -149,12 +151,12 @@ public class DoWhileLoopNodeTest {
         assert endBlock.getLabel().equals("do_while.exit");
 
         StringBuilder stringBuilder = new StringBuilder();
-        Function function = new Function("test");
+        Function function = new Function("test", new ArrayList<>());
         function.setEntryBlock(entryBlock);
         function.dumpIR(stringBuilder);
         String irCode = stringBuilder.toString();
         assert irCode.startsWith("""
-                function test: {
+                function test(): {
                 entry:
                   jump do_while.body
                 do_while.body:

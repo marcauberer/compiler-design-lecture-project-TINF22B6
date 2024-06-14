@@ -194,6 +194,7 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
       throw new SemaError(node, "Parameter name already in use");
     } else {
       currentScopes.peek().insertSymbol(node.getName(), node);
+      node.setSymbol(new SymbolTableEntry(currentScopes.peek(), node.getName(), node));
     }
     return null;
   }

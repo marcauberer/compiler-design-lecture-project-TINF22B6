@@ -309,7 +309,19 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     node.setEvaluatedSymbolType(type.getType());
     entryNode.defineFunction(new FunctionDef(node));
     Type resultType = new Type(SuperType.TY_FUNCTION);
+    visitLogic(node.getBody());
+
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
+  }
+
+  @Override
+  public ExprResult visitLogic(ASTLogicNode node) {
+    visitStmtLst(node.getBody());
+    if (node.hasReturn())
+      visitLogicalExpr(node.getReturnNode());
+
+
+    return new ExprResult(new Type(SuperType.TY_INVALID));
   }
 
   @Override
@@ -333,10 +345,11 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     }
 
 
-    Type resultType = new Type(SuperType.TY_FUNCTION);
+    Type resultType = new Type(def.getReturnType());
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 
+@Override
   public ExprResult visitParam(ASTParamNode node) {
     ASTTypeNode typeNode = node.getDataType();
     ExprResult type = visitType(typeNode);

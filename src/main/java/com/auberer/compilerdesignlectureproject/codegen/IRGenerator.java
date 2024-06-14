@@ -12,6 +12,7 @@ import java.util.List;
 public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   // IR module, which represents the whole program
+
   private final Module module;
 
   @Getter
@@ -22,6 +23,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   public IRGenerator(String moduleName) {
     module = new Module(moduleName);
   }
+
 
   @Override
   public IRExprResult visitForLoop(ASTForNode node) {
@@ -270,7 +272,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
    */
   private void finalizeFunction() {
     assert currentBlock != null;
-    assert isBlockTerminated(currentBlock);
+    assert !isBlockTerminated(currentBlock);
     currentBlock = null;
   }
 
@@ -298,4 +300,59 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     return !block.getInstructions().isEmpty() && block.getInstructions().getLast().isTerminator();
   }
 
+  @Override
+  public IRExprResult visitFctCall(ASTFctCallNode node) {
+    CallInstruction callInstruction = new CallInstruction(node, module.getFunction(node.getName(), node.getCallParams().getParamsAsLogicNodes().stream().map(ASTNode::getType).toList()), node.getCallParams());
+    pushToCurrentBlock(callInstruction);
+    return new IRExprResult(node.getValue(), node, null);
+  }
+
+  @Override
+  public IRExprResult visitFctDef(ASTFctDefNode node) {
+    BasicBlock fctDef = new BasicBlock("fctDef");
+
+    switchToBlock(fctDef);
+    if(node.hasParams()){
+      visitParamLst(node.getParams());
+    }
+
+
+    List<Function.Parameter> params = node.hasParams()?
+            node.getParams().getParamNodes().stream().map((paramNode) -> new Function.Parameter(paramNode.getName(), paramNode.getType())).toList()
+            :new ArrayList<>();
+
+    Function function = new Function(node.getName(), params);
+    function.setEntryBlock(fctDef);
+    module.addFunction(function);
+
+    visitLogic(node.getBody());
+
+    currentBlock = null;
+    return new IRExprResult(node.getValue(), node, null);
+  }
+
+  @Override
+  public IRExprResult visitParamLst(ASTParamLstNode node){
+    for (ASTParamNode paramNode: node.getParamNodes()){
+      visitParam(paramNode);
+    }
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitParam(ASTParamNode node){
+    AllocaInstruction allocaInstruction = new AllocaInstruction(node, node.getSymbol());
+    pushToCurrentBlock(allocaInstruction);
+    StoreInstruction storeParam = new StoreInstruction(node, node.getSymbol());
+    pushToCurrentBlock(storeParam);
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitLogic(ASTLogicNode node) {
+    visitStmtLst(node.getBody());
+    ReturnInstruction returnInstruction = new ReturnInstruction(node);
+    pushToCurrentBlock(returnInstruction);
+    return new IRExprResult(null, node, null);
+  }
 }
