@@ -4,22 +4,21 @@ import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+@Setter
+@Getter
 public class ASTIfStmtNode extends ASTNode {
-    public static Set<TokenType> getSelectionSet() {
-        return Set.of(TokenType.TOK_IF);
-    }
 
-    @Setter
-    @Getter
     private boolean hasAfterIf;
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
         return visitor.visitIf(this);
+    }
+
+    public static Set<TokenType> getSelectionSet() {
+        return Set.of(TokenType.TOK_IF);
     }
 
     public ASTLogicalExprNode getCondition() {

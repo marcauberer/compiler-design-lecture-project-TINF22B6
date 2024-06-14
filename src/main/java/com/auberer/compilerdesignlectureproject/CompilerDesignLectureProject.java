@@ -32,7 +32,9 @@ public class CompilerDesignLectureProject {
         .addOption("h", "help", false, "Print this help text")
         .addOption("antlr", "use-antlr-parser", false, "Use ANTLR generated parser")
         .addOption("tokens", "dump-tokens", false, "Dump the lexed tokens")
-        .addOption("ast", "dump-ast", false, "Dump the AST as dot file");
+        .addOption("ast", "dump-ast", false, "Dump the AST as dot file")
+        .addOption("ir", "dump-ir", false, "Dump the intermediate representation")
+        .addOption("trace", "trace", false, "Trace the interpreter execution");
 
     DefaultParser cliParser = new DefaultParser();
     try {

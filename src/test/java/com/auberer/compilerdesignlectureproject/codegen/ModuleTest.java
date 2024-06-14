@@ -33,7 +33,7 @@ public class ModuleTest {
 module test.tinf:
 
 function main(): {
-fctDef:
+entry:
   return
 }
 

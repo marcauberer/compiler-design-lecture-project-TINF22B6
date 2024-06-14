@@ -277,6 +277,8 @@ public class Parser implements IParser {
     parseElsePre();
     parseElsePost();
 
+    node.setElseIf(node.getElsePost() != null && node.getElsePost().getIfStmt() != null);
+
     exitNode(node);
     return node;
   }

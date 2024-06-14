@@ -66,6 +66,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     assert currentBlock == null;
     return null;
   }
+
   @Override
   public IRExprResult visitPrintBuiltin(ASTPrintBuiltinCallNode node) {
     // Create print instruction and append it to the current BasicBlock
@@ -83,21 +84,23 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
       pushToCurrentBlock(storeInstruction);
       return new IRExprResult(node.getCurrentSymbol().getValue(), node, node.getCurrentSymbol());
     }
-    
+
     return new IRExprResult(node.getLogicalExpr().getValue(), node, null);
   }
 
   public IRExprResult visitVarDecl(ASTVarDeclNode node) {
     AllocaInstruction allocaInstruction = new AllocaInstruction(node, node.getCurrentSymbol());
     pushToCurrentBlock(allocaInstruction);
+
     if (node.isHasLogicalExpr()) {
+      visit(node.getLogicalExpr());
       StoreInstruction storeInstruction = new StoreInstruction(node, node.getCurrentSymbol());
       pushToCurrentBlock(storeInstruction);
     }
-    
+
     return new IRExprResult(node.getValue(), node, node.getCurrentSymbol());
   }
-  
+
   @Override
   public IRExprResult visitWhileLoop(ASTWhileLoopNode node) {
     BasicBlock conditionBlock = new BasicBlock("while.cond");
@@ -142,50 +145,44 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Override
   public IRExprResult visitIf(ASTIfStmtNode node) {
     // if, continue in currentBlock
-    BasicBlock trueBlock = new BasicBlock("trueBlock");
-    BasicBlock afterIfBlock = new BasicBlock("afterIfBlock");
-    BasicBlock exitBlock = new BasicBlock("exitBlock");
+    BasicBlock thenBlock = new BasicBlock("if.then");
+    BasicBlock elseBlock = new BasicBlock("if.else");
+    BasicBlock exitBlock = new BasicBlock("if.exit");
 
-    if (node.isHasAfterIf()) {
-      pushToCurrentBlock(new CondJumpInstruction(node, node.getCondition(), trueBlock, afterIfBlock));
-    } else {
-      pushToCurrentBlock(new CondJumpInstruction(node, node.getCondition(), trueBlock, exitBlock));
-    }
-    switchToBlock(trueBlock);
+    // Visit condition in original block
+    ASTLogicalExprNode condition = node.getCondition();
+    visit(condition);
+    pushToCurrentBlock(new CondJumpInstruction(node, condition, thenBlock, node.isHasAfterIf() ? elseBlock : exitBlock));
+
+    // Fill then block
+    switchToBlock(thenBlock);
     visit(node.getBody());
     pushToCurrentBlock(new JumpInstruction(node, exitBlock));
+
     if (node.isHasAfterIf()) {
-      switchToBlock(afterIfBlock);
+      // Fill else block
+      switchToBlock(elseBlock);
       visit(node.getAfterIf());
+      pushToCurrentBlock(new JumpInstruction(node, exitBlock));
     }
+
+    // Switch to exit block
+    switchToBlock(exitBlock);
+
     return new IRExprResult(null, node, null);
   }
 
-  @Override
-  public IRExprResult visitElse(ASTElseNode node) {
-    BasicBlock stmtList = new BasicBlock("stmtList");
-    BasicBlock afterList = new BasicBlock("afterList");
-    pushToCurrentBlock(new JumpInstruction(node, stmtList));
-    switchToBlock(stmtList);
-    visit(node.getStmtLstNode());
-    pushToCurrentBlock(new JumpInstruction(node, afterList));
-    return new IRExprResult(null, node, null);
-  }
-    
   @Override
   public IRExprResult visitLogicalExpr(ASTLogicalExprNode node) {
-
     List<ASTCompareExprNode> operandsList = node.operands();
     List<ASTLogicalExprNode.LogicalOperator> operatorsList = node.getOperatorList();
 
     for (int i = 0; i < operatorsList.size(); i++) {
-      if(operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.AND) {
-        AndInstruction andInstruction = new AndInstruction(node, operandsList.get(i), operandsList.get(i+1));
+      if (operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.AND) {
+        AndInstruction andInstruction = new AndInstruction(node, operandsList.get(i), operandsList.get(i + 1));
         pushToCurrentBlock(andInstruction);
-
-      }
-      else if(operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.OR) {
-        OrInstruction orInstruction = new OrInstruction(node, operandsList.get(i), operandsList.get(i+1));
+      } else if (operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.OR) {
+        OrInstruction orInstruction = new OrInstruction(node, operandsList.get(i), operandsList.get(i + 1));
         pushToCurrentBlock(orInstruction);
       }
     }
@@ -215,12 +212,12 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     List<ASTAdditiveExprNode.AdditiveOperator> operatorsList = node.operatorList;
 
     for (int i = 0; i < operatorsList.size(); i++) {
-      if(operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.PLUS) {
-        PlusInstruction plusInstruction = new PlusInstruction(node, operandsList.get(i), operandsList.get(i+1));
+      if (operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.PLUS) {
+        PlusInstruction plusInstruction = new PlusInstruction(node, operandsList.get(i), operandsList.get(i + 1));
         pushToCurrentBlock(plusInstruction);
 
-      } else if(operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.MINUS) {
-        MinusInstruction minusInstruction = new MinusInstruction(node, operandsList.get(i), operandsList.get(i+1));
+      } else if (operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.MINUS) {
+        MinusInstruction minusInstruction = new MinusInstruction(node, operandsList.get(i), operandsList.get(i + 1));
         pushToCurrentBlock(minusInstruction);
       }
     }
@@ -234,11 +231,11 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     List<ASTMultiplicativeExprNode.MultiplicativeOperator> operatorsList = node.operatorList;
 
     for (int i = 0; i < operatorsList.size(); i++) {
-      if(operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.MUL) {
-        MultiplicativeInstruction multiplicativeInstruction = new MultiplicativeInstruction(node, operandsList.get(i), operandsList.get(i+1));
+      if (operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.MUL) {
+        MultiplicativeInstruction multiplicativeInstruction = new MultiplicativeInstruction(node, operandsList.get(i), operandsList.get(i + 1));
         pushToCurrentBlock(multiplicativeInstruction);
-      } else if(operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.DIV) {
-        DivisionInstruction divisionInstruction = new DivisionInstruction(node, operandsList.get(i), operandsList.get(i+1));
+      } else if (operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.DIV) {
+        DivisionInstruction divisionInstruction = new DivisionInstruction(node, operandsList.get(i), operandsList.get(i + 1));
         pushToCurrentBlock(divisionInstruction);
       }
     }
@@ -251,7 +248,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     ASTAtomicExprNode operand = node.operand();
     ASTPrefixExprNode.PrefixOperator prefixOperator = node.operator;
 
-    if (prefixOperator == ASTPrefixExprNode.PrefixOperator.PLUS){
+    if (prefixOperator == ASTPrefixExprNode.PrefixOperator.PLUS) {
       PrefixPlusInstruction prefixPlusInstruction = new PrefixPlusInstruction(node, operand);
       pushToCurrentBlock(prefixPlusInstruction);
     } else if (prefixOperator == ASTPrefixExprNode.PrefixOperator.MINUS) {
@@ -266,7 +263,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   public IRExprResult visitAtomicExpr(ASTAtomicExprNode node) {
     ASTAtomicExprNode.AtomicType atomicOperator = node.getExprType();
 
-    switch (atomicOperator){
+    switch (atomicOperator) {
       case IDENTIFIER -> {
         LoadInstruction loadInstruction = new LoadInstruction(node, node.getCurrentSymbol());
         pushToCurrentBlock(loadInstruction);
@@ -298,7 +295,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
    */
   private void finalizeFunction() {
     assert currentBlock != null;
-    assert !isBlockTerminated(currentBlock);
+    assert isBlockTerminated(currentBlock);
     currentBlock = null;
   }
 
@@ -335,38 +332,37 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
   @Override
   public IRExprResult visitFctDef(ASTFctDefNode node) {
-    BasicBlock fctDef = new BasicBlock("fctDef");
+    BasicBlock entryBlock = new BasicBlock("entry");
+    switchToBlock(entryBlock);
 
-    switchToBlock(fctDef);
-    if(node.hasParams()){
+    if (node.hasParams()) {
       visitParamLst(node.getParams());
     }
 
-
-    List<Function.Parameter> params = node.hasParams()?
-            node.getParams().getParamNodes().stream().map((paramNode) -> new Function.Parameter(paramNode.getName(), paramNode.getType())).toList()
-            :new ArrayList<>();
+    List<Function.Parameter> params = node.hasParams() ?
+        node.getParams().getParamNodes().stream().map((paramNode) -> new Function.Parameter(paramNode.getName(), paramNode.getType())).toList()
+        : new ArrayList<>();
 
     Function function = new Function(node.getName(), params);
-    function.setEntryBlock(fctDef);
+    function.setEntryBlock(entryBlock);
     module.addFunction(function);
 
     visitLogic(node.getBody());
 
-    currentBlock = null;
+    finalizeFunction();
     return new IRExprResult(node.getValue(), node, null);
   }
 
   @Override
-  public IRExprResult visitParamLst(ASTParamLstNode node){
-    for (ASTParamNode paramNode: node.getParamNodes()){
+  public IRExprResult visitParamLst(ASTParamLstNode node) {
+    for (ASTParamNode paramNode : node.getParamNodes()) {
       visitParam(paramNode);
     }
     return new IRExprResult(null, node, null);
   }
 
   @Override
-  public IRExprResult visitParam(ASTParamNode node){
+  public IRExprResult visitParam(ASTParamNode node) {
     AllocaInstruction allocaInstruction = new AllocaInstruction(node, node.getSymbol());
     pushToCurrentBlock(allocaInstruction);
     StoreInstruction storeParam = new StoreInstruction(node, node.getSymbol());
