@@ -140,6 +140,39 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   }
 
   @Override
+  public IRExprResult visitIf(ASTIfStmtNode node) {
+    // if, continue in currentBlock
+    BasicBlock trueBlock = new BasicBlock("trueBlock");
+    BasicBlock afterIfBlock = new BasicBlock("afterIfBlock");
+    BasicBlock exitBlock = new BasicBlock("exitBlock");
+
+    if (node.isHasAfterIf()) {
+      pushToCurrentBlock(new CondJumpInstruction(node, node.getCondition(), trueBlock, afterIfBlock));
+    } else {
+      pushToCurrentBlock(new CondJumpInstruction(node, node.getCondition(), trueBlock, exitBlock));
+    }
+    switchToBlock(trueBlock);
+    visit(node.getBody());
+    pushToCurrentBlock(new JumpInstruction(node, exitBlock));
+    if (node.isHasAfterIf()) {
+      switchToBlock(afterIfBlock);
+      visit(node.getAfterIf());
+    }
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitElse(ASTElseNode node) {
+    BasicBlock stmtList = new BasicBlock("stmtList");
+    BasicBlock afterList = new BasicBlock("afterList");
+    pushToCurrentBlock(new JumpInstruction(node, stmtList));
+    switchToBlock(stmtList);
+    visit(node.getStmtLstNode());
+    pushToCurrentBlock(new JumpInstruction(node, afterList));
+    return new IRExprResult(null, node, null);
+  }
+    
+  @Override
   public IRExprResult visitLogicalExpr(ASTLogicalExprNode node) {
 
     List<ASTCompareExprNode> operandsList = node.operands();
