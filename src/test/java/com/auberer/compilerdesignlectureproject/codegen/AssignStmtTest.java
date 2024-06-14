@@ -9,6 +9,9 @@ import com.auberer.compilerdesignlectureproject.reader.Reader;
 import com.auberer.compilerdesignlectureproject.sema.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AssignStmtTest {
@@ -51,7 +54,7 @@ public class AssignStmtTest {
         assertTrue(instruction instanceof StoreInstruction);
 
         StringBuilder sb = new StringBuilder();
-        Function function = new Function("assignStmt");
+        Function function = new Function("main", new ArrayList<>());
         function.setEntryBlock(basicBlock);
         function.dumpIR(sb);
         String irCode = sb.toString();

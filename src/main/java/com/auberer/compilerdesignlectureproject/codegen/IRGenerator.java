@@ -39,7 +39,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     switchToBlock(loopHeadBlock);
     IRExprResult conditionResult = visit(node.getCondition());
 
-    CondJumpInstruction condJumpInstruction = new CondJumpInstruction(node, conditionResult.getValue().getNode(), loopBodyBlock, loopEndBlock);
+    CondJumpInstruction condJumpInstruction = new CondJumpInstruction(node, conditionResult.getNode(), loopBodyBlock, loopEndBlock);
     pushToCurrentBlock(condJumpInstruction);
 
     switchToBlock(loopBodyBlock);
@@ -78,10 +78,13 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   public IRExprResult visitAssignStmt(ASTAssignStmtNode node) {
     visit(node.getLogicalExpr());
 
-    StoreInstruction storeInstruction = new StoreInstruction(node.getLogicalExpr(), node.getCurrentSymbol());
-    pushToCurrentBlock(storeInstruction);
+    if (node.isAssignment()) {
+      StoreInstruction storeInstruction = new StoreInstruction(node.getLogicalExpr(), node.getCurrentSymbol());
+      pushToCurrentBlock(storeInstruction);
+      return new IRExprResult(node.getCurrentSymbol().getValue(), node, node.getCurrentSymbol());
+    }
     
-    return new IRExprResult(node.getCurrentSymbol().getValue(), node, node.getCurrentSymbol());
+    return new IRExprResult(node.getLogicalExpr().getValue(), node, null);
   }
 
   public IRExprResult visitVarDecl(ASTVarDeclNode node) {
@@ -143,7 +146,6 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     List<ASTLogicalExprNode.LogicalOperator> operatorsList = node.getOperatorList();
 
     for (int i = 0; i < operatorsList.size(); i++) {
-
       if(operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.AND) {
         AndInstruction andInstruction = new AndInstruction(node, operandsList.get(i), operandsList.get(i+1));
         pushToCurrentBlock(andInstruction);
@@ -155,7 +157,7 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
       }
     }
 
-    return null;
+    return new IRExprResult(node.getValue(), node, null);
   }
 
   @Override
@@ -166,12 +168,12 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     if (operator == ASTCompareExprNode.CompareOperator.EQUAL) {
       EqualInstruction equalInstruction = new EqualInstruction(node, operands.get(0), operands.get(1));
       pushToCurrentBlock(equalInstruction);
-    }
-    else if (operator == ASTCompareExprNode.CompareOperator.NOT_EQUAL) {
+    } else if (operator == ASTCompareExprNode.CompareOperator.NOT_EQUAL) {
       NotEqualInstruction notEqualInstruction = new NotEqualInstruction(node, operands.get(0), operands.get(1));
       pushToCurrentBlock(notEqualInstruction);
     }
-    return null;
+
+    return new IRExprResult(node.getValue(), node, null);
   }
 
   @Override
@@ -180,19 +182,17 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     List<ASTAdditiveExprNode.AdditiveOperator> operatorsList = node.operatorList;
 
     for (int i = 0; i < operatorsList.size(); i++) {
-
       if(operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.PLUS) {
         PlusInstruction plusInstruction = new PlusInstruction(node, operandsList.get(i), operandsList.get(i+1));
         pushToCurrentBlock(plusInstruction);
 
-      }
-      else if(operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.MINUS) {
+      } else if(operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.MINUS) {
         MinusInstruction minusInstruction = new MinusInstruction(node, operandsList.get(i), operandsList.get(i+1));
         pushToCurrentBlock(minusInstruction);
       }
     }
 
-    return null;
+    return new IRExprResult(node.getValue(), node, null);
   }
 
   @Override
@@ -201,18 +201,16 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     List<ASTMultiplicativeExprNode.MultiplicativeOperator> operatorsList = node.operatorList;
 
     for (int i = 0; i < operatorsList.size(); i++) {
-
       if(operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.MUL) {
         MultiplicativeInstruction multiplicativeInstruction = new MultiplicativeInstruction(node, operandsList.get(i), operandsList.get(i+1));
         pushToCurrentBlock(multiplicativeInstruction);
-
-      }
-      else if(operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.DIV) {
+      } else if(operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.DIV) {
         DivisionInstruction divisionInstruction = new DivisionInstruction(node, operandsList.get(i), operandsList.get(i+1));
         pushToCurrentBlock(divisionInstruction);
       }
     }
-    return null;
+
+    return new IRExprResult(node.getValue(), node, null);
   }
 
   @Override
@@ -227,7 +225,8 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
       PrefixMinusInstruction prefixMinusInstruction = new PrefixMinusInstruction(node, operand);
       pushToCurrentBlock(prefixMinusInstruction);
     }
-    return null;
+
+    return new IRExprResult(node.getValue(), node, null);
   }
 
   @Override
@@ -239,18 +238,12 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
         LoadInstruction loadInstruction = new LoadInstruction(node, node.getCurrentSymbol());
         pushToCurrentBlock(loadInstruction);
       }
-      case FCT_CALL -> {
-        visitFctCall(node.getFctCall());
-      }
-      case LOGICAL_EXPR -> {
-        visitLogicalExpr(node.getLogicalExpr());
-      }
-      case PRINT_BUILTIN_CALL -> {
-        visitPrintBuiltin(node.getPrintCall());
-      }
+      case FCT_CALL -> visitFctCall(node.getFctCall());
+      case LOGICAL_EXPR -> visitLogicalExpr(node.getLogicalExpr());
+      case PRINT_BUILTIN_CALL -> visitPrintBuiltin(node.getPrintCall());
     }
 
-    return null;
+    return new IRExprResult(node.getValue(), node, null);
   }
 
   /**

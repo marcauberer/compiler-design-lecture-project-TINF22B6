@@ -1,19 +1,20 @@
 package com.auberer.compilerdesignlectureproject.codegen;
-import com.auberer.compilerdesignlectureproject.ast.*;
+
+import com.auberer.compilerdesignlectureproject.ast.ASTVarDeclNode;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.AllocaInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
-import com.auberer.compilerdesignlectureproject.codegen.instructions.StoreInstruction;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
 import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
-import com.auberer.compilerdesignlectureproject.sema.SymbolTableEntry;
 import com.auberer.compilerdesignlectureproject.sema.TypeChecker;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VarDeclTest {
 
@@ -49,7 +50,7 @@ public class VarDeclTest {
         assertTrue(allocaInstruction instanceof AllocaInstruction);
 
         StringBuilder sb = new StringBuilder();
-        Function function = new Function("varDecl");
+        Function function = new Function("main", new ArrayList<>());
         function.setEntryBlock(basicBlock);
         function.dumpIR(sb);
         String irCode = sb.toString();
@@ -86,7 +87,7 @@ public class VarDeclTest {
         assertTrue(instruction instanceof AllocaInstruction);
 
         StringBuilder sb = new StringBuilder();
-        Function function = new Function("varDecl");
+        Function function = new Function("main", new ArrayList<>());
         function.setEntryBlock(basicBlock);
         function.dumpIR(sb);
         String irCode = sb.toString();

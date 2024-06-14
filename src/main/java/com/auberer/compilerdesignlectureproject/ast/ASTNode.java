@@ -5,15 +5,12 @@ import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.sema.SuperType;
 import com.auberer.compilerdesignlectureproject.sema.Type;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
+@Data
 public abstract class ASTNode implements IVisitable {
 
   public void addChild(ASTNode child) {
@@ -35,10 +32,6 @@ public abstract class ASTNode implements IVisitable {
   public Type setEvaluatedSymbolType(Type type) {
     this.type = type;
     return type;
-  }
-
-  public String toString(){
-    return "";
   }
 
   ASTNode parent;
