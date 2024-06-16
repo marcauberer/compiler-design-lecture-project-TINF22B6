@@ -95,11 +95,11 @@ public interface TInfVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSwitchStmt(TInfParser.SwitchStmtContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link TInfParser#cases}.
+	 * Visit a parse tree produced by {@link TInfParser#case}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCases(TInfParser.CasesContext ctx);
+	T visitCase(TInfParser.CaseContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TInfParser#default}.
 	 * @param ctx the parse tree
