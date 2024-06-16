@@ -88,6 +88,10 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
+  public T visitCase(ASTCaseNode node) {
+    return visitChildren(node);
+  }
+
   public T visitDefault(ASTDefaultNode node) {
     return visitChildren(node);
   }
