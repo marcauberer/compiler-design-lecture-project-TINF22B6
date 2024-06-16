@@ -40,10 +40,8 @@ public class SwitchStmtTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assertInstanceOf(ASTCasesNode.class, astSwitchStmt.getCases());
+        assert(astSwitchStmt.getCase().size() == 2);
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
-        assert(astSwitchStmt.getCases().getCasesSize() == 2);
-        assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
         assert(exprResult.getType().getSuperType().equals(SuperType.TY_EMPTY));
     }
 
@@ -72,10 +70,8 @@ public class SwitchStmtTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assertInstanceOf(ASTCasesNode.class, astSwitchStmt.getCases());
+        assert(astSwitchStmt.getCase().size() == 2);
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
-        assert(astSwitchStmt.getCases().getCasesSize() == 2);
-        assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
 
         SemaError exception = Assertions.assertThrows(SemaError.class, () -> typeChecker.visitSwitchStmt(astSwitchStmt));
         assertTrue(exception.getMessage().contains("Switch statement expects int, double or string, but got 'TY_BOOL'"));
@@ -107,10 +103,8 @@ public class SwitchStmtTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assertInstanceOf(ASTCasesNode.class, astSwitchStmt.getCases());
+        assert(astSwitchStmt.getCase().size() == 2);
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
-        assert(astSwitchStmt.getCases().getCasesSize() == 2);
-        assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
 
         SemaError exception = Assertions.assertThrows(SemaError.class, () -> typeChecker.visitSwitchStmt(astSwitchStmt));
         assertTrue(exception.getMessage().contains("Switch case expects 'INT_LIT' but got 'DOUBLE_LIT'"));
