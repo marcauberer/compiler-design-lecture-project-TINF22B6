@@ -186,45 +186,34 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitCases(TInfParser.CasesContext ctx) {
-    ASTCasesNode node = new ASTCasesNode();
+  public ASTNode visitCase(TInfParser.CaseContext ctx){
+    ASTCaseNode node = new ASTCaseNode();
     enterNode(node, ctx);
-
-    int casesSize = ctx.CASE().size();
-    node.setCasesSize(casesSize);
-
-    List<String> cases = new ArrayList<>();
 
     for (int i = 0; i < ctx.getChildCount(); i++){
       ParseTree child = ctx.getChild(i);
       if (child instanceof TerminalNode terminalNode){
         String caseLiteral = terminalNode.getSymbol().getText();
-        cases.add(caseLiteral);
+        node.setCaseLiteral(caseLiteral);
       }
     }
 
-    node.setCases(cases);
-
-    List<TerminalNode> doubles = ctx.DOUBLE_LIT();
-    List<TerminalNode> ints = ctx.INT_LIT();
-    List<TerminalNode> strings = ctx.STRING_LIT();
-
-    for(TerminalNode ignored : doubles){
-      node.addCaseType(ASTCasesNode.CaseType.DOUBLE_LIT);
+    if(ctx.STRING_LIT() != null){
+      node.setCaseType(ASTCaseNode.CaseType.STRING_LIT);
     }
-    for(TerminalNode ignored : ints) {
-      node.addCaseType(ASTCasesNode.CaseType.INT_LIT);
+    else if(ctx.INT_LIT() != null){
+      node.setCaseType(ASTCaseNode.CaseType.INT_LIT);
     }
-    for(TerminalNode ignored : strings){
-      node.addCaseType(ASTCasesNode.CaseType.STRING_LIT);
+    else if(ctx.DOUBLE_LIT() != null){
+      node.setCaseType(ASTCaseNode.CaseType.DOUBLE_LIT);
     }
-
 
     visitChildren(ctx);
 
     exitNode(node);
     return node;
   }
+
 
   @Override
   public ASTNode visitDefault(TInfParser.DefaultContext ctx) {

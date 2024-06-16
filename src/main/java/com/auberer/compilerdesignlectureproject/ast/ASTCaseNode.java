@@ -12,6 +12,9 @@ public class ASTCaseNode extends ASTNode{
     @Getter @Setter
     private CaseType caseType;
 
+    @Getter @Setter
+    private String caseLiteral;
+
     public enum CaseType{
         INT_LIT,
         DOUBLE_LIT,
