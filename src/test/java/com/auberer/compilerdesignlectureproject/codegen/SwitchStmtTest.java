@@ -31,7 +31,8 @@ public class SwitchStmtTest {
 
         ASTSwitchStmtNode astSwitchStmt = parser.parseSwitchStmt();
 
-        astSwitchStmt.getCases().setCases(List.of("1", "2"));
+        astSwitchStmt.getCase().get(0).setCaseLiteral("1");
+        astSwitchStmt.getCase().get(1).setCaseLiteral("2");
 
         IRGenerator irGenerator = new IRGenerator("test_module");
         BasicBlock startBlock = new BasicBlock("start-block");

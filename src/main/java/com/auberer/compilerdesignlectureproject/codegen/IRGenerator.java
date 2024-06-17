@@ -100,21 +100,22 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     }
 
     List<BasicBlock> casesBlocks = new ArrayList<>();
-    for(int i = 0; i < node.getCases().getCasesSize(); i++){
-      casesBlocks.add(new BasicBlock("switch-case " + node.getCases().getCases().get(i)));
+    for(int i = 0; i < node.getCase().size(); i++){
+      casesBlocks.add(new BasicBlock("switch-case " + node.getCase().get(i).getCaseLiteral()));
     }
 
     BasicBlock endBlock = new BasicBlock("switch-end");
 
-    SwitchInstruction switchInstruction = new SwitchInstruction(node, node.getLogicalExpr().getValue(), casesBlocks, node.getCases().getCases(), defaultBlock);
+    SwitchInstruction switchInstruction = new SwitchInstruction(node, node.getLogicalExpr().getValue(), casesBlocks, node.getCase(), defaultBlock);
     pushToCurrentBlock(switchInstruction);
 
-    JumpInstruction casesJumpToEnd = new JumpInstruction(node.getCases(), endBlock);
 
-    for(BasicBlock b: casesBlocks){
+    for(int i = 0; i < casesBlocks.size(); i++){
+      JumpInstruction caseJumpToEnd = new JumpInstruction(node.getCase().get(i), endBlock);
+      BasicBlock b = casesBlocks.get(i);
       switchToBlock(b);
-      visitCases(node.getCases());
-      b.pushInstruction(casesJumpToEnd);
+      visitCase(node.getCase().get(i));
+      b.pushInstruction(caseJumpToEnd);
     }
 
     if(defaultBlock != null) {
@@ -125,6 +126,13 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     }
 
     switchToBlock(endBlock);
+
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitCase(ASTCaseNode node){
+    visitStmtLst(node.getStmtList());
 
     return new IRExprResult(null, node, null);
   }
