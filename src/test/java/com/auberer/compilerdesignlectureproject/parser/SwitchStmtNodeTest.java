@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -45,7 +47,7 @@ public class SwitchStmtNodeTest {
         doReturn(new ASTDefaultNode()).when(parser).parseDefault();
         doNothing().when(lexer).expect(TokenType.TOK_RBRACE);
         doReturn(new Token(TokenType.TOK_DEFAULT, "", new CodeLoc(1, 1))).when(lexer).getToken();
-        when(parser.parseCases()).thenReturn(new ASTCasesNode());
+        when(parser.parseCase()).thenReturn(new ASTCaseNode());
 
 
         // Execute parse method
@@ -57,7 +59,7 @@ public class SwitchStmtNodeTest {
         verify(parser, times(1)).parseLogicalExpression();
         verify(lexer, times(1)).expect(TokenType.TOK_RPAREN);
         verify(lexer, times(1)).expect(TokenType.TOK_LBRACE);
-        verify(parser, times(1)).parseCases();
+        verify(parser, times(1)).parseCase();
         verify(parser, times(1)).parseDefault();
         verify(lexer, times(1)).expect(TokenType.TOK_RBRACE);
 
@@ -76,9 +78,9 @@ public class SwitchStmtNodeTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assertInstanceOf(ASTCasesNode.class, astSwitchStmt.getCases());
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
-        assert(astSwitchStmt.getCases().getCasesSize() == 2);
-        assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
+        assert(astSwitchStmt.getCases().size() == 2);
+        assert (astSwitchStmt.getCases().get(0).getCaseType() == ASTCaseNode.CaseType.INT_LIT);
+        assert (astSwitchStmt.getCases().get(1).getCaseType() == ASTCaseNode.CaseType.INT_LIT);
     }
 }

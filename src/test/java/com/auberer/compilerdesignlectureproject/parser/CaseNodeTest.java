@@ -1,6 +1,6 @@
 package com.auberer.compilerdesignlectureproject.parser;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTCaseNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTStmtLstNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.lexer.Token;
@@ -20,9 +20,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
-public class CasesNodeTest {
+public class CaseNodeTest {
     @Spy
     private Parser parser; // Use spy to allow partial mocking
 
@@ -38,32 +37,26 @@ public class CasesNodeTest {
     }
 
     @Test
-    @DisplayName("Test switch statement cases")
-    void testCases() {
-        List<Token> tokenList = new LinkedList<>();
-        tokenList.add(new Token(TokenType.TOK_CASE, "1", new CodeLoc(1,1)));
-        tokenList.add(new Token(TokenType.TOK_CASE, "2", new CodeLoc(1,2)));
-        tokenList.add(new Token(TokenType.TOK_CASE, "3", new CodeLoc(1,3)));
-        tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "end", new CodeLoc(1, 4)));
-
+    @DisplayName("Test switch statement case")
+    void testCase() {
         // Arrange
         doNothing().when(lexer).advance();
         doNothing().when(lexer).expect(TokenType.TOK_CASE);
         doNothing().when(lexer).expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
         doNothing().when(lexer).expect(TokenType.TOK_COLON);
         doReturn(mock(ASTStmtLstNode.class)).when(parser).parseStmtLst();
-        doReturn(tokenList.get(0), tokenList.get(0), tokenList.get(1), tokenList.get(1), tokenList.get(2), tokenList.get(2), tokenList.get(3)).when(lexer).getToken();
+        doReturn(new Token(TokenType.TOK_CASE, "1", new CodeLoc(1,1))).when(lexer).getToken();
 
         // Execute parse method
-        ASTCasesNode casesNode = parser.parseCases();
+        ASTCaseNode caseNode = parser.parseCase();
 
         // Assert
-        verify(lexer, times(3)).expect(TokenType.TOK_CASE);
-        verify(lexer, times(3)).expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
-        verify(lexer, times(3)).expect(TokenType.TOK_COLON);
-        verify(parser, times(3)).parseStmtLst();
+        verify(lexer, times(1)).expect(TokenType.TOK_CASE);
+        verify(lexer, times(1)).expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
+        verify(lexer, times(1)).expect(TokenType.TOK_COLON);
+        verify(parser, times(1)).parseStmtLst();
 
-        assertNotNull(casesNode);
-        assertInstanceOf(ASTCasesNode.class, casesNode);
+        assertNotNull(caseNode);
+        assertInstanceOf(ASTCaseNode.class, caseNode);
     }
 }

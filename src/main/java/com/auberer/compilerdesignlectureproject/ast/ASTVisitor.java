@@ -84,7 +84,7 @@ public class ASTVisitor<T> {
     return visitChildren(node);
   }
 
-  public T visitCases(ASTCasesNode node) {
+  public T visitCase(ASTCaseNode node) {
     return visitChildren(node);
   }
 

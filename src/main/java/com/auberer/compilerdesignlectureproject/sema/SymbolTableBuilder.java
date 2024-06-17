@@ -131,16 +131,14 @@ public class SymbolTableBuilder extends ASTVisitor<Void> {
   }
 
   @Override
-  public Void visitCases(ASTCasesNode node) {
-    for (ASTStmtLstNode stmtLst : node.getStmtLists()) {
-      Scope scope = currentScopes.peek().createChildScope();
-      currentScopes.push(scope);
+  public Void visitCase(ASTCaseNode node){
+    Scope scope = currentScopes.peek().createChildScope();
+    currentScopes.push(scope);
 
-      visit(stmtLst);
+    visit(node.getStmtList());
 
-      assert currentScopes.peek() == scope;
-      currentScopes.pop();
-    }
+    assert currentScopes.peek() == scope;
+    currentScopes.pop();
 
     return null;
   }

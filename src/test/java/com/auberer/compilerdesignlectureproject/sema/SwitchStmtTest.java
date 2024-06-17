@@ -1,6 +1,6 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
+import com.auberer.compilerdesignlectureproject.ast.ASTCaseNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTDefaultNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTSwitchStmtNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
@@ -40,10 +40,12 @@ public class SwitchStmtTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assertInstanceOf(ASTCasesNode.class, astSwitchStmt.getCases());
+        assert(astSwitchStmt.getCases().size() == 2);
+        assert (astSwitchStmt.getCases().get(0).getExpectedType() == ASTCaseNode.CaseType.INT_LIT);
+        assert (astSwitchStmt.getCases().get(1).getExpectedType() == ASTCaseNode.CaseType.INT_LIT);
+        assert (astSwitchStmt.getCases().get(0).getCaseType() == ASTCaseNode.CaseType.INT_LIT);
+        assert (astSwitchStmt.getCases().get(1).getCaseType() == ASTCaseNode.CaseType.INT_LIT);
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
-        assert(astSwitchStmt.getCases().getCasesSize() == 2);
-        assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
         assert(exprResult.getType().getSuperType().equals(SuperType.TY_EMPTY));
     }
 
@@ -72,10 +74,10 @@ public class SwitchStmtTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assertInstanceOf(ASTCasesNode.class, astSwitchStmt.getCases());
+        assert(astSwitchStmt.getCases().size() == 2);
+        assert (astSwitchStmt.getCases().get(0).getCaseType() == ASTCaseNode.CaseType.INT_LIT);
+        assert (astSwitchStmt.getCases().get(1).getCaseType() == ASTCaseNode.CaseType.INT_LIT);
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
-        assert(astSwitchStmt.getCases().getCasesSize() == 2);
-        assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
 
         SemaError exception = Assertions.assertThrows(SemaError.class, () -> typeChecker.visitSwitchStmt(astSwitchStmt));
         assertTrue(exception.getMessage().contains("Switch statement expects int, double or string, but got 'TY_BOOL'"));
@@ -107,10 +109,10 @@ public class SwitchStmtTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assertInstanceOf(ASTCasesNode.class, astSwitchStmt.getCases());
+        assert(astSwitchStmt.getCases().size() == 2);
+        assert (astSwitchStmt.getCases().get(0).getCaseType() == ASTCaseNode.CaseType.INT_LIT);
+        assert (astSwitchStmt.getCases().get(1).getCaseType() == ASTCaseNode.CaseType.DOUBLE_LIT);
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
-        assert(astSwitchStmt.getCases().getCasesSize() == 2);
-        assert(astSwitchStmt.getCases().getStmtLists().size() == 2);
 
         SemaError exception = Assertions.assertThrows(SemaError.class, () -> typeChecker.visitSwitchStmt(astSwitchStmt));
         assertTrue(exception.getMessage().contains("Switch case expects 'INT_LIT' but got 'DOUBLE_LIT'"));

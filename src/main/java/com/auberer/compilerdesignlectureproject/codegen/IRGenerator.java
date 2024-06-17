@@ -1,6 +1,10 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
 import com.auberer.compilerdesignlectureproject.ast.*;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpInstruction;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
+import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.*;
 import com.auberer.compilerdesignlectureproject.sema.SemaError;
 import lombok.Getter;
@@ -318,6 +322,64 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
     return new IRExprResult(node.getValue(), node, null);
   }
+
+  @Override
+  public IRExprResult visitSwitchStmt(ASTSwitchStmtNode node) {
+
+    BasicBlock defaultBlock = null;
+
+    if(node.getDefault() != null){
+      defaultBlock = new BasicBlock("switch-default");
+    }
+
+    List<BasicBlock> casesBlocks = new ArrayList<>();
+    for(int i = 0; i < node.getCases().size(); i++){
+      casesBlocks.add(new BasicBlock("switch-case " + node.getCases().get(i).getCaseLiteral()));
+    }
+
+    BasicBlock endBlock = new BasicBlock("switch-end");
+
+    SwitchInstruction switchInstruction = new SwitchInstruction(node, node.getLogicalExpr().getValue(), casesBlocks, node.getCases(), defaultBlock);
+    pushToCurrentBlock(switchInstruction);
+
+
+    for(int i = 0; i < casesBlocks.size(); i++){
+      JumpInstruction caseJumpToEnd = new JumpInstruction(node.getCases().get(i), endBlock);
+      BasicBlock b = casesBlocks.get(i);
+      switchToBlock(b);
+      visitCase(node.getCases().get(i));
+      b.pushInstruction(caseJumpToEnd);
+    }
+
+    if(defaultBlock != null) {
+      switchToBlock(defaultBlock);
+      visitDefault(node.getDefault());
+      JumpInstruction defaultJumpToEnd = new JumpInstruction(node.getDefault(), endBlock);
+      defaultBlock.pushInstruction(defaultJumpToEnd);
+    }
+
+    switchToBlock(endBlock);
+
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitCase(ASTCaseNode node){
+    visitStmtLst(node.getStmtList());
+
+    return new IRExprResult(null, node, null);
+  }
+
+  @Override
+  public IRExprResult visitDefault(ASTDefaultNode node) {
+
+    visitStmtLst(node.getStmtList());
+
+    return new IRExprResult(null, node, null);
+  }
+
+
+  // ToDo: Insert other visit methods here
 
   /**
    * Can be used to set the instruction insert point to a specific block

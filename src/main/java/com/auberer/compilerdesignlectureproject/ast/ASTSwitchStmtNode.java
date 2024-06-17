@@ -2,6 +2,7 @@ package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
 
+import java.util.List;
 import java.util.Set;
 
 public class ASTSwitchStmtNode extends ASTNode {
@@ -15,12 +16,17 @@ public class ASTSwitchStmtNode extends ASTNode {
         return Set.of(TokenType.TOK_SWITCH);
     }
 
-    public ASTCasesNode getCases(){
-        return getChild(ASTCasesNode.class, 0);
+    public List<ASTCaseNode> getCases(){
+        return getChildren(ASTCaseNode.class);
     }
 
     public ASTDefaultNode getDefault(){
-        return getChild(ASTDefaultNode.class, 0);
+        try{
+            return getChild(ASTDefaultNode.class, 0);
+        }
+        catch(IndexOutOfBoundsException e){
+            return null;
+        }
     }
 
     public ASTLogicalExprNode getLogicalExpr(){
