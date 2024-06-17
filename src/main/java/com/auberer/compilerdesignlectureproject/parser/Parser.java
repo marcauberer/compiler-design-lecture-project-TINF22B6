@@ -228,6 +228,7 @@ public class Parser implements IParser {
     } else if (tokenType == TokenType.TOK_STRING_LIT) {
       node.setCaseType(ASTCaseNode.CaseType.STRING_LIT);
     }
+    node.setCaseLiteral(lexer.getToken().getText());
     lexer.expectOneOf(Set.of(TokenType.TOK_INT_LIT, TokenType.TOK_DOUBLE_LIT, TokenType.TOK_STRING_LIT));
     lexer.expect(TokenType.TOK_COLON);
     parseStmtLst();

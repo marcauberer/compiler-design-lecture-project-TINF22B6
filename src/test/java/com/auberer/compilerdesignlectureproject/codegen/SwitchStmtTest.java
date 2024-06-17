@@ -4,6 +4,7 @@ import com.auberer.compilerdesignlectureproject.ast.ASTSwitchStmtNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
 import org.junit.jupiter.api.Test;
 
 
@@ -32,8 +33,8 @@ public class SwitchStmtTest {
 
         ASTSwitchStmtNode astSwitchStmt = parser.parseSwitchStmt();
 
-        astSwitchStmt.getCases().get(0).setCaseLiteral("1");
-        astSwitchStmt.getCases().get(1).setCaseLiteral("2");
+        SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+        symbolTableBuilder.visitSwitchStmt(astSwitchStmt);
 
         IRGenerator irGenerator = new IRGenerator("test_module");
         BasicBlock startBlock = new BasicBlock("start-block");

@@ -192,10 +192,10 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
     for (int i = 1; i < operandsList.size(); i++) {
       visit(operandsList.get(i));
-      if (operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.AND) {
+      if (operatorsList.get(i - 1) == ASTLogicalExprNode.LogicalOperator.AND) {
         AndInstruction andInstruction = new AndInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(andInstruction);
-      } else if (operatorsList.get(i) == ASTLogicalExprNode.LogicalOperator.OR) {
+      } else if (operatorsList.get(i - 1) == ASTLogicalExprNode.LogicalOperator.OR) {
         OrInstruction orInstruction = new OrInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(orInstruction);
       }
@@ -236,10 +236,10 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
     for (int i = 1; i < operandsList.size(); i++) {
       visit(operandsList.get(i));
-      if (operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.PLUS) {
+      if (operatorsList.get(i - 1) == ASTAdditiveExprNode.AdditiveOperator.PLUS) {
         PlusInstruction plusInstruction = new PlusInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(plusInstruction);
-      } else if (operatorsList.get(i) == ASTAdditiveExprNode.AdditiveOperator.MINUS) {
+      } else if (operatorsList.get(i - 1) == ASTAdditiveExprNode.AdditiveOperator.MINUS) {
         MinusInstruction minusInstruction = new MinusInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(minusInstruction);
       }
@@ -260,10 +260,10 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
 
     for (int i = 1; i < operandsList.size(); i++) {
       visit(operandsList.get(i));
-      if (operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.MUL) {
+      if (operatorsList.get(i - 1) == ASTMultiplicativeExprNode.MultiplicativeOperator.MUL) {
         MultiplicativeInstruction multiplicativeInstruction = new MultiplicativeInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(multiplicativeInstruction);
-      } else if (operatorsList.get(i) == ASTMultiplicativeExprNode.MultiplicativeOperator.DIV) {
+      } else if (operatorsList.get(i - 1) == ASTMultiplicativeExprNode.MultiplicativeOperator.DIV) {
         DivisionInstruction divisionInstruction = new DivisionInstruction(node, operandsList.get(i - 1), operandsList.get(i));
         pushToCurrentBlock(divisionInstruction);
       }
