@@ -35,7 +35,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     ASTLogicalExprNode condition = node.getCondition();
     ExprResult forNodeResult = visit(condition);
     if (!forNodeResult.getType().is(SuperType.TY_BOOL))
-      throw new SemaError(node, "Boolean Statement expected, but instead got '" + forNodeResult.getType().toString() + "'");
+      throw new SemaError(node, "Boolean type expected, but instead got '" + forNodeResult.getType().toString() + "'");
 
     ASTAssignStmtNode increment = node.getIncrement();
     ExprResult incrementResult = visit(increment);
@@ -60,11 +60,11 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   @Override
   public ExprResult visitLogicalExpr(ASTLogicalExprNode node) {
-    ExprResult left = visit(node.operands().get(0));
-    for (int i = 1; i < node.operands().size(); i++){
+    ExprResult left = visit(node.operands().getFirst());
+    for (int i = 1; i < node.operands().size(); i++) {
       ExprResult right = visit(node.operands().get(i));
-      if (!left.getType().equals(right.getType())){
-        throw new RuntimeException("Type mismatch in logical expression");
+      if (!left.getType().equals(right.getType())) {
+        throw new SemaError(node, "Type mismatch in logical expression");
       }
     }
     Type resultType = left.getType();
@@ -86,11 +86,11 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   @Override
   public ExprResult visitAdditiveExpr(ASTAdditiveExprNode node) {
-    ExprResult left = visit(node.operands().get(0));
-    for (int i = 1; i < node.operands().size(); i++){
+    ExprResult left = visit(node.operands().getFirst());
+    for (int i = 1; i < node.operands().size(); i++) {
       ExprResult right = visit(node.operands().get(i));
-      if(!left.getType().equals(right.getType())){
-        throw new RuntimeException("Type mismatch in additive expression");
+      if (!left.getType().equals(right.getType())) {
+        throw new SemaError(node, "Type mismatch in additive expression");
       }
     }
     Type resultType = left.getType();
@@ -112,11 +112,11 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   @Override
   public ExprResult visitCompareExpr(ASTCompareExprNode node) {
     ExprResult left = visit(node.operands().get(0));
-    if(node.operands().size() > 1){
+    if (node.operands().size() > 1) {
       ExprResult right = visit(node.operands().get(1));
 
-      if(!left.getType().equals(right.getType())){
-        throw new RuntimeException("Type mismatch in compare expression");
+      if (!left.getType().equals(right.getType())) {
+        throw new SemaError(node, "Type mismatch in compare expression");
       }
       return new ExprResult(node.setEvaluatedSymbolType(new Type(SuperType.TY_BOOL)));
     }
@@ -154,17 +154,19 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
       case ASTAtomicExprNode.AtomicType.PRINT_BUILTIN_CALL: {
         return visitPrintBuiltin(node.getPrintCall());
       }
+      default: {
+        throw new SemaError(node, "Fallthrough in atomic expression");
+      }
     }
-      return null;
   }
 
   @Override
   public ExprResult visitMultiplicativeExpr(ASTMultiplicativeExprNode node) {
-    ExprResult left = visit(node.operands().get(0));
-    for (int i = 1; i < node.operands().size(); i++){
+    ExprResult left = visit(node.operands().getFirst());
+    for (int i = 1; i < node.operands().size(); i++) {
       ExprResult right = visit(node.operands().get(i));
-      if(!left.getType().equals(right.getType())){
-        throw new RuntimeException("Type mismatch in multiplicative expression");
+      if (!left.getType().equals(right.getType())) {
+        throw new SemaError(node, "Type mismatch in multiplicative expression");
       }
     }
     Type resultType = left.getType();
@@ -174,13 +176,12 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   @Override
   public ExprResult visitPrefixExpr(ASTPrefixExprNode node) {
     ExprResult left = visit(node.operand());
-    if(node.operator != null){
-      if(left.getType().isOneOf(SuperType.TY_INT, SuperType.TY_DOUBLE)){
+    if (node.operator != null) {
+      if (left.getType().isOneOf(SuperType.TY_INT, SuperType.TY_DOUBLE)) {
         Type resultType = left.getType();
         return new ExprResult(node.setEvaluatedSymbolType(resultType));
-      }
-      else {
-        throw new RuntimeException("Type mismatch in prefix expression");
+      } else {
+        throw new SemaError(node, "Type mismatch in prefix expression");
       }
     }
     return left;
@@ -189,11 +190,11 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   @Override
   public ExprResult visitIf(ASTIfStmtNode node) {
     ASTLogicalExprNode logicalExprNode = node.getCondition();
-    
+
     ExprResult logicalExprResult = visit(logicalExprNode);
     if (!logicalExprResult.getType().is(SuperType.TY_BOOL))
       throw new SemaError(node, String.format("if statement expects bool but got'%s", logicalExprResult.getType().toString()));
-    
+
     return new ExprResult(new Type(SuperType.TY_EMPTY));
   }
 
@@ -206,7 +207,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   public ExprResult visitElse(ASTElseNode node) {
     return new ExprResult(new Type(SuperType.TY_EMPTY));
   }
-  
+
   @Override
   public ExprResult visitDoWhileLoop(ASTDoWhileLoopNode node) {
     ASTLogicalExprNode logicalExprNode = node.getCondition();
@@ -215,7 +216,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
     if (!logicalExprResult.getType().is(SuperType.TY_BOOL))
       throw new SemaError(node, "While statement expects bool, but got '" + logicalExprResult.getType().toString() + "'");
-    
+
     Type resultType = new Type(SuperType.TY_EMPTY);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
@@ -229,7 +230,7 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
     if (!logicalExprResult.getType().is(declaredType.getSuperType())) {
       throw new SemaError(node, "Variable Declaration - Type mismatch: cannot assign type '"
-              + logicalExprResult.getType().toString() + "' to variable of type '" + declaredType.toString() + "'");
+          + logicalExprResult.getType().toString() + "' to variable of type '" + declaredType + "'");
     }
     SymbolTableEntry entry = node.getCurrentSymbol();
     entry.updateType(declaredType);
@@ -294,20 +295,20 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
   public ExprResult visitFctDef(ASTFctDefNode node) {
 
     FunctionDef def = new FunctionDef(node);
-    if(! (entryNode.getFunctionDefOrNull(def) == null) ){
-      throw new SemaError(node, "function definition for function " + entryNode.getFunctionDefOrNull(def)  + " is already defined");
-    };
+    if (!(entryNode.getFunctionDefOrNull(def) == null)) {
+      throw new SemaError(node, "function definition for function " + entryNode.getFunctionDefOrNull(def) + " is already defined");
+    }
 
     ASTTypeNode typeNode = node.getDataType();
     ExprResult type = visitType(typeNode);
 
     if (!type.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE, SuperType.TY_EMPTY))
       throw new SemaError(node, "function definition expects type of boolean string, int , empty or double, but got '" +
-              type.getType().toString() + "'");
+          type.getType().toString() + "'");
 
     if (node.hasParams()) {
       ASTParamLstNode params = node.getParams();
-      for(ASTParamNode paramNode: params.getParamNodes()){
+      for (ASTParamNode paramNode : params.getParamNodes()) {
         visitParam(paramNode);
       }
     }
@@ -315,40 +316,50 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     node.setEvaluatedSymbolType(type.getType());
     entryNode.defineFunction(new FunctionDef(node));
     Type resultType = new Type(SuperType.TY_FUNCTION);
+    visitLogic(node.getBody());
+
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 
   @Override
-  public ExprResult visitFctCall(ASTFctCallNode node) {
+  public ExprResult visitLogic(ASTLogicNode node) {
+    visitStmtLst(node.getBody());
+    if (node.hasReturn())
+      visitLogicalExpr(node.getReturnNode());
 
+    return new ExprResult(new Type(SuperType.TY_INVALID));
+  }
+
+  @Override
+  public ExprResult visitFctCall(ASTFctCallNode node) {
     visitChildren(node);
 
     ASTCallParamsNode params = node.getCallParams();
 
-    for (ASTLogicalExprNode exprNode: params.getParamsAsLogicNodes()){
+    for (ASTLogicalExprNode exprNode : params.getParamsAsLogicNodes()) {
       ExprResult result = visit(exprNode);
       if (!result.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
         throw new SemaError(node, "fct call statement expects type of boolean string, int or double, but got '" +
-                result.getType().toString() + "'");
+            result.getType().toString() + "'");
       exprNode.setEvaluatedSymbolType(result.getType());
     }
 
     FunctionDef def = new FunctionDef(node);
-    if(entryNode.getFunctionDefOrNull(def) == null){
+    if (entryNode.getFunctionDefOrNull(def) == null) {
       throw new SemaError(node, "function " + def + "is not yet defined");
     }
 
-
-    Type resultType = new Type(SuperType.TY_FUNCTION);
+    Type resultType = new Type(def.getReturnType());
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
   }
 
+  @Override
   public ExprResult visitParam(ASTParamNode node) {
     ASTTypeNode typeNode = node.getDataType();
     ExprResult type = visitType(typeNode);
     if (!type.getType().isOneOf(SuperType.TY_BOOL, SuperType.TY_INT, SuperType.TY_STRING, SuperType.TY_DOUBLE))
       throw new SemaError(node, "param expects type of boolean string, int or double, but got '" +
-              type.getType().toString() + "'");
+          type.getType().toString() + "'");
 
     Type resultType = new Type(type.getType().getSuperType());
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
@@ -356,18 +367,18 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
   @Override
   public ExprResult visitAssignStmt(ASTAssignStmtNode node) {
+    ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
+    visitLogicalExpr(logicalExprNode);
+
     SymbolTableEntry currentSymbol = node.getCurrentSymbol();
     if (currentSymbol != null) {
       Type leftType = currentSymbol.getType();
-      ASTLogicalExprNode logicalExprNode = node.getLogicalExpr();
-      ExprResult logicalExprResult = visit(logicalExprNode);
-
-      if (!logicalExprResult.getType().is(leftType.getSuperType()))
-        throw new SemaError(node, "AssignStmt expects '" + leftType.getSuperType() + ",' but got '" + logicalExprResult.getType().toString() + "'");
+      Type rightType = visit(logicalExprNode).getType();
+      if (!rightType.is(leftType.getSuperType()))
+        throw new SemaError(node, "AssignStmt expects '" + leftType.getSuperType() + ",' but got '" + rightType + "'");
     }
 
-    Type resultType = new Type(SuperType.TY_INVALID);
-    return new ExprResult(node.setEvaluatedSymbolType(resultType));
+    return new ExprResult(node.setEvaluatedSymbolType(new Type(SuperType.TY_INVALID)));
   }
 
 }

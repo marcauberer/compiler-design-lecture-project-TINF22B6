@@ -1,16 +1,19 @@
 package com.auberer.compilerdesignlectureproject.ast;
 
 import com.auberer.compilerdesignlectureproject.lexer.TokenType;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableEntry;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Set;
 
+@Getter
+@Setter
 public class ASTParamNode extends ASTNode{
 
-    @Getter
-    @Setter
+
     private String name;
+    private SymbolTableEntry symbol;
 
     public static Set<TokenType> getSelectionSet() {
         return ASTTypeNode.getSelectionSet();

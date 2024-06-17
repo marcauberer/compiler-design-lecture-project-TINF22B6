@@ -4,8 +4,12 @@ import com.auberer.compilerdesignlectureproject.ast.ASTWhileLoopNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
 import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
+import com.auberer.compilerdesignlectureproject.sema.SymbolTableBuilder;
+import com.auberer.compilerdesignlectureproject.sema.TypeChecker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,6 +26,12 @@ public class WhileLoopTest {
         Parser parser = new Parser(lexer);
         ASTWhileLoopNode node = parser.parseWhileLoop();
 
+        SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+        symbolTableBuilder.visitWhileLoop(node);
+
+        TypeChecker typeChecker = new TypeChecker();
+        typeChecker.visitWhileLoop(node);
+
         IRGenerator irGenerator = new IRGenerator("whileLoop");
         BasicBlock basicBlock = new BasicBlock("entry");
         irGenerator.setCurrentBlock(basicBlock);
@@ -34,7 +44,7 @@ public class WhileLoopTest {
         assertTrue(irGenerator.getCurrentBlock().getLabel().equals("while.exit"));
 
         StringBuilder sb = new StringBuilder();
-        Function function = new Function("whileLoop");
+        Function function = new Function("whileLoop", new ArrayList<>());
         function.setEntryBlock(basicBlock);
         function.dumpIR(sb);
         String irCode = sb.toString();

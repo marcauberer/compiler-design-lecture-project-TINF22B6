@@ -7,6 +7,8 @@ import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.Test;
 
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwitchStmtTest {
@@ -46,7 +48,7 @@ public class SwitchStmtTest {
         assert(irGenerator.getCurrentBlock().getLabel().equals("switch-end"));
 
         StringBuilder sb = new StringBuilder();
-        Function function = new Function("switch-test");
+        Function function = new Function("switch-test", new ArrayList<>());
         function.setEntryBlock(startBlock);
         function.dumpIR(sb);
         String irCode = sb.toString();

@@ -29,4 +29,8 @@ public class ASTElsePostNode extends ASTNode {
     selectionSet.addAll(ASTElseNode.getSelectionSet());
     return selectionSet;
   }
+
+  public ASTIfStmtNode getIfStmt() {
+    return getChild(ASTIfStmtNode.class, 0);
+  }
 }

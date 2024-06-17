@@ -5,6 +5,7 @@ import com.auberer.compilerdesignlectureproject.reader.CodeLoc;
 import com.auberer.compilerdesignlectureproject.sema.SuperType;
 import com.auberer.compilerdesignlectureproject.sema.Type;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,8 @@ public abstract class ASTNode implements IVisitable {
   }
 
   public <T> T getChild(Class<T> targetClass, int idx) {
-    return getChildren(targetClass).get(idx);
+    List<T> children = getChildren(targetClass);
+    return children.isEmpty() ? null : children.get(idx);
   }
 
   public Type setEvaluatedSymbolType(Type type) {
@@ -34,6 +36,7 @@ public abstract class ASTNode implements IVisitable {
     return type;
   }
 
+  @ToString.Exclude
   ASTNode parent;
   List<ASTNode> children = new ArrayList<>();
   CodeLoc codeLoc;

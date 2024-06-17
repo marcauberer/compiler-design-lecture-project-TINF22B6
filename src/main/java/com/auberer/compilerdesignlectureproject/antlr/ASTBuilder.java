@@ -88,6 +88,8 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     ASTIfStmtNode node = new ASTIfStmtNode();
     enterNode(node, ctx);
 
+    node.setHasAfterIf(ctx.afterIf() != null);
+
     visitChildren(ctx);
 
     exitNode(node);
@@ -98,6 +100,8 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
   public ASTNode visitAfterIf(TInfParser.AfterIfContext ctx) {
     ASTAfterIfNode node = new ASTAfterIfNode();
     enterNode(node, ctx);
+
+    node.setElseIf(ctx.elsePost() != null && ctx.elsePost().ifStmt() != null);
 
     visitChildren(ctx);
 
@@ -252,7 +256,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     return node;
   }
 
-  public ASTNode visitParam(TInfParser.ParamContext ctx){
+  public ASTNode visitParam(TInfParser.ParamContext ctx) {
     ASTParamNode paramNode = new ASTParamNode();
 
     enterNode(paramNode, ctx);
@@ -303,6 +307,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
 
     visitChildren(ctx);
     node.setVariableName(ctx.IDENTIFIER().toString());
+    node.setHasLogicalExpr(ctx.logicalExpr() != null);
 
     exitNode(node);
     return node;
@@ -326,9 +331,9 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     ASTLogicalExprNode node = new ASTLogicalExprNode();
     enterNode(node, ctx);
 
-    for (int i = 0; i < ctx.getChildCount(); i++){
+    for (int i = 0; i < ctx.getChildCount(); i++) {
       ParseTree child = ctx.getChild(i);
-      if (child instanceof TerminalNode terminalNode){
+      if (child instanceof TerminalNode terminalNode) {
         Token token = terminalNode.getSymbol();
         if (token.getType() == TInfParser.LOGICAL_AND) {
           node.operatorsListAdd(ASTLogicalExprNode.LogicalOperator.AND);
@@ -365,14 +370,13 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     ASTAdditiveExprNode node = new ASTAdditiveExprNode();
     enterNode(node, ctx);
 
-    for (int i = 0; i < ctx.getChildCount(); i++){
+    for (int i = 0; i < ctx.getChildCount(); i++) {
       ParseTree child = ctx.getChild(i);
-      if (child instanceof TerminalNode terminalNode){
+      if (child instanceof TerminalNode terminalNode) {
         Token token = terminalNode.getSymbol();
-        if (token.getType() == TInfParser.PLUS){
+        if (token.getType() == TInfParser.PLUS) {
           node.operatorsListAdd(ASTAdditiveExprNode.AdditiveOperator.PLUS);
-        }
-        else if (token.getType() == TInfParser.MINUS){
+        } else if (token.getType() == TInfParser.MINUS) {
           node.operatorsListAdd(ASTAdditiveExprNode.AdditiveOperator.MINUS);
         }
       } else if (child instanceof ParserRuleContext) {
@@ -389,14 +393,13 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     ASTMultiplicativeExprNode node = new ASTMultiplicativeExprNode();
     enterNode(node, ctx);
 
-    for (int i = 0; i < ctx.getChildCount(); i++){
+    for (int i = 0; i < ctx.getChildCount(); i++) {
       ParseTree child = ctx.getChild(i);
-      if (child instanceof TerminalNode terminalNode){
+      if (child instanceof TerminalNode terminalNode) {
         Token token = terminalNode.getSymbol();
-        if (token.getType() == TInfParser.MUL){
+        if (token.getType() == TInfParser.MUL) {
           node.operatorsListAdd(ASTMultiplicativeExprNode.MultiplicativeOperator.MUL);
-        }
-        else if (token.getType() == TInfParser.DIV){
+        } else if (token.getType() == TInfParser.DIV) {
           node.operatorsListAdd(ASTMultiplicativeExprNode.MultiplicativeOperator.DIV);
         }
       } else if (child instanceof ParserRuleContext) {
@@ -429,7 +432,7 @@ public class ASTBuilder extends TInfBaseVisitor<ASTNode> {
     ASTAtomicExprNode node = new ASTAtomicExprNode();
     enterNode(node, ctx);
 
-    if (ctx.INT_LIT() != null){
+    if (ctx.INT_LIT() != null) {
       node.setExprType(ASTAtomicExprNode.AtomicType.INT_LIT);
       node.setIntLit(Integer.parseInt(ctx.STRING_LIT().toString()));
     } else if (ctx.DOUBLE_LIT() != null) {

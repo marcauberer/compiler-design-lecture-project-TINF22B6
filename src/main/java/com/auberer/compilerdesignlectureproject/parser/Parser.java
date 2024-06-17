@@ -262,6 +262,7 @@ public class Parser implements IParser {
     lexer.expect(TokenType.TOK_RBRACE);
     if (ASTAfterIfNode.getSelectionSet().contains(lexer.getToken().getType())) {
       parseAfterIf();
+      node.setHasAfterIf(true);
     }
 
     exitNode(node);
@@ -274,6 +275,8 @@ public class Parser implements IParser {
 
     parseElsePre();
     parseElsePost();
+
+    node.setElseIf(node.getElsePost() != null && node.getElsePost().getIfStmt() != null);
 
     exitNode(node);
     return node;
@@ -325,6 +328,7 @@ public class Parser implements IParser {
     node.setVariableName(lexer.getToken().getText());
     lexer.expect(TokenType.TOK_IDENTIFIER);
     if (lexer.getToken().getType() == TokenType.TOK_ASSIGN) {
+      node.setHasLogicalExpr(true);
       lexer.expect(TokenType.TOK_ASSIGN);
       parseLogicalExpression();
     }

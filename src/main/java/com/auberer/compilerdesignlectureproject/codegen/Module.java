@@ -1,5 +1,6 @@
 package com.auberer.compilerdesignlectureproject.codegen;
 
+import com.auberer.compilerdesignlectureproject.sema.Type;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ public class Module implements IDumpable {
     functions.add(function);
   }
 
-  public Function getFunction(String name) {
+  public Function getFunction(String name, List<Type> parameters) {
     for (Function function : functions)
-      if (function.getName().equals(name))
+      if (function.getName().equals(name) && function.getParameters().stream().map(Function.Parameter::getType).toList().equals(parameters))
         return function;
     return null;
   }

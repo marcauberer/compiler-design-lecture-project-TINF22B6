@@ -14,4 +14,8 @@ public class ASTElseNode extends ASTNode {
   public static Set<TokenType> getSelectionSet() {
     return Set.of(TokenType.TOK_LBRACE);
   }
+
+  public ASTStmtLstNode getStmtLstNode() {
+    return getChild(ASTStmtLstNode.class, 0);
+  }
 }
