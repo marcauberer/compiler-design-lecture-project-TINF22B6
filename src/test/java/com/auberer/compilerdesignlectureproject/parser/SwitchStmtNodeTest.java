@@ -78,8 +78,9 @@ public class SwitchStmtNodeTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assertInstanceOf(List.class, astSwitchStmt.getCases());
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
         assert(astSwitchStmt.getCases().size() == 2);
+        assert (astSwitchStmt.getCases().get(0).getCaseType() == ASTCaseNode.CaseType.INT_LIT);
+        assert (astSwitchStmt.getCases().get(1).getCaseType() == ASTCaseNode.CaseType.INT_LIT);
     }
 }
