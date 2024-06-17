@@ -15,10 +15,14 @@ public class ASTCaseNode extends ASTNode{
     @Getter @Setter
     private String caseLiteral;
 
+    @Getter @Setter
+    private CaseType expectedType;
+
     public enum CaseType{
         INT_LIT,
         DOUBLE_LIT,
-        STRING_LIT
+        STRING_LIT,
+        INVALID
     }
 
     @Override
