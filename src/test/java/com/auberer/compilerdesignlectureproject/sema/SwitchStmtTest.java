@@ -1,6 +1,5 @@
 package com.auberer.compilerdesignlectureproject.sema;
 
-import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTDefaultNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTSwitchStmtNode;
 import com.auberer.compilerdesignlectureproject.lexer.Lexer;
@@ -40,7 +39,7 @@ public class SwitchStmtTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assert(astSwitchStmt.getCase().size() == 2);
+        assert(astSwitchStmt.getCases().size() == 2);
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
         assert(exprResult.getType().getSuperType().equals(SuperType.TY_EMPTY));
     }
@@ -70,7 +69,7 @@ public class SwitchStmtTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assert(astSwitchStmt.getCase().size() == 2);
+        assert(astSwitchStmt.getCases().size() == 2);
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
 
         SemaError exception = Assertions.assertThrows(SemaError.class, () -> typeChecker.visitSwitchStmt(astSwitchStmt));
@@ -103,7 +102,7 @@ public class SwitchStmtTest {
 
         assertNotNull(astSwitchStmt);
         assertInstanceOf(ASTSwitchStmtNode.class, astSwitchStmt);
-        assert(astSwitchStmt.getCase().size() == 2);
+        assert(astSwitchStmt.getCases().size() == 2);
         assertInstanceOf(ASTDefaultNode.class, astSwitchStmt.getDefault());
 
         SemaError exception = Assertions.assertThrows(SemaError.class, () -> typeChecker.visitSwitchStmt(astSwitchStmt));

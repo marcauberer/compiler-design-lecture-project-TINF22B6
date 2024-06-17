@@ -5,12 +5,9 @@ import com.auberer.compilerdesignlectureproject.codegen.instructions.CondJumpIns
 import com.auberer.compilerdesignlectureproject.codegen.instructions.Instruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.JumpInstruction;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.PrintInstruction;
-import com.auberer.compilerdesignlectureproject.ast.*;
 import com.auberer.compilerdesignlectureproject.codegen.instructions.*;
-import com.auberer.compilerdesignlectureproject.interpreter.Value;
 import lombok.Getter;
 import lombok.Setter;
-import org.antlr.v4.runtime.Token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,21 +97,21 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
     }
 
     List<BasicBlock> casesBlocks = new ArrayList<>();
-    for(int i = 0; i < node.getCase().size(); i++){
-      casesBlocks.add(new BasicBlock("switch-case " + node.getCase().get(i).getCaseLiteral()));
+    for(int i = 0; i < node.getCases().size(); i++){
+      casesBlocks.add(new BasicBlock("switch-case " + node.getCases().get(i).getCaseLiteral()));
     }
 
     BasicBlock endBlock = new BasicBlock("switch-end");
 
-    SwitchInstruction switchInstruction = new SwitchInstruction(node, node.getLogicalExpr().getValue(), casesBlocks, node.getCase(), defaultBlock);
+    SwitchInstruction switchInstruction = new SwitchInstruction(node, node.getLogicalExpr().getValue(), casesBlocks, node.getCases(), defaultBlock);
     pushToCurrentBlock(switchInstruction);
 
 
     for(int i = 0; i < casesBlocks.size(); i++){
-      JumpInstruction caseJumpToEnd = new JumpInstruction(node.getCase().get(i), endBlock);
+      JumpInstruction caseJumpToEnd = new JumpInstruction(node.getCases().get(i), endBlock);
       BasicBlock b = casesBlocks.get(i);
       switchToBlock(b);
-      visitCase(node.getCase().get(i));
+      visitCase(node.getCases().get(i));
       b.pushInstruction(caseJumpToEnd);
     }
 
@@ -133,17 +130,6 @@ public class IRGenerator extends ASTVisitor<IRExprResult> {
   @Override
   public IRExprResult visitCase(ASTCaseNode node){
     visitStmtLst(node.getStmtList());
-
-    return new IRExprResult(null, node, null);
-  }
-
-  @Override
-  public IRExprResult visitCases(ASTCasesNode node) {
-
-    String caseName = currentBlock.getLabel().substring(12);
-    int index = node.findCaseIndex(caseName);
-
-    visitStmtLst(node.getStmtLists().get(index));
 
     return new IRExprResult(null, node, null);
   }

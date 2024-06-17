@@ -1,18 +1,13 @@
 package com.auberer.compilerdesignlectureproject.codegen.instructions;
 
 import com.auberer.compilerdesignlectureproject.ast.ASTCaseNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTCasesNode;
-import com.auberer.compilerdesignlectureproject.ast.ASTDefaultNode;
 import com.auberer.compilerdesignlectureproject.ast.ASTNode;
 import com.auberer.compilerdesignlectureproject.codegen.BasicBlock;
 import com.auberer.compilerdesignlectureproject.interpreter.InterpreterEnvironment;
 import com.auberer.compilerdesignlectureproject.interpreter.Value;
-import com.auberer.compilerdesignlectureproject.sema.SymbolTableEntry;
-import org.antlr.v4.runtime.Token;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class SwitchInstruction extends Instruction{
     private final Value value;

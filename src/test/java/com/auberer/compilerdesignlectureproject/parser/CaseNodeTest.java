@@ -39,12 +39,6 @@ public class CaseNodeTest {
     @Test
     @DisplayName("Test switch statement case")
     void testCase() {
-        List<Token> tokenList = new LinkedList<>();
-        tokenList.add(new Token(TokenType.TOK_CASE, "1", new CodeLoc(1,1)));
-        tokenList.add(new Token(TokenType.TOK_CASE, "2", new CodeLoc(1,2)));
-        tokenList.add(new Token(TokenType.TOK_CASE, "3", new CodeLoc(1,3)));
-        tokenList.add(new Token(TokenType.TOK_IDENTIFIER, "end", new CodeLoc(1, 4)));
-
         // Arrange
         doNothing().when(lexer).advance();
         doNothing().when(lexer).expect(TokenType.TOK_CASE);

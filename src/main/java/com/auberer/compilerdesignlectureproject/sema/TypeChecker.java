@@ -249,17 +249,17 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
     SuperType type = result.getType().getSuperType();
     ASTCaseNode.CaseType expectedType = ASTCaseNode.CaseType.INVALID;
 
-    if(result.getType().getSuperType().equals(SuperType.TY_DOUBLE)){
+    if(type.equals(SuperType.TY_DOUBLE)){
       expectedType = ASTCaseNode.CaseType.DOUBLE_LIT;
     }
-    else if(result.getType().getSuperType().equals(SuperType.TY_INT)){
+    else if(type.equals(SuperType.TY_INT)){
       expectedType = ASTCaseNode.CaseType.INT_LIT;
     }
-    else if(result.getType().getSuperType().equals(SuperType.TY_STRING)){
+    else if(type.equals(SuperType.TY_STRING)){
       expectedType = ASTCaseNode.CaseType.STRING_LIT;
     }
 
-    for(ASTCaseNode c: node.getCase()){
+    for(ASTCaseNode c: node.getCases()){
       c.setExpectedType(expectedType);
       visit(c);
     }
@@ -280,19 +280,6 @@ public class TypeChecker extends ASTVisitor<ExprResult> {
 
     Type resultType = new Type(SuperType.TY_EMPTY);
     return new ExprResult(node.setEvaluatedSymbolType(resultType));
-  }
-
-  @Override
-  public ExprResult visitCases(ASTCasesNode node) {
-    for(ASTCasesNode.CaseType t: node.getCaseTypes()){
-      if(t != node.getExpectedType()){
-        throw new SemaError(node, "Switch case expects '" + node.getExpectedType() + "' but got '" + t + "'");
-      }
-    }
-
-    visitChildren(node);
-
-    return null;
   }
 
   @Override

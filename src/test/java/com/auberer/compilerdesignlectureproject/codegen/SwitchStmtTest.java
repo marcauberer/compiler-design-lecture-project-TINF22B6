@@ -6,7 +6,6 @@ import com.auberer.compilerdesignlectureproject.parser.Parser;
 import com.auberer.compilerdesignlectureproject.reader.Reader;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,8 +30,8 @@ public class SwitchStmtTest {
 
         ASTSwitchStmtNode astSwitchStmt = parser.parseSwitchStmt();
 
-        astSwitchStmt.getCase().get(0).setCaseLiteral("1");
-        astSwitchStmt.getCase().get(1).setCaseLiteral("2");
+        astSwitchStmt.getCases().get(0).setCaseLiteral("1");
+        astSwitchStmt.getCases().get(1).setCaseLiteral("2");
 
         IRGenerator irGenerator = new IRGenerator("test_module");
         BasicBlock startBlock = new BasicBlock("start-block");
